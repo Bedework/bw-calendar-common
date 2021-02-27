@@ -91,6 +91,9 @@
     <module>bw-calendar-annotations</module>
     <module>bw-calendar-convert</module>
     <module>bw-calendar-facade</module>
+    <module>bw-calendar-sysevents-msgs</module>
+    <module>bw-calendar-api</module>
+    <module>bw-calendar-api-ro</module>
   </modules>
 
   <developers>
@@ -256,16 +259,16 @@
         <version>${bw-xml.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-xml-synchws</artifactId>
+        <version>${bw-xml.version}</version>
+      </dependency>
+
       <!--
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-xml-tzsvr</artifactId>
-        <version>${bw-xml.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.bedework</groupId>
-        <artifactId>bw-xml-synchws</artifactId>
         <version>${bw-xml.version}</version>
       </dependency>
 

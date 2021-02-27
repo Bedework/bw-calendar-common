@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>bw-calendar-common</artifactId>
+    <groupId>org.bedework</groupId>
+    <version>4.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>bw-calendar-api-ro</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-util-misc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
+      <artifactId>bw-calendar-facade</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-util-maven-deploy-wfmodule</artifactId>
+
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>bw-deploy-wfmodule</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+          <moduleName>org.bedework.calendar.common.api-ro</moduleName>
+
+          <moduleDependencies>
+            <moduleDependency>
+              <name>org.bedework.calendar.common.facade</name>
+            </moduleDependency>
+
+            <moduleDependency>
+              <name>org.bedework.calendar.common.sysevents.msgs</name>
+            </moduleDependency>
+
+            <moduleDependency>
+              <name>org.bedework.xml</name>
+            </moduleDependency>
+          </moduleDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

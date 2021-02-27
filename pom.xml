@@ -94,6 +94,7 @@
     <module>bw-calendar-sysevents-msgs</module>
     <module>bw-calendar-api</module>
     <module>bw-calendar-api-ro</module>
+    <module>bw-calendar-mail</module>
   </modules>
 
   <developers>

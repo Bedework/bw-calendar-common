@@ -250,43 +250,6 @@ public class CalFacadeUtil implements Serializable {
     return 0;
   }
 
-  /** Given a class name return an object of that class.
-   * The class parameter is used to check that the
-   * named class is an instance of that class.
-   *
-   * @param className String class name
-   * @param cl   Class expected
-   * @return     Object checked to be an instance of that class
-   * @throws RuntimeException on fatal error
-   */
-  public static Object getObject(final String className,
-                                 final Class<?> cl) {
-    try {
-      final ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-      final Class<?> clazz = loader.loadClass(className);
-
-      if (clazz == null) {
-        throw new RuntimeException("Class " + className + " not found");
-      }
-
-      final Object o = clazz.getDeclaredConstructor().newInstance();
-
-      if (!cl.isInstance(o)) {
-        throw new RuntimeException(
-                "Class " + clazz +
-                        " is not a subclass of " +
-                        cl.getName());
-      }
-
-      return o;
-    } catch (final RuntimeException re) {
-      throw re;
-    } catch (final Throwable t) {
-      throw new RuntimeException(t);
-    }
-  }
-
   /** Turn the int minutes into a 4 digit String hours and minutes value
    *
    * @param minutes  int

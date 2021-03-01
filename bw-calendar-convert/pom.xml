@@ -81,7 +81,7 @@
 
           <moduleDependencies>
             <moduleDependency>
-              <name>org.bedework.calendar.facade</name>
+              <name>org.bedework.calendar.common.facade</name>
             </moduleDependency>
 
             <moduleDependency>

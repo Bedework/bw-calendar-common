@@ -91,10 +91,12 @@
     <module>bw-calendar-annotations</module>
     <module>bw-calendar-convert</module>
     <module>bw-calendar-facade</module>
-    <module>bw-calendar-sysevents-msgs</module>
     <module>bw-calendar-api</module>
     <module>bw-calendar-api-ro</module>
     <module>bw-calendar-mail</module>
+    <module>bw-calendar-sysevents-msgs</module>
+    <module>bw-calendar-sysevents-common</module>
+    <module>bw-calendar-config</module>
   </modules>
 
   <developers>
@@ -172,25 +174,25 @@
         <version>${bw-util-index.version}</version>
       </dependency>
 
-<!--
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-jmx</artifactId>
         <version>${bw-util-conf.version}</version>
       </dependency>
 
+<!--
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-jolokia</artifactId>
         <version>${bw-cliutil.version}</version>
       </dependency>
+      -->
 
       <dependency>
         <groupId>org.bedework</groupId>
         <artifactId>bw-util-logging</artifactId>
         <version>${bw-util-logging.version}</version>
       </dependency>
-      -->
 
       <dependency>
         <groupId>org.bedework</groupId>
@@ -354,12 +356,6 @@
       </dependency>
 
       <dependency>
-        <groupId>javax.jms</groupId>
-        <artifactId>javax.jms-api</artifactId>
-        <version>${jms.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.elasticsearch</groupId>
         <artifactId>elasticsearch</artifactId>
         <version>${elasticsearch.version}</version>
@@ -389,6 +385,12 @@
         <version>${jackson.version}</version>
       </dependency>
 -->
+
+      <dependency>
+        <groupId>javax.jms</groupId>
+        <artifactId>javax.jms-api</artifactId>
+        <version>${jms.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>javax.xml.bind</groupId>

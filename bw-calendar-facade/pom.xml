@@ -249,7 +249,7 @@
 
           <moduleDependencies>
             <moduleDependency>
-              <name>org.bedework.calendar.annotations</name>
+              <name>org.bedework.calendar.common.annotations</name>
             </moduleDependency>
 
             <moduleDependency>

@@ -42,7 +42,7 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
       "org.bedework.calcore.hibernate.SchemaBuilderImpl";
 
   private static final String systemConfigClass =
-      "org.bedework.calsvc.jmx.ConfigurationsImpl";
+      "org.bedework.common.jmx.ConfigurationsImpl";
 
   private static class ConfigHolder {
     final static Configurations conf =

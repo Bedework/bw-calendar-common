@@ -32,8 +32,8 @@ import org.bedework.calfacade.requests.GetInstancesRequest;
 import org.bedework.calfacade.responses.InstancesResponse;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.svc.EventInfo.UpdateResult;
+import org.bedework.calfacade.svc.RealiasResult;
 import org.bedework.calfacade.util.ChangeTable;
-import org.bedework.util.misc.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -302,18 +302,6 @@ public interface EventsI extends Serializable {
    * @param ev  event
    */
   void claim(BwEvent ev);
-
-  class RealiasResult extends Response {
-    private final Set<BwCategory> cats;
-
-    public RealiasResult(final Set<BwCategory> cats) {
-      this.cats = cats;
-    }
-
-    public Set<BwCategory> getCats() {
-      return cats;
-    }
-  }
 
   /** Realias the event - set categories according to the set of aliases.
    * 

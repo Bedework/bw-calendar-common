@@ -22,9 +22,10 @@ import org.bedework.caldav.util.sharing.InviteReplyType;
 import org.bedework.caldav.util.sharing.InviteType;
 import org.bedework.caldav.util.sharing.ShareResultType;
 import org.bedework.caldav.util.sharing.ShareType;
-import org.bedework.caldav.util.sharing.SharedAsType;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.calfacade.svc.SharingReplyResult;
+import org.bedework.calfacade.svc.SubscribeResult;
 
 import java.io.Serializable;
 
@@ -41,9 +42,9 @@ public interface SharingI extends Serializable {
    * @return list of ok and !ok sharees
    * @throws CalFacadeException on fatal error
    */
-  ShareResultType share(final String principalHref,
-                        final BwCalendar col,
-                        final ShareType share) throws CalFacadeException;
+  ShareResultType share(String principalHref,
+                        BwCalendar col,
+                        ShareType share) throws CalFacadeException;
 
   /**
    * @param col MUST be a sharable collection
@@ -51,67 +52,8 @@ public interface SharingI extends Serializable {
    * @return list of ok and !ok sharees
    * @throws CalFacadeException on fatal error
    */
-  ShareResultType share(final BwCalendar col,
-                        final ShareType share) throws CalFacadeException;
-
-  /**
-   */
-  class ReplyResult {
-    /** true for fine */
-    private boolean ok;
-
-    /** message if !ok */
-    private String failMsg;
-
-    /** Path to new alias */
-    private SharedAsType sharedAs;
-
-    /**
-     * @param msg reason
-     * @return a failure result
-     */
-    public static ReplyResult failed(final String msg) {
-      final ReplyResult rr = new ReplyResult();
-
-      rr.failMsg = msg;
-
-      return rr;
-    }
-
-    /**
-     * @param href display name for new sharee
-     * @return a successful result
-     */
-    public static ReplyResult success(final String href) {
-      final ReplyResult rr = new ReplyResult();
-
-      rr.ok = true;
-      rr.sharedAs = new SharedAsType(href);
-
-      return rr;
-    }
-
-    /**
-     * @return the ok flag
-     */
-    public boolean getOk() {
-      return ok;
-    }
-
-    /**
-     * @return the failure msg
-     */
-    public String getFailMsg() {
-      return failMsg;
-    }
-
-    /**
-     * @return the Sharedas object
-     */
-    public SharedAsType getSharedAs() {
-      return sharedAs;
-    }
-  }
+  ShareResultType share(BwCalendar col,
+                        ShareType share) throws CalFacadeException;
 
   /**
    * @param col MUST be current sharees home
@@ -119,15 +61,15 @@ public interface SharingI extends Serializable {
    * @return a ReplyResult object.
    * @throws CalFacadeException on fatal error
    */
-  ReplyResult reply(final BwCalendar col,
-                    final InviteReplyType reply) throws CalFacadeException;
+  SharingReplyResult reply(BwCalendar col,
+                           InviteReplyType reply) throws CalFacadeException;
 
   /**
    * @param col to check
    * @return current invitations
    * @throws CalFacadeException on fatal error
    */
-  InviteType getInviteStatus(final BwCalendar col) throws CalFacadeException;
+  InviteType getInviteStatus(BwCalendar col) throws CalFacadeException;
 
   /** Do any cleanup necessary for a collection delete.
    *
@@ -135,8 +77,8 @@ public interface SharingI extends Serializable {
    * @param sendNotifications true to notify sharees
    * @throws CalFacadeException on fatal error
    */
-  void delete(final BwCalendar col,
-              final boolean sendNotifications) throws CalFacadeException;
+  void delete(BwCalendar col,
+              boolean sendNotifications) throws CalFacadeException;
 
   /** Publish the collection - that is make it available for subscriptions.
    *
@@ -152,16 +94,6 @@ public interface SharingI extends Serializable {
    * @throws CalFacadeException on fatal error
    */
   void unpublish(BwCalendar col) throws CalFacadeException;
-
-  /**
-   */
-  class SubscribeResult {
-    /** Path to alias */
-    public String path;
-
-    /** True if user was already subscribed */
-    public boolean alreadySubscribed;
-  }
 
   /** Subscribe to the collection - must be a published collection.
    *

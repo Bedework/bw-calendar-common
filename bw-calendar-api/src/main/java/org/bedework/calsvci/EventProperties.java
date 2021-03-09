@@ -23,6 +23,7 @@ import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.EventPropertiesReference;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.indexing.BwIndexer;
+import org.bedework.calfacade.svc.EnsureEntityExistsResult;
 import org.bedework.util.misc.response.GetEntitiesResponse;
 import org.bedework.util.misc.response.GetEntityResponse;
 import org.bedework.util.misc.response.Response;
@@ -200,15 +201,6 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    */
   Collection<EventPropertiesReference> getRefs(T val) throws CalFacadeException;
 
-  /** Returned to show if an entity was added. entity is set to retrieved entity
-   *
-   * @param <T>
-   */
-  class EnsureEntityExistsResult<T> extends GetEntityResponse<T> {
-    /** Was added */
-    public boolean added;
-  }
-
   /** Ensure an entity exists. If it already does returns the object.
    * If not creates the entity.
    *
@@ -217,8 +209,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @param ownerHref   String principal href, null for current user
    * @return EnsureEntityExistsResult  with entity set to actual object.
    */
-  EnsureEntityExistsResult<T> ensureExists(final T val,
-                                           final String ownerHref);
+  EnsureEntityExistsResult<T> ensureExists(T val,
+                                           String ownerHref);
 
   /** Reindex current users entities
    *

@@ -145,6 +145,11 @@ public class BwCategory extends BwEventProperty<BwCategory>
   @Override
   void fixNames() {
     String extra = getWordVal();
+
+    if (extra == null) {
+      return;
+    }
+
     final String name;
 
     final int pos = extra.lastIndexOf("/");

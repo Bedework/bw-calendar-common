@@ -52,8 +52,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.bedework.calfacade.BwAlarm.TriggerVal;
-import static org.bedework.jsforj.model.JSTypes.typeJSEvent;
-import static org.bedework.jsforj.model.JSTypes.typeJSTask;
+import static org.bedework.jsforj.model.JSTypes.typeEvent;
+import static org.bedework.jsforj.model.JSTypes.typeTask;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSRoles.roleAttendee;
 import static org.bedework.jsforj.model.values.JSRoles.roleChair;
@@ -98,11 +98,11 @@ public class JsCal2BwEvent {
     final int entityType;
 
     switch (jstype) {
-      case typeJSEvent:
+      case typeEvent:
         entityType = IcalDefs.entityTypeEvent;
         break;
 
-      case typeJSTask:
+      case typeTask:
         entityType = IcalDefs.entityTypeTodo;
         break;
 

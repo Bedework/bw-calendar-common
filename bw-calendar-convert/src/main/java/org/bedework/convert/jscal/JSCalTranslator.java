@@ -47,7 +47,7 @@ public class JSCalTranslator extends IcalTranslator {
   public static JSGroup newJSGroup(final int methodType) {
     final JSGroup group =
             (JSGroup)JSFactory.getFactory()
-                              .newValue(JSTypes.typeJSGroup);
+                              .newValue(JSTypes.typeGroup);
 
     group.setProperty(JSPropertyNames.prodId,
                       BwVersion.prodId);

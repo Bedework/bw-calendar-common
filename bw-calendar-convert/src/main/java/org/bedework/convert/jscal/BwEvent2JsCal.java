@@ -182,12 +182,12 @@ public class BwEvent2JsCal {
 
       switch (val.getEntityType()) {
         case IcalDefs.entityTypeEvent:
-          jstype = JSTypes.typeJSEvent;
+          jstype = JSTypes.typeEvent;
           event = true;
           break;
 
         case IcalDefs.entityTypeTodo:
-          jstype = JSTypes.typeJSTask;
+          jstype = JSTypes.typeTask;
           todo = true;
           break;
 /*
@@ -211,7 +211,7 @@ public class BwEvent2JsCal {
 */
 
         case IcalDefs.entityTypeVpoll:
-          jstype = JSTypes.typeJSVPoll;
+          jstype = JSTypes.typeVPoll;
           vpoll = true;
           break;
 

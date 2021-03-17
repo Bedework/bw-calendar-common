@@ -187,7 +187,9 @@ public class BwEvent2Ical extends IcalUtil {
       if ((strval != null) && (strval.length() > 0)) {
         isInstance = true;
 
-        pl.add(new RecurrenceId(makeZonedDt(val, strval)));
+        pl.add(new RecurrenceId(
+                makeZonedDt(ei.getParent().getEvent(),
+                            strval)));
       }
 
       /* ------------------- Alarms -------------------- */

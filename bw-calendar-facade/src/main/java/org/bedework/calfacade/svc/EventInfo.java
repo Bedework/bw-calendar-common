@@ -112,6 +112,8 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
   private EventInfo retrievedEvent;
 
+  private EventInfo parent;
+
   protected BwEvent event;
 
   private SchedulingInfo schedulingInfo;
@@ -224,12 +226,13 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
     this.overrides = new TreeSet<>();
 
-    for (EventInfo oei: overrides) {
+    for (final EventInfo oei: overrides) {
       if (oei.getEvent().getRecurrenceId() == null) {
         throw new RuntimeException("No recurrence id in override");
       }
 
       this.overrides.add(new EventOverride(oei));
+      oei.parent = this;
     }
 
     retrievedOverrides = new TreeSet<>(this.overrides);
@@ -261,6 +264,10 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
    */
   public BwEvent getEvent() {
     return event;
+  }
+
+  public EventInfo getParent() {
+    return parent;
   }
 
   /** The full event as retrieved. This allows us to (re)index after
@@ -605,9 +612,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       return null;
     }
 
-    Set<EventInfo> eis = new TreeSet<>();
+    final Set<EventInfo> eis = new TreeSet<>();
 
-    for (EventOverride eo: overrides) {
+    for (final EventOverride eo: overrides) {
       eis.add(eo.getEventInfo());
     }
 
@@ -618,7 +625,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
    * @return int number of overrides.
    */
   public int getNumOverrides() {
-    Set<EventInfo> os = getOverrides();
+    final Set<EventInfo> os = getOverrides();
     if (os == null) {
       return 0;
     }
@@ -641,6 +648,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     final EventOverride eo = new EventOverride(val);
 
     overrides.add(eo);
+    val.parent = this;
   }
 
   /* *
@@ -709,8 +717,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
         continue;
       }
 
-      BwXproperty pu = proxy.findPeruserXprop(userHref,
-                                              BwXproperty.peruserPropTransp);
+      final BwXproperty pu =
+              proxy.findPeruserXprop(userHref,
+                                     BwXproperty.peruserPropTransp);
 
       if (pu != null) {
         /* remove it */
@@ -718,14 +727,14 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       }
 
       /* Remove any alarm(s) */
-      List<BwAlarm> toRemove = new ArrayList<>();
-      for (BwAlarm a: proxy.getAlarms()) {
+      final List<BwAlarm> toRemove = new ArrayList<>();
+      for (final BwAlarm a: proxy.getAlarms()) {
         if (a.getOwnerHref().equals(userHref)) {
           toRemove.add(a);
         }
       }
 
-      for (BwAlarm a: toRemove) {
+      for (final BwAlarm a: toRemove) {
         proxy.removeAlarm(a);
       }
 
@@ -772,7 +781,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   public EventInfo findOverride(final String rid,
                                 final boolean create) {
     if (overrides != null) {
-      for (EventOverride eo: overrides) {
+      for (final EventOverride eo: overrides) {
         if (eo.getEvent().getRecurrenceId().equals(rid)) {
           return eo.getEventInfo();
         }
@@ -913,13 +922,14 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     }
 
     cis.add(val);
+    val.parent = this;
   }
 
   /**
    * @return int number of contained items.
    */
   public int getNumContainedItems() {
-    Set<EventInfo> cis = getContainedItems();
+    final Set<EventInfo> cis = getContainedItems();
     if (cis == null) {
       return 0;
     }

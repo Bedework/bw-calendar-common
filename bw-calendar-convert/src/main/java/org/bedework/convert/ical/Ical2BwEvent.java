@@ -50,6 +50,7 @@ import org.bedework.util.misc.Util;
 import org.bedework.util.misc.response.GetEntitiesResponse;
 import org.bedework.util.misc.response.GetEntityResponse;
 import org.bedework.util.misc.response.Response;
+import org.bedework.util.timezones.Timezones;
 import org.bedework.util.xml.tagdefs.XcalTags;
 
 import net.fortuna.ical4j.model.Component;
@@ -62,6 +63,7 @@ import net.fortuna.ical4j.model.PeriodList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.Available;
 import net.fortuna.ical4j.model.component.Participant;
 import net.fortuna.ical4j.model.component.VAvailability;
@@ -244,6 +246,7 @@ public class Ical2BwEvent extends IcalUtil {
 
       BwDateTime ridObj = null;
       String rid = null;
+      TimeZone ridTz = null;
 
       prop = pl.getProperty(Property.RECURRENCE_ID);
       if (prop != null) {
@@ -391,18 +394,19 @@ public class Ical2BwEvent extends IcalUtil {
           final String bogusDate = "19980118";
           final String bogusTime = "T230000";
 
-          final Parameter par = dtStart.getParameter("VALUE");
-          final boolean isDateType = (par != null) && (par.equals(Value.DATE));
+          // Base dtstart on the recurrence id.
+
+          final boolean isDateType = ridObj.getDateType();
 
           if (isDateType) {
             mdtStart = new DtStart(new Date(bogusDate));
           } else if (dtStart.isUtc()) {
             mdtStart = new DtStart(bogusDate + bogusTime + "Z");
-          } else if (dtStart.getTimeZone() == null) {
+          } else if (ridObj.getTzid() == null) {
             mdtStart = new DtStart(bogusDate + bogusTime);
           } else {
             mdtStart = new DtStart(bogusDate + bogusTime,
-                                   dtStart.getTimeZone());
+                                   Timezones.getTz(ridObj.getTzid()));
           }
 
           IcalUtil.setDates(cb.getPrincipal().getPrincipalRef(),

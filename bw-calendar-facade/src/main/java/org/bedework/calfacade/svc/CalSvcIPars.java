@@ -85,7 +85,7 @@ public class CalSvcIPars implements Serializable {
 
   /** The clientid from headers.
    */
-  private String clientId;
+  private final String clientId;
 
   /** Id for logging.
    */
@@ -107,9 +107,9 @@ public class CalSvcIPars implements Serializable {
    */
   private final boolean dontKill;
 
-  private boolean forRestore;
+  private final boolean forRestore;
 
-  private boolean indexRebuild;
+  private final boolean indexRebuild;
 
   private boolean readonly;
 
@@ -170,6 +170,10 @@ public class CalSvcIPars implements Serializable {
     this.user = user;
     this.publicSubmission = publicSubmission;
     this.readonly = readonly;
+
+    this.clientId = clientId;
+    this.forRestore = forRestore;
+    this.indexRebuild = indexRebuild;
   }
 
   public static CalSvcIPars getRoClientPars(
@@ -315,27 +319,24 @@ public class CalSvcIPars implements Serializable {
    */
   public static CalSvcIPars getIndexerPars(final String account,
                                            final boolean publicAdmin) {
-    final CalSvcIPars pars =
-            new CalSvcIPars(logIdIndexer,
-                            account,
-                            null,    // user
-                            null,   // calsuite
-                            publicAdmin,
-                            false, // public auth
-                            true,
-                            true,   // service
-                            false,  // public submission
-                            false,  // adminCanEditAllPublicCategories
-                            false,  // adminCanEditAllPublicLocations
-                            false,  // adminCanEditAllPublicSponsors
-                            false, // sessionless
-                            true,  // dontKill
-                            false, // readOnly
-                            null, // clientId
-                            false, // forRestore
-                            true); // indexRebuild
-
-    return pars;
+    return new CalSvcIPars(logIdIndexer,
+                           account,
+                           null,    // user
+                           null,   // calsuite
+                           publicAdmin,
+                           false, // public auth
+                           true,
+                           true,   // service
+                           false,  // public submission
+                           false,  // adminCanEditAllPublicCategories
+                           false,  // adminCanEditAllPublicLocations
+                           false,  // adminCanEditAllPublicSponsors
+                           false, // sessionless
+                           true,  // dontKill
+                           false, // readOnly
+                           null, // clientId
+                           false, // forRestore
+                           true); // indexRebuild
   }
 
 
@@ -347,27 +348,24 @@ public class CalSvcIPars implements Serializable {
   public static CalSvcIPars getDumpRestorePars(final String id,
                                                final String account,
                                                final boolean superUser) {
-    final CalSvcIPars p =
-            new CalSvcIPars(logIdRestore,
-                            account,
-                            null,    // user
-                            null,   // calsuite
-                            superUser,   // publicAdmin,
-                            false,  // public auth
-                            superUser,
-                            true,   // service
-                            false,  // public submission
-                            true,   // adminCanEditAllPublicCategories
-                            true,   // adminCanEditAllPublicLocations
-                            true,   // adminCanEditAllPublicSponsors
-                            false, // sessionless
-                            true, // dontKill
-                            false, // readOnly
-                            null,
-                            true,
-                            true);
-
-    return p;
+    return new CalSvcIPars(id,
+                           account,
+                           null,    // user
+                           null,   // calsuite
+                           superUser,   // publicAdmin,
+                           false,  // public auth
+                           superUser,
+                           true,   // service
+                           false,  // public submission
+                           true,   // adminCanEditAllPublicCategories
+                           true,   // adminCanEditAllPublicLocations
+                           true,   // adminCanEditAllPublicSponsors
+                           false, // sessionless
+                           true, // dontKill
+                           false, // readOnly
+                           null,
+                           true,
+                           true);
   }
 
   /** Return new parameters for caldav.
@@ -392,27 +390,24 @@ public class CalSvcIPars implements Serializable {
                                           final boolean publicAdmin,
                                           final boolean allowCreateEprops,
                                           final boolean readonly) {
-    final CalSvcIPars pars =
-            new CalSvcIPars(logId,
-                            authUser,
-                            runAsUser,
-                            null,    // calsuite
-                            publicAdmin,
-                            false, // public auth
-                            allowSuperUser,   // allow SuperUser
-                            service,
-                            false, // publicSubmission
-                            allowCreateEprops,  // adminCanEditAllPublicCategories
-                            allowCreateEprops,  // adminCanEditAllPublicLocations
-                            allowCreateEprops,  // adminCanEditAllPublicSponsors
-                            true, // sessionless
-                            false, // system
-                            readonly,
-                            clientId,
-                            false,
-                            false);
-
-    return pars;
+    return new CalSvcIPars(logId,
+                           authUser,
+                           runAsUser,
+                           null,    // calsuite
+                           publicAdmin,
+                           false, // public auth
+                           allowSuperUser,   // allow SuperUser
+                           service,
+                           false, // publicSubmission
+                           allowCreateEprops, // adminCanEditAllPublicCategories
+                           allowCreateEprops,  // adminCanEditAllPublicLocations
+                           allowCreateEprops,  // adminCanEditAllPublicSponsors
+                           true, // sessionless
+                           false, // system
+                           readonly,
+                           clientId,
+                           false,
+                           false);
   }
 
   /**
@@ -448,13 +443,6 @@ public class CalSvcIPars implements Serializable {
    */
   public String getCalSuite() {
     return calSuite;
-  }
-
-  /**
-   * @param val String clientId
-   */
-  public void setClientId(final String val) {
-    clientId = val;
   }
 
   /**
@@ -610,26 +598,34 @@ public class CalSvcIPars implements Serializable {
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
   public Object clone() {
-    final CalSvcIPars pars =
-            new CalSvcIPars(getLogId(),
-                            getAuthUser(),
-                            getUser(),
-                            getCalSuite(),
-                            getPublicAdmin(),
-                            getPublicAuth(),
-                            getAllowSuperUser(),
-                            getService(),
-                            getPublicSubmission(),
-                            getAdminCanEditAllPublicCategories(),
-                            getAdminCanEditAllPublicLocations(),
-                            getAdminCanEditAllPublicContacts(),
-                            getSessionsless(),
-                            getDontKill(),
-                            getReadonly(), // system
-                            getClientId(), // clientId
-                            getForRestore(), // forRestore
-                            getIndexRebuild()); // indexRebuild
+    return new CalSvcIPars(getLogId(),
+                           getAuthUser(),
+                           getUser(),
+                           getCalSuite(),
+                           getPublicAdmin(),
+                           getPublicAuth(),
+                           getAllowSuperUser(),
+                           getService(),
+                           getPublicSubmission(),
+                           getAdminCanEditAllPublicCategories(),
+                           getAdminCanEditAllPublicLocations(),
+                           getAdminCanEditAllPublicContacts(),
+                           getSessionsless(),
+                           getDontKill(),
+                           getReadonly(), // system
+                           getClientId(), // clientId
+                           getForRestore(), // forRestore
+                           getIndexRebuild()); // indexRebuild
+  }
 
+  public CalSvcIPars cloneRo() {
+    final CalSvcIPars pars = getRoClientPars("",
+                                             getAuthUser(),
+                                             getUser(),
+                                             getCalSuite(),
+                                             getPublicAuth());
+
+    pars.logId = getLogId();
     return pars;
   }
 }

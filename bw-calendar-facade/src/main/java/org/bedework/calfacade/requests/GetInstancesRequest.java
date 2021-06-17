@@ -32,7 +32,7 @@ import static org.bedework.util.misc.response.Response.invalid;
  *
  * <p>If no rrule is provided then rdates MUST be supplied</p>
  * 
- * User: douglm: spherical cow group
+ * User: douglm: Bedework Commercial Services
  */
 public class GetInstancesRequest extends RequestBase {
   private String rrule;

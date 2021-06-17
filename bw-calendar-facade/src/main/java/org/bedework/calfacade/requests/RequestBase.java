@@ -32,7 +32,7 @@ import org.bedework.util.misc.response.Response;
  * <p>The validate method may be overridden and will be called by
  * the api to validate fields.</p>
  * 
- * douglm: spherical cow group
+ * douglm: Bedework Commercial Services
  */
 public class RequestBase {
   /** get instances

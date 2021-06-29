@@ -37,12 +37,6 @@
       <artifactId>bw-xml-icalendar</artifactId>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>org.bedework</groupId>
-      <artifactId>bw-xml-synchws</artifactId>
-    </dependency>
--->
     <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-jsforj</artifactId>
@@ -60,40 +54,4 @@
       <artifactId>jaxb-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.bedework</groupId>
-        <artifactId>bw-util-maven-deploy-wfmodule</artifactId>
-
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>bw-deploy-wfmodule</goal>
-            </goals>
-          </execution>
-        </executions>
-
-        <configuration>
-          <moduleName>org.bedework.calendar.common.convert</moduleName>
-
-          <moduleDependencies>
-            <moduleDependency>
-              <name>org.bedework.calendar.common.facade</name>
-            </moduleDependency>
-
-            <moduleDependency>
-              <name>org.bedework.xml</name>
-            </moduleDependency>
-
-            <moduleDependency>
-              <name>org.bedework.jsforj</name>
-            </moduleDependency>
-          </moduleDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

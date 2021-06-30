@@ -34,6 +34,7 @@ import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.svc.EventInfo.UpdateResult;
 import org.bedework.calfacade.svc.RealiasResult;
 import org.bedework.calfacade.util.ChangeTable;
+import org.bedework.util.misc.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -154,11 +155,21 @@ public interface EventsI extends Serializable {
    *
    * @param ei                 BwEvent object to be deleted
    * @param sendSchedulingMessage   Send a declined or cancel scheduling message
-   * @return true if event deleted
-   * @throws CalFacadeException on error
+   * @return Response with status ok if event deleted
    */
-  boolean delete(EventInfo ei,
-                 boolean sendSchedulingMessage) throws CalFacadeException;
+  Response delete(EventInfo ei,
+                  boolean sendSchedulingMessage);
+
+  /** Method which allows us to flag it as a scheduling action
+   *
+   * @param ei event info
+   * @param scheduling true for scheduling
+   * @param sendSchedulingReply true if we need a reply
+   * @return Response with status
+   */
+  Response delete(EventInfo ei,
+                  boolean scheduling,
+                  boolean sendSchedulingReply);
 
   /** Add an event and ensure its location and contact exist. The calendar path
    * must be set in the event.
@@ -258,26 +269,6 @@ public interface EventsI extends Serializable {
    */
   void markDeleted(BwEvent event) throws CalFacadeException;
 
-  /** Result from copy or move operations. */
-  enum CopyMoveStatus {
-    /** */
-    ok,
-
-    /** Nothing happened */
-    noop,
-
-    /** Destination was created (i.e. didn't exist previously) */
-    created,
-
-    /** copy/move would create duplicate uid */
-    duplicateUid,
-
-    /** changing uids is illegal */
-    changedUid,
-
-    /** destination exists and overwrite not set. */
-    destinationExists,
-  }
   /** Copy or move the given named entity to the destination calendar and give it
    * the supplied name.
    *
@@ -287,15 +278,14 @@ public interface EventsI extends Serializable {
    * @param copy      true for copying
    * @param overwrite if destination exists replace it.
    * @param newGuidOK   set a new guid if needed (e.g. copy in same collection)
-   * @return CopyMoveStatus
-   * @throws CalFacadeException on error
+   * @return Response with status
    */
-  CopyMoveStatus copyMoveNamed(EventInfo from,
-                               BwCalendar to,
-                               String name,
-                               boolean copy,
-                               boolean overwrite,
-                               boolean newGuidOK) throws CalFacadeException;
+  Response copyMoveNamed(EventInfo from,
+                         BwCalendar to,
+                         String name,
+                         boolean copy,
+                         boolean overwrite,
+                         boolean newGuidOK);
 
   /** Claim ownership of this event
    *

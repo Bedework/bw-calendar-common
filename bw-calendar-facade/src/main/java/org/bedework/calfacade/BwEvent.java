@@ -36,6 +36,7 @@ import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
+import org.bedework.util.misc.Uid;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.DateTime;
@@ -4813,6 +4814,30 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     return s.equals(statusMasterSuppressed);
+  }
+
+  /** Assign a guid to this event. A noop if this event already has a guid.
+   *
+   * @param systemId for the system
+   */
+  @NoProxy
+  public void assignGuid(final String systemId) {
+    if ((getName() != null) &&
+            (getUid() != null)) {
+      return;
+    }
+
+    final String guidPrefix = "CAL-" + Uid.getUid();
+
+    if (getName() == null) {
+      setName(guidPrefix + ".ics");
+    }
+
+    if (getUid() != null) {
+      return;
+    }
+
+    setUid(guidPrefix + systemId);
   }
 
   /* * Unmodified here means all but the peruser properties - transparency and

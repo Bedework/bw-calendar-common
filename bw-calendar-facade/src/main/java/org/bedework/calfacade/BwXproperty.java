@@ -214,8 +214,16 @@ public class BwXproperty extends BwDbentity<BwXproperty>
   public final static String peruserInstance = "X-PERUSER-INSTANCE";
 
   /* ====================================================================
+   *                      Tasks extensions related fields
+   * These will be moved into real fields in 4.0
+   * ==================================================================== */
+
+  /** */
+  public final static String estimatedDuration = "X-BW-ESTIMATED-DURATION";
+
+  /* ====================================================================
    *                      VPoll or VPoll related fields
-   * These are moved into real fields in 4.0
+   * These will be moved into real fields in 4.0
    * ==================================================================== */
 
   public final static String pollItemId = "X-BW-POLL-ITEMID";

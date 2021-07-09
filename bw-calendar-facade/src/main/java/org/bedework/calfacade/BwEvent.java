@@ -2331,6 +2331,28 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return duration;
   }
 
+  /** Set the event's publish URL
+   *
+   *
+   * @param val   string URL
+   */
+  @IcalProperty(pindex = PropertyInfoIndex.ESTIMATED_DURATION,
+          todoProperty = true)
+  @NoProxy
+  public void setEstimatedDuration(final String val) {
+    replaceXproperty(BwXproperty.estimatedDuration, val);
+  }
+
+  /**
+   *
+   *  @return the event's publish URL
+   */
+  @NoProxy
+  @NoDump
+  public String getEstimatedDuration() {
+    return getXproperty(BwXproperty.estimatedDuration);
+  }
+
   @Override
   @NoProxy
   @IcalProperty(pindex = PropertyInfoIndex.NO_START,

@@ -63,6 +63,7 @@ import static org.bedework.jsforj.model.values.JSRoles.roleOptional;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CATEGORIES;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CREATED;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.DESCRIPTION;
+import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ESTIMATED_DURATION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.SUMMARY;
 import static org.bedework.util.misc.response.Response.Status.failed;
 
@@ -247,6 +248,16 @@ public class JsCal2BwEvent {
       }
     }
 
+    /* ------------------- Estimated Duration -------------------- */
+
+    if (val.hasProperty(JSPropertyNames.estimatedDuration)) {
+      final var estd = val.getStringProperty(JSPropertyNames.estimatedDuration);
+      if (chg.changed(ESTIMATED_DURATION,
+                      ev.getEstimatedDuration(), estd)) {
+        ev.setEstimatedDuration(estd);
+      }
+    }
+
     /* ------------- Description Content type--------------- */
     // Not used
 
@@ -285,9 +296,6 @@ public class JsCal2BwEvent {
           break;
 
         case JSPropertyNames.entries:
-          break;
-
-        case JSPropertyNames.estimatedDuration:
           break;
 
         case JSPropertyNames.excluded:

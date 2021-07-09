@@ -497,8 +497,20 @@ public class BwEvent2JsCal {
         }
       }
 
-      /* ------------------- ExDate --below------------ */
-      /* ------------------- ExRule --below------------- */
+      /* -------------- Estimated Duration ---------------- */
+
+      final String estDur = val.getEstimatedDuration();
+      final DifferResult<String, ?> estdDiff =
+              differs(String.class,
+                      PropertyInfoIndex.ESTIMATED_DURATION,
+                      estDur, master);
+      if (estdDiff.differs) {
+        jsval.setProperty(JSPropertyNames.estimatedDuration,
+                          estDur);
+      }
+
+      /* ------------------- ExDate --below -------------- */
+      /* ------------------- ExRule --below -------------- */
 
       if (freeBusy) {
         final Collection<BwFreeBusyComponent> fbps = val.getFreeBusyPeriods();

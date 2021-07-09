@@ -128,6 +128,11 @@ public class BwDiffer {
                        Util.cmpObjval((String)val,
                                       ev.getDuration()) != 0);
 
+      case ESTIMATED_DURATION:
+        return diffres(cl,
+                       Util.cmpObjval((String)val,
+                                      ev.getEstimatedDuration()) != 0);
+
       case GEO:
         return diffres(cl,
                        Util.cmpObjval((BwGeo)val,

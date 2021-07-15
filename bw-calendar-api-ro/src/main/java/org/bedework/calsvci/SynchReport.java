@@ -27,7 +27,7 @@ import java.util.Set;
 public class SynchReport {
   /**
    */
-  private Set<SynchReportItem> items;
+  private final Set<SynchReportItem> items;
 
   /** True if the report was truncated
    */
@@ -35,7 +35,7 @@ public class SynchReport {
 
   /** Token for next time.
    */
-  private String token;
+  private final String token;
 
   /**
    * @param items set of SynchReportItem

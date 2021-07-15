@@ -54,15 +54,15 @@ public interface PreferencesI extends Serializable {
 
   /** delete a preferences object
    *
-   * @param val
-   * @throws CalFacadeException
+   * @param val to delete
+   * @throws CalFacadeException on fatal error
    */
   void delete(BwPreferences val) throws CalFacadeException;
 
   /** Get the path to the attachments directory
    *
    * @return String path.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   String getAttachmentsPath() throws CalFacadeException;
 

@@ -52,7 +52,7 @@ public interface FiltersI extends Serializable {
   /** Validate a filter definition.
    *
    * @param  val       String xml filter definition
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void validate(String val) throws CalFacadeException;
 
@@ -73,7 +73,7 @@ public interface FiltersI extends Serializable {
   /** Get filter definitions to which this user has access
    *
    * @return Collection     of BwCalSuiteWrapper
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   Collection<BwFilterDef> getAll() throws CalFacadeException;
 
@@ -87,7 +87,7 @@ public interface FiltersI extends Serializable {
   /** Delete a filter given the name
    *
    * @param  name     String name of filter
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void delete(String name) throws CalFacadeException;
 

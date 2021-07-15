@@ -36,7 +36,7 @@ public interface ViewsI extends Serializable {
    * @param  val           BwView to add
    * @param  makeDefault   boolean true for make this the default.
    * @return boolean false view not added, true - added.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean add(BwView val,
               boolean makeDefault) throws CalFacadeException;
@@ -45,7 +45,7 @@ public interface ViewsI extends Serializable {
    *
    * @param  val     BwView
    * @return boolean false - view not found.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean remove(BwView val) throws CalFacadeException;
 
@@ -53,7 +53,7 @@ public interface ViewsI extends Serializable {
    *
    * @param  val     String view name - null means default
    * @return BwView  null view not found.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwView find(String val) throws CalFacadeException;
 
@@ -62,7 +62,7 @@ public interface ViewsI extends Serializable {
    * @param  name    String view name - null means default
    * @param  path     collection path to add
    * @return boolean false view not found, true - collection path added.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean addCollection(String name,
                         String path) throws CalFacadeException;
@@ -72,7 +72,7 @@ public interface ViewsI extends Serializable {
    * @param  name    String view name - null means default
    * @param  path    collection path to remove
    * @return boolean false view not found, true - collection path removed.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean removeCollection(String name,
                                   String path) throws CalFacadeException;
@@ -80,15 +80,15 @@ public interface ViewsI extends Serializable {
   /** Return the collection of views - named collections of collections
    *
    * @return collection of views
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   Collection<BwView> getAll() throws CalFacadeException;
 
   /** Return the collection of views - named collections of collections
    *
-   * @param pr
+   * @param pr owning principal
    * @return collection of views
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   Collection<BwView> getAll(BwPrincipal pr) throws CalFacadeException;
 }

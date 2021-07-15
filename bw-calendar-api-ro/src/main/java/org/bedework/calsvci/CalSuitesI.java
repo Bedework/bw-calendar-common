@@ -38,10 +38,10 @@ public interface CalSuitesI extends Serializable {
    *
    * @param name of calsuite
    * @param adminGroupName - name of the admin group
-   * @param rootCollectionPath
-   * @param submissionsPath
+   * @param rootCollectionPath  The root collection
+   * @param submissionsPath The submissions root
    * @return BwCalSuiteWrapper for new object
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwCalSuiteWrapper add(String name,
                         String adminGroupName,
@@ -57,7 +57,7 @@ public interface CalSuitesI extends Serializable {
   /** Get the current calendar suite.
    *
    * @return BwCalSuiteWrapper null for unknown calendar suite
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwCalSuiteWrapper get() throws CalFacadeException;
 
@@ -65,7 +65,7 @@ public interface CalSuitesI extends Serializable {
    *
    * @param  name     String name of calendar suite
    * @return BwCalSuiteWrapper null for unknown calendar suite
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwCalSuiteWrapper get(String name) throws CalFacadeException;
 
@@ -73,7 +73,7 @@ public interface CalSuitesI extends Serializable {
    *
    * @param  group     BwAdminGroup
    * @return BwCalSuiteWrapper null for unknown calendar suite
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwCalSuiteWrapper get(BwAdminGroup group)
           throws CalFacadeException;
@@ -81,7 +81,7 @@ public interface CalSuitesI extends Serializable {
   /** Get calendar suites to which this user has access
    *
    * @return Collection     of BwCalSuiteWrapper
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   Collection<BwCalSuite> getAll() throws CalFacadeException;
 
@@ -90,9 +90,9 @@ public interface CalSuitesI extends Serializable {
    *
    * @param cs     BwCalSuiteWrapper object
    * @param adminGroupName - name of the admin group
-   * @param rootCollectionPath
-   * @param submissionsPath
-   * @throws CalFacadeException
+   * @param rootCollectionPath The root collection
+   * @param submissionsPath The submissions root
+   * @throws CalFacadeException on fatal error
    */
   void update(BwCalSuiteWrapper cs,
               String adminGroupName,
@@ -102,7 +102,7 @@ public interface CalSuitesI extends Serializable {
   /** Delete a calendar suite object
    *
    * @param  val     BwCalSuiteWrapper object
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void delete(BwCalSuiteWrapper val) throws CalFacadeException;
 
@@ -116,7 +116,7 @@ public interface CalSuitesI extends Serializable {
     admin,
 
     /** managed by superuser and stored as a global resource */
-    global;
+    global
   }
 
   /** Get the path to the resources directory for the calsuite
@@ -124,17 +124,17 @@ public interface CalSuitesI extends Serializable {
    * @param suite - the suite
    * @param cl - class of resource
    * @return path
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  String getResourcesPath(final BwCalSuite suite,
-                          final ResourceClass cl) throws CalFacadeException;
+  String getResourcesPath(BwCalSuite suite,
+                          ResourceClass cl) throws CalFacadeException;
 
   /** Get a list of resources. The content is not fetched.
    *
    * @param suite - calendar suite
    * @param cl - define class of resource
    * @return list
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   List<BwResource> getResources(BwCalSuite suite,
                                 ResourceClass cl) throws CalFacadeException;
@@ -145,7 +145,7 @@ public interface CalSuitesI extends Serializable {
    * @param name of resource
    * @param cl - define class of resource
    * @return resource or null
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   BwResource getResource(BwCalSuite suite,
                          String name,
@@ -159,7 +159,7 @@ public interface CalSuitesI extends Serializable {
    * @param suite - calendar suite
    * @param res to add
    * @param cl - define class of resource
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void addResource(BwCalSuite suite,
                    BwResource res,
@@ -170,7 +170,7 @@ public interface CalSuitesI extends Serializable {
    * @param suite - calendar suite
    * @param name of resource
    * @param cl - define class of resource
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void deleteResource(BwCalSuite suite,
                       String name,

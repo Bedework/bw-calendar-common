@@ -46,9 +46,9 @@ public interface SchedulingI extends Serializable {
    * NEEDS-ACTION
    *
    * @param ei
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public void setupReschedule(EventInfo ei) throws CalFacadeException;
+  void setupReschedule(EventInfo ei) throws CalFacadeException;
 
   /** Schedule a meeting or publish an event. The event object must have the organizer
    * and attendees and possibly recipients set according to itip + caldav.
@@ -58,39 +58,40 @@ public interface SchedulingI extends Serializable {
    * request will be immediately addded to the recipients inbox. For external
    * users they are sent via ischedule or mail.
    *
-   * @param ei         EventInfo object containing event with method=REQUEST, CANCEL,
+   * @param ei         EventInfo object containing event with
+   *                   method=REQUEST, CANCEL,
    *                              ADD, DECLINECOUNTER or PUBLISH
    * @param recipient - non null to send to this recipient only (for REFRESH)
-   * @param fromAttUri
+   * @param fromAttUri attendee uri
    * @param iSchedule  true if it's an iSchedule request.
    * @return ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult schedule(EventInfo ei,
-                                 String recipient,
-                                 String fromAttUri,
-                                 boolean iSchedule) throws CalFacadeException;
+  ScheduleResult schedule(EventInfo ei,
+                          String recipient,
+                          String fromAttUri,
+                          boolean iSchedule) throws CalFacadeException;
 
   /**
    * @param ei
    * @param comment
    * @param fromAtt
    * @return ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult declineCounter(EventInfo ei,
-                                       String comment,
-                                       BwAttendee fromAtt) throws CalFacadeException;
+  ScheduleResult declineCounter(EventInfo ei,
+                                String comment,
+                                BwAttendee fromAtt) throws CalFacadeException;
 
   /** Attendee wants a refresh
    *
    * @param ei event which is probably in a calendar.
    * @param comment - optional comment
    * @return   ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult requestRefresh(EventInfo ei,
-                                       String comment) throws CalFacadeException;
+  ScheduleResult requestRefresh(EventInfo ei,
+                                String comment) throws CalFacadeException;
 
   /** Attendee wants to send a reply
    *
@@ -98,21 +99,21 @@ public interface SchedulingI extends Serializable {
    * @param partstat - valid partstat.
    * @param comment - optional comment
    * @return   ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult sendReply(EventInfo ei,
-                                  int partstat,
-                                  String comment) throws CalFacadeException;
+  ScheduleResult sendReply(EventInfo ei,
+                           int partstat,
+                           String comment) throws CalFacadeException;
 
   /** An attendee responds to a request.
    *
    * @param ei  The stored updated copy of the meeting
    * @param method - the scheduling method
    * @return   ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult attendeeRespond(EventInfo ei,
-                                        final int method) throws CalFacadeException;
+  ScheduleResult attendeeRespond(EventInfo ei,
+                                 int method) throws CalFacadeException;
 
   /* * Handle replies to scheduling requests - that is the schedule
    * method was REPLY. We, as an organizer (or their delegate) are going to
@@ -120,9 +121,9 @@ public interface SchedulingI extends Serializable {
    *
    * @param ei - the incoming event in the inbox
    * @return ScheduleResult showing how things went.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    * /
-  public ScheduleResult processResponse(EventInfo ei) throws CalFacadeException;
+  ScheduleResult processResponse(EventInfo ei) throws CalFacadeException;
   */
 
   /* * The organizer has canceled the meeting - or taken us (the attendee) off
@@ -133,9 +134,9 @@ public interface SchedulingI extends Serializable {
    *
    * @param ei            EventInfo object with method=CANCEL
    * @return ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    * /
-  public ScheduleResult processCancel(EventInfo ei) throws CalFacadeException;
+  ScheduleResult processCancel(EventInfo ei) throws CalFacadeException;
   */
 
   /** Respond to a scheduling request. The event object must have the organizer
@@ -149,9 +150,9 @@ public interface SchedulingI extends Serializable {
    * @param ei         EventInfo object with event with method=REPLY, COUNTER or
    *                    REFRESH
    * @return ScheduleResult
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public ScheduleResult scheduleResponse(EventInfo ei) throws CalFacadeException;
+  ScheduleResult scheduleResponse(EventInfo ei) throws CalFacadeException;
 
   /** Get the free busy for the given principal as a list of busy periods.
    *
@@ -166,15 +167,15 @@ public interface SchedulingI extends Serializable {
    * @param uid - uid of requesting component or null for no request
    * @param exceptUid if non-null omit this uid from the freebusy calculation
    * @return BwEvent
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  BwEvent getFreeBusy(final Collection<BwCalendar> fbset,
-                      final BwPrincipal who,
-                      final BwDateTime start,
-                      final BwDateTime end,
-                      final BwOrganizer org,
-                      final String uid,
-                      final String exceptUid)
+  BwEvent getFreeBusy(Collection<BwCalendar> fbset,
+                      BwPrincipal who,
+                      BwDateTime start,
+                      BwDateTime end,
+                      BwOrganizer org,
+                      String uid,
+                      String exceptUid)
           throws CalFacadeException;
 
   /** Used for user interface. Result of dividing VFREEBUSY into equal sized
@@ -183,7 +184,7 @@ public interface SchedulingI extends Serializable {
    * @author Mike Douglass
    *
    */
-  public static class FbGranulatedResponse implements Serializable {
+  class FbGranulatedResponse implements Serializable {
     private BwDateTime start;
     private BwDateTime end;
 
@@ -199,7 +200,7 @@ public interface SchedulingI extends Serializable {
     private String recipient;
 
     /** Collection of Granulator.EventPeriod */
-    public Collection<EventPeriod> eps = new ArrayList<EventPeriod>();
+    public Collection<EventPeriod> eps = new ArrayList<>();
 
     /**
      * @param val
@@ -296,7 +297,7 @@ public interface SchedulingI extends Serializable {
    * @author douglm
    *
    */
-  public static class FbResponses implements Serializable {
+  class FbResponses implements Serializable {
     private Collection<FbGranulatedResponse> responses;
 
     private FbGranulatedResponse aggregatedResponse;
@@ -336,9 +337,9 @@ public interface SchedulingI extends Serializable {
   /** Get calendar collections which affect freebusy.
    *
    * @return Collection of calendars.
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public Collection<BwCalendar> getFreebusySet() throws CalFacadeException;
+  Collection<BwCalendar> getFreebusySet() throws CalFacadeException;
 
   /** Get aggregated free busy for a ScheduleResult.
    *
@@ -347,11 +348,11 @@ public interface SchedulingI extends Serializable {
    * @param end
    * @param granularity
    * @return FbResponses
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public FbResponses aggregateFreeBusy(ScheduleResult sr,
-                                       BwDateTime start, BwDateTime end,
-                                       BwDuration granularity) throws CalFacadeException;
+  FbResponses aggregateFreeBusy(ScheduleResult sr,
+                                BwDateTime start, BwDateTime end,
+                                BwDuration granularity) throws CalFacadeException;
 
   /** Granulate (divide into equal chunks and return the result. The response
    * from the original request may be for a different time range than requested.
@@ -361,19 +362,19 @@ public interface SchedulingI extends Serializable {
    * @param end       end from original request
    * @param granularity
    * @return FbResponse
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public FbGranulatedResponse granulateFreeBusy(BwEvent fb,
-                                                BwDateTime start,
-                                                BwDateTime end,
-                                                BwDuration granularity) throws CalFacadeException;
+  FbGranulatedResponse granulateFreeBusy(BwEvent fb,
+                                         BwDateTime start,
+                                         BwDateTime end,
+                                         BwDuration granularity) throws CalFacadeException;
 
   /** Return the users copy of the active meeting with the
    * same uid as that given.
    *
    * @param ev
    * @return possibly null meeting
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
-  public EventInfo getStoredMeeting(BwEvent ev) throws CalFacadeException;
+  EventInfo getStoredMeeting(BwEvent ev) throws CalFacadeException;
 }

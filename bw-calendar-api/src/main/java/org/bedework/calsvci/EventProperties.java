@@ -142,7 +142,7 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @param val          BwString value
    * @return Response with status and matching BwEventProperty object
    */
-  GetEntityResponse<T> findPersistent(final BwString val);
+  GetEntityResponse<T> findPersistent(BwString val);
 
   /** Return an entity matching the given BwString to which the
    * user has access.
@@ -156,7 +156,7 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @return matching BwEventProperty object
    * @throws CalFacadeException on fatal error
    */
-  T find(final BwString val) throws CalFacadeException;
+  T find(BwString val) throws CalFacadeException;
 
   /** Return all entities matching the given filter expression to which the
    * user has access.

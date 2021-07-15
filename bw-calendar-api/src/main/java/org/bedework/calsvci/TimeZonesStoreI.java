@@ -47,9 +47,9 @@ public interface TimeZonesStoreI extends Serializable {
    * @return UpdateFromTimeZonesInfo staus of the update
    * @throws CalFacadeException on error
    */
-  public UpdateFromTimeZonesInfo updateFromTimeZones(String colHref,
-                                                     int limit,
-                                                     boolean checkOnly,
-                                                     UpdateFromTimeZonesInfo info
-                                                     ) throws CalFacadeException;
+  UpdateFromTimeZonesInfo updateFromTimeZones(String colHref,
+                                              int limit,
+                                              boolean checkOnly,
+                                              UpdateFromTimeZonesInfo info
+  ) throws CalFacadeException;
 }

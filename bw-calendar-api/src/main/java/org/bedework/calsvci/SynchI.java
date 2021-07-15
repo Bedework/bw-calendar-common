@@ -89,7 +89,7 @@ public interface SynchI extends Serializable {
    * @return true if unsubscribed OK.
    * @throws CalFacadeException
    */
-  boolean unsubscribe(final BwCalendar val,
+  boolean unsubscribe(BwCalendar val,
                       boolean forDelete) throws CalFacadeException;
 
   /** Returns the synch service information.

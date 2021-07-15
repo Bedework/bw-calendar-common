@@ -40,7 +40,7 @@ public interface NotificationsI extends Serializable {
    * @param pr - target
    * @param val - the notification
    * @return false for unknown CU
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean send(BwPrincipal pr,
                NotificationType val) throws CalFacadeException;
@@ -51,7 +51,7 @@ public interface NotificationsI extends Serializable {
    *
    * @param val - the notification
    * @return false for no notification or collection
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean add(NotificationType val) throws CalFacadeException;
 
@@ -59,7 +59,7 @@ public interface NotificationsI extends Serializable {
    *
    * @param val - the notification
    * @return false for no notification or collection
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   boolean update(NotificationType val) throws CalFacadeException;
 
@@ -68,7 +68,7 @@ public interface NotificationsI extends Serializable {
    *
    * @param name - of the notification
    * @return null for no notification or the notification with that name
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   NotificationType find(String name) throws CalFacadeException;
 
@@ -78,7 +78,7 @@ public interface NotificationsI extends Serializable {
    * @param principalHref - target
    * @param name - of the notification
    * @return null for no notification or the notification with that name
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   NotificationType find(String principalHref,
                         String name) throws CalFacadeException;
@@ -88,8 +88,7 @@ public interface NotificationsI extends Serializable {
    *
    * @param principalHref - target
    * @param name - of the notification
-   * @return null for no notification or the notification with that name
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void remove(String principalHref,
               String name) throws CalFacadeException;
@@ -99,7 +98,7 @@ public interface NotificationsI extends Serializable {
    *
    * @param principalHref - target
    * @param val - the notification
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void remove(String principalHref,
               NotificationType val) throws CalFacadeException;
@@ -108,7 +107,7 @@ public interface NotificationsI extends Serializable {
    * current calendar user.
    *
    * @param val - the notification
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void remove(NotificationType val) throws CalFacadeException;
 
@@ -116,20 +115,20 @@ public interface NotificationsI extends Serializable {
    * given calendar user.
    *
    * @param principalHref - the principal
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void removeAll(String principalHref) throws CalFacadeException;
 
   /**
    * @return all notifications for this user
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getAll() throws CalFacadeException;
 
   /**
    * @param type of notification (null for all)
    * @return matching notifications for this user - never null
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getMatching(QName type) throws CalFacadeException;
 
@@ -137,7 +136,7 @@ public interface NotificationsI extends Serializable {
    * @param pr principal
    * @param type of notification (null for all)
    * @return notifications for the given principal of the given type
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getMatching(BwPrincipal pr,
                                      QName type) throws CalFacadeException;
@@ -146,21 +145,21 @@ public interface NotificationsI extends Serializable {
    * @param href principal href
    * @param type of notification (null for all)
    * @return notifications for the given principal of the given type
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getMatching(String href,
                                      QName type) throws CalFacadeException;
 
   /** Subscribe to a notification service.
    *
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void subscribe(String principalHref,
                  List<String> emails) throws CalFacadeException;
 
   /** Subscribe to a notification service.
    *
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   void unsubscribe(String principalHref,
                    List<String> emails) throws CalFacadeException;

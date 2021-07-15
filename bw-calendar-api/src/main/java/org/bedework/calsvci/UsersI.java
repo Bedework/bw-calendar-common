@@ -35,7 +35,7 @@ public interface UsersI extends Serializable {
    * @param val           String user id
    * @return User principal or null if not there
    */
-  public BwPrincipal getUser(final String val);
+  public BwPrincipal getUser(String val);
 
   /** Find the user with the given account name. Create if not there.
    *
@@ -50,7 +50,7 @@ public interface UsersI extends Serializable {
    * @param val           String principal hierarchy path
    * @return BwPrincipal  representing the principal or null if not there
    */
-  public BwPrincipal getPrincipal(final String val);
+  public BwPrincipal getPrincipal(String val);
 
   /** Add an entry for the user.
    *

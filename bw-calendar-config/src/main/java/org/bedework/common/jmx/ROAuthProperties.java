@@ -27,14 +27,14 @@ import org.bedework.calfacade.configs.AuthProperties;
 public final class ROAuthProperties implements AuthProperties {
   /* Wrapper to make System properties read only. */
 
-  private AuthProperties cfg;
+  private final AuthProperties cfg;
 
   private AuthProperties getConfig() {
     return cfg;
   }
 
   /**
-   * @param cfg
+   * @param cfg AuthProperties object
    */
   ROAuthProperties(final AuthProperties cfg) {
     this.cfg = cfg;

@@ -35,11 +35,11 @@ import java.util.Map;
  * @author douglm
  */
 public class DataValues {
-  private Map<SysCode, DataAvg> dvMap = new HashMap<SysCode, DataAvg>();
+  private final Map<SysCode, DataAvg> dvMap = new HashMap<>();
 
-  private Map<String, DataAvg> timedValuesMap = new HashMap<>();
+  private final Map<String, DataAvg> timedValuesMap = new HashMap<>();
 
-  private Map<String, DataAvg> statMap = new HashMap<String, DataAvg>();
+  private final Map<String, DataAvg> statMap = new HashMap<>();
 
   /**
    */
@@ -53,14 +53,14 @@ public class DataValues {
   }
 
   /**
-   * @param ev
+   * @param ev system event
    */
   public void update(final SysEvent ev) {
-    SysCode sc = ev.getSysCode();
+    final SysCode sc = ev.getSysCode();
 
     if (ev instanceof TimedEvent) {
-      TimedEvent te = (TimedEvent)ev;
-      String lbl = te.getLabel();
+      final TimedEvent te = (TimedEvent)ev;
+      final String lbl = te.getLabel();
 
       DataAvg dv = timedValuesMap.get(lbl);
 
@@ -76,7 +76,7 @@ public class DataValues {
     }
 
     if (ev instanceof MillisecsEvent) {
-      DataAvg dv = dvMap.get(sc);
+      final DataAvg dv = dvMap.get(sc);
 
       if (dv != null) {
         dv.inc(((MillisecsEvent)ev).getMillis());
@@ -85,8 +85,8 @@ public class DataValues {
     }
 
     if (sc == SysCode.STATS) {
-      StatsEvent se = (StatsEvent)ev;
-      String sname = se.getName();
+      final StatsEvent se = (StatsEvent)ev;
+      final String sname = se.getName();
       DataAvg da = statMap.get(sname);
 
       if (da == null) {
@@ -95,7 +95,7 @@ public class DataValues {
         statMap.put(sname, da);
       }
 
-      StatType st = StatsEvent.getStatType(sname);
+      final StatType st = StatsEvent.getStatType(sname);
 
       if (st != StatType.lnum) {
         da.inc(1);
@@ -108,30 +108,30 @@ public class DataValues {
   }
 
   /**
-   * @param vals
+   * @param vals to add to
    */
   public void getValues(final List<String> vals) {
-    for (DataAvg da: dvMap.values()) {
+    for (final DataAvg da: dvMap.values()) {
       vals.add(da.toString());
     }
   }
 
   /**
-   * @param stats
+   * @param stats to add to
    */
   public void getStats(final List<MonitorStat> stats) {
-    for (DataAvg da: dvMap.values()) {
+    for (final DataAvg da: dvMap.values()) {
       stats.add(da.getStat());
     }
 
-    for (DataAvg da: timedValuesMap.values()) {
-      long val = (long)(da.getValue() / da.getCount());
+    for (final DataAvg da: timedValuesMap.values()) {
+      final long val = (long)(da.getValue() / da.getCount());
       stats.add(new MonitorStat(da.getName(), (long)da.getCount(),
                                 String.valueOf(val)));
     }
 
-    for (DataAvg da: statMap.values()) {
-      long val = (long)(da.getValue() / da.getCount());
+    for (final DataAvg da: statMap.values()) {
+      final long val = (long)(da.getValue() / da.getCount());
       stats.add(new MonitorStat(da.getName(), (long)da.getCount(),
                                 String.valueOf(val)));
     }
@@ -139,7 +139,7 @@ public class DataValues {
 
   private DataAvg addDv(final String name,
                         final SysCode scode) {
-    DataAvg dv = new DataAvg(name, scode);
+    final DataAvg dv = new DataAvg(name, scode);
 
     dvMap.put(scode, dv);
 

@@ -26,14 +26,14 @@ import org.bedework.sysevents.events.SysEventBase.SysCode;
  * @author douglm
  */
 public class DataValue {
-  private String name;
-  private SysCode sysCode;
+  private final String name;
+  private final SysCode sysCode;
 
   /* The value at the time we last refreshed */
   private double value;
 
   /**
-   * @param name
+   * @param name of value
    * @param sysCode - non null if this object is associated with a code
    */
   public DataValue(final String name,
@@ -67,7 +67,7 @@ public class DataValue {
   }
 
   /**
-   * @param value
+   * @param value double
    */
   public void setValue(final double value) {
     this.value = value;
@@ -88,7 +88,7 @@ public class DataValue {
   }
 
   /**
-   * @param val
+   * @param val double to inc by
    */
   public void inc(final double val) {
     value += val;
@@ -96,13 +96,6 @@ public class DataValue {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-
-    sb.append(getName());
-    sb.append(" = ");
-    sb.append(getValue());
-    sb.append("\n");
-
-    return sb.toString();
+    return getName() + " = " + getValue() + "\n";
   }
 }

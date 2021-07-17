@@ -30,7 +30,7 @@ public class DataAvg extends DataValue {
   private double count;
 
   /**
-   * @param name
+   * @param name of average
    * @param sysCode - non null if this object is associated with a code
    */
   public DataAvg(final String name,
@@ -50,7 +50,7 @@ public class DataAvg extends DataValue {
    */
   @Override
   public MonitorStat getStat() {
-    long val = (long)(getValue() / getCount());
+    final long val = (long)(getValue() / getCount());
 
     return new MonitorStat(getName(),
                            String.valueOf(val));
@@ -67,13 +67,8 @@ public class DataAvg extends DataValue {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-
-    sb.append(getName());
-    sb.append(" = ");
-    sb.append(getValue() / getCount());
-    sb.append("\n");
-
-    return sb.toString();
+    return getName() + " = " +
+            (getValue() / getCount()) +
+            "\n";
   }
 }

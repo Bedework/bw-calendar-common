@@ -41,7 +41,7 @@ public class MailerConf extends ConfBase<MailConfigPropertiesImpl>
   }
 
   /**
-   * @param name
+   * @param name of mbean
    * @return service name for the mbean with this name
    */
   public static String getServiceName(final String name) {

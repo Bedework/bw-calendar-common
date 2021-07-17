@@ -33,9 +33,9 @@ import java.util.Map;
  * @author douglm
  */
 public class DataCounts {
-  private Collection<DataValue> dls = new ArrayList<DataValue>();
+  private final Collection<DataValue> dls = new ArrayList<>();
 
-  private Map<SysCode, DataValue> dlMap = new HashMap<SysCode, DataValue>();
+  private final Map<SysCode, DataValue> dlMap = new HashMap<>();
 
   /**
    */
@@ -56,11 +56,11 @@ public class DataCounts {
   }
 
   /**
-   * @param ev
+   * @param ev system event
    */
   public void update(final SysEvent ev) {
-    SysCode sc = ev.getSysCode();
-    DataValue dl = dlMap.get(sc);
+    final SysCode sc = ev.getSysCode();
+    final DataValue dl = dlMap.get(sc);
 
     if (dl != null) {
       dl.inc();
@@ -68,30 +68,30 @@ public class DataCounts {
   }
 
   /**
-   * @param vals
+   * @param vals to add to
    */
   public void getValues(final List<String> vals) {
-    for (DataValue dv: dls) {
+    for (final DataValue dv: dls) {
       vals.add(dv.toString());
     }
   }
 
   /**
-   * @param stats
+   * @param stats to add to
    */
   public void getStats(final List<MonitorStat> stats) {
-    for (DataValue dv: dls) {
+    for (final DataValue dv: dls) {
       stats.add(dv.getStat());
     }
   }
 
   private DataValue addDl(final String name,
                           final SysCode scode) {
-    DataValue dl = new DataValue(name, scode);
+    final DataValue dl = new DataValue(name, scode);
 
     dls.add(dl);
 
-    SysCode s = dl.getSysCode();
+    final SysCode s = dl.getSysCode();
 
     if (s != null) {
       dlMap.put(s, dl);

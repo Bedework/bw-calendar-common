@@ -48,7 +48,7 @@ public class BwSysMonitor extends ConfBase implements
     }
 
     @Override
-    public void action(final SysEvent ev) throws NotificationException {
+    public void action(final SysEvent ev) {
       if (ev == null) {
         return;
       }

@@ -32,7 +32,7 @@ public class AuthConf extends ConfBase<AuthPropertiesImpl>
   public static final String confuriPname = "org.bedework.bwengine.confuri";
 
   /**
-   * @param name
+   * @param name of mbean
    */
   public AuthConf(final String name) {
     super(getServiceName(name));
@@ -45,7 +45,7 @@ public class AuthConf extends ConfBase<AuthPropertiesImpl>
   }
 
   /**
-   * @param name
+   * @param name of mbean
    * @return service name for the mbean with this name
    */
   public static String getServiceName(final String name) {

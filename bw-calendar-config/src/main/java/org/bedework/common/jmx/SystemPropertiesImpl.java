@@ -464,8 +464,7 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   }
 
   @Override
-  @ConfInfo(collectionElementName = "syseventsProperty" ,
-            elementType = "java.lang.String")
+  @ConfInfo(collectionElementName = "syseventsProperty")
   public List<String> getSyseventsProperties() {
     return syseventsProperties;
   }

@@ -221,7 +221,7 @@ public final class ConfigurationsImpl
     try {
       return new ObjectName(getServiceName(
               Configurations.unauthPropsNamePart));
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }
   }
@@ -247,7 +247,7 @@ public final class ConfigurationsImpl
     try {
       return new ObjectName(getServiceName(
               Configurations.systemPropsNamePart));
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }
   }
@@ -365,7 +365,7 @@ public final class ConfigurationsImpl
   }
 
   private void startChgNote() throws Throwable {
-    ConfBase cb = loadInstance(chgnoteClass);
+    final ConfBase<?> cb = loadInstance(chgnoteClass);
 
     register(new ObjectName(cb.getServiceName()), cb);
     cb.start();
@@ -487,20 +487,16 @@ public final class ConfigurationsImpl
         throw new CalFacadeException("Class " + cname + " not found");
       }
 
-      final Object o = cl.newInstance();
+      final Object o = cl.getDeclaredConstructor().newInstance();
 
-      if (o == null) {
-        throw new CalFacadeException("Unable to instantiate class " + cname);
-      }
-
-      return (ConfBase)o;
+      return (ConfBase<?>)o;
     } catch (final Throwable t) {
       t.printStackTrace();
       throw new RuntimeException(t);
     }
   }
 
-  private SystemProperties getSystemProps() throws CalFacadeException {
+  private SystemProperties getSystemProps() {
     return sysProperties;
   }
 
@@ -871,8 +867,8 @@ public final class ConfigurationsImpl
   }
 
   @Override
-  @ConfInfo(collectionElementName = "syseventsProperty" ,
-          elementType = "java.lang.String")
+  @ConfInfo(collectionElementName = "syseventsProperty"
+  )
   public List<String> getSyseventsProperties() {
     return getConfig().getSyseventsProperties();
   }

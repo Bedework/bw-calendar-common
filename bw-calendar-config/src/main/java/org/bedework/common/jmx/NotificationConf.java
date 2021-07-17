@@ -132,7 +132,7 @@ public class NotificationConf extends ConfBase<NotificationPropertiesImpl>
 
       share.getSet().add(set);
 
-      try (CalSvcI svci = getSvci(getNotifierId())) {
+      try (final CalSvcI svci = getSvci(getNotifierId())) {
         final BwCalendar col = svci.getCalendarsHandler().get(href);
 
         if (col == null) {
@@ -164,7 +164,7 @@ public class NotificationConf extends ConfBase<NotificationPropertiesImpl>
    *
    * @param account of user to run as
    * @return svci object
-   * @throws org.bedework.calfacade.exc.CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   private CalSvcI getSvci(final String account) throws CalFacadeException {
     if ((svci != null) && svci.isOpen()) {

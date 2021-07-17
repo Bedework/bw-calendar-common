@@ -196,9 +196,9 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
     return maxDateTime;
   }
 
-  /** Set the c if not specified
+  /** Set the default freebusy period if not specified
    *
-   * @param val
+   * @param val default freebusy period
    */
   @Override
   public void setDefaultFBPeriod(final Integer val) {
@@ -216,7 +216,7 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   /** Set the maximum freebusy fetch period
    *
-   * @param val
+   * @param val max freebusy period
    */
   @Override
   public void setMaxFBPeriod(final Integer val) {
@@ -234,7 +234,7 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   /** Set the default webcal fetch period if not specified
    *
-   * @param val
+   * @param val default webcal fetch period
    */
   @Override
   public void setDefaultWebCalPeriod(final Integer val) {
@@ -252,7 +252,7 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   /** Set the maximum webcal fetch period
    *
-   * @param val
+   * @param val maximum webcal fetch period
    */
   @Override
   public void setMaxWebCalPeriod(final Integer val) {
@@ -294,7 +294,7 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   @Override
   public String toString() {
-    ToString ts = new ToString(this);
+    final ToString ts = new ToString(this);
 
     ts.newLine();
     ts.append("directoryBrowsingDisallowed", getDirectoryBrowsingDisallowed());
@@ -321,7 +321,7 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   @Override
   public AuthProperties cloneIt() {
-    AuthPropertiesImpl clone = new AuthPropertiesImpl();
+    final AuthPropertiesImpl clone = new AuthPropertiesImpl();
 
     clone.setName(getName());
 

@@ -445,10 +445,6 @@ public class CalFacadeException extends Exception {
 
   /* ****************** Timezones ****************************** */
 
-  /** Error reading timezones */
-  public static final String timezonesReadError =
-      "org.bedework.error.timezones.readerror";
-
   /** Unknown timezones */
   public static final String unknownTimezone =
       "org.bedework.error.unknown.timezone";
@@ -470,14 +466,6 @@ public class CalFacadeException extends Exception {
   /** */
   public static final String notIndexPrincipal =
       "org.bedework.error.indexing.notprincipal";
-
-  /** */
-  public static final String notIndexDirectory =
-      "org.bedework.error.lucene.notdirectory";
-
-  /** */
-  public static final String indexCreateFailed =
-      "org.bedework.error.lucene.createfailed";
 
   /* ****************** Notifications ********************* */
 

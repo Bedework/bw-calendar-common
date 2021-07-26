@@ -31,10 +31,18 @@ import java.io.Serializable;
 public interface CalSvcFactory extends Serializable {
   /** Get an initialised instance of CalSvcI
    *
-   * @param pars
+   * @param pars svc parameters
    * @return initialised CalSvcI instance
    */
   CalSvcI getSvc(CalSvcIPars pars);
+
+  /** Get an initialised instance of CalSvcI
+   *
+   * @param loader class loader to use
+   * @param pars svc parameters
+   * @return initialised CalSvcI instance
+   */
+  CalSvcI getSvc(ClassLoader loader, CalSvcIPars pars);
 
   /**
    * @return schema builder

@@ -366,7 +366,10 @@ public class BwResource extends BwShareableContainedDbentity<BwResource> {
     /* We have to change the name to avoid conflicts -
      */
 
+    /* I don't think this is true - the tombstoned version replaces the
+       original - leave these alone
     setName(getName() + tombstonedSuffix);
+     */
   }
 
   /** Is this resource tombstoned?
@@ -377,8 +380,7 @@ public class BwResource extends BwShareableContainedDbentity<BwResource> {
   @NoDump
   @NoWrap
   public boolean getTombstoned() {
-    final String f = getEncoding();
-    return (f != null) && f.equals(tombstoned);
+    return tombstoned.equals(getEncoding());
   }
 
   /* ====================================================================

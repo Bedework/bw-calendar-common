@@ -31,7 +31,6 @@ import org.bedework.calfacade.configs.SynchConfig;
 import org.bedework.calfacade.configs.SystemProperties;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.mail.MailConfigProperties;
-import org.bedework.calfacade.indexing.BwIndexCtlMBean;
 import org.bedework.calfacade.svc.CalSvcIPars;
 import org.bedework.calsvci.CalSvcFactoryDefault;
 import org.bedework.calsvci.CalSvcI;
@@ -95,16 +94,12 @@ public final class ConfigurationsImpl
   private static final String dumpRestoreClass =
           "org.bedework.dumprestore.BwDumpRestore";
 
-  private static ConfBase<?> dumpRestore;
+  private static DumpRestoreProperties dumpRestoreProperties;
 
   private static CmdUtilProperties cmdUtilProperties;
 
-  private static DumpRestoreProperties dumpRestoreProperties;
-
   private static final String indexerCtlClass =
           "org.bedework.indexer.BwIndexCtl";
-
-  private static BwIndexCtlMBean indexCtl;
 
   private static IndexProperties indexProperties;
 

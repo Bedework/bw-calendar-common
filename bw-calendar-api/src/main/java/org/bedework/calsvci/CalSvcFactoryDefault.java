@@ -46,7 +46,8 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
 
   private static class ConfigHolder {
     final static Configurations conf =
-            (Configurations)loadInstance(systemConfigClass,
+            (Configurations)loadInstance(Thread.currentThread().getContextClassLoader(),
+                                         systemConfigClass,
                                          Configurations.class);
   }
 
@@ -58,8 +59,16 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
   
   @Override
   public CalSvcI getSvc(final CalSvcIPars pars) {
+    return getSvc(Thread.currentThread().getContextClassLoader(),
+                  pars);
+  }
+
+  @Override
+  public CalSvcI getSvc(final ClassLoader loader,
+                        final CalSvcIPars pars) {
     CalSvcI svc =
-            (CalSvcI)loadInstance(defaultSvciClass,
+            (CalSvcI)loadInstance(loader,
+                                  defaultSvciClass,
                                   CalSvcI.class);
 
     try {
@@ -69,7 +78,8 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
         final var clonedPars = (CalSvcIPars)pars.clone();
         clonedPars.setReadonly(false);
 
-        svc = (CalSvcI)loadInstance(defaultSvciClass,
+        svc = (CalSvcI)loadInstance(loader,
+                                    defaultSvciClass,
                                     CalSvcI.class);
 
         svc.init(clonedPars);
@@ -81,7 +91,8 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
 
   @Override
   public SchemaBuilder getSchemaBuilder() {
-    return (SchemaBuilder)loadInstance(schemaBuilderClass,
+    return (SchemaBuilder)loadInstance(Thread.currentThread().getContextClassLoader(),
+                                       schemaBuilderClass,
                                        SchemaBuilder.class);
   }
 
@@ -120,10 +131,10 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
     }
   }
 
-  private static Object loadInstance(final String cname,
+  private static Object loadInstance(final ClassLoader loader,
+                                     final String cname,
                                      final Class<?> interfaceClass) {
     try {
-      final ClassLoader loader = Thread.currentThread().getContextClassLoader();
       final Class<?> cl = loader.loadClass(cname);
 
       if (cl == null) {

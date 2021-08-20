@@ -27,10 +27,18 @@ import org.bedework.calfacade.exc.CalFacadeException;
 public class IcalMalformedException extends CalFacadeException {
   /** Constructor
    *
-   * @param msg
+   * @param msg test
    */
-  public IcalMalformedException(String msg) {
+  public IcalMalformedException(final String msg) {
     super(msg);
+  }
+
+  /** Constructor
+   *
+   * @param exc Throwable
+   */
+  public IcalMalformedException(final Throwable exc) {
+    super(exc);
   }
 }
 

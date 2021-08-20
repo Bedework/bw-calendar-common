@@ -345,10 +345,7 @@ public class IcalTranslator implements Logged, Serializable {
     } catch (final CalFacadeException cfe) {
       throw cfe;
     } catch (final ParserException pe) {
-      if (debug()) {
-        error(pe);
-      }
-      throw new IcalMalformedException(pe.getMessage());
+      throw new IcalMalformedException(pe);
     } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }

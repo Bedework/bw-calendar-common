@@ -117,7 +117,7 @@ public class IcalUtil {
   private final static BwLogger logger =
           new BwLogger().setLoggedClass(IcalUtil.class);
 
-  private static final Supplier<List<PropertyFactory<?>>> propertyFactorySupplier =
+  private static final Supplier<List<PropertyFactory<? extends Property>>> propertyFactorySupplier =
           new DefaultPropertyFactorySupplier();
 
   private static final Supplier<List<ParameterFactory<?>>> parameterFactorySupplier =
@@ -172,7 +172,7 @@ public class IcalUtil {
 
     try {
       sb.append("BEGIN:VCALENDAR\n");
-      sb.append(Version.VERSION_2_0.toString());
+      sb.append(Version.VERSION_2_0);
       sb.append("\n");
       sb.append(xcompPropVal);
       if (!xcompPropVal.endsWith("\n")) {
@@ -224,7 +224,7 @@ public class IcalUtil {
         }
 
         final var propertyBuilder =
-                new PropertyBuilder().factories(
+                new PropertyBuilder(
                         propertyFactorySupplier.get()).name(pname);
 
         final ParameterList pars = makeXparlist(params);
@@ -559,10 +559,8 @@ public class IcalUtil {
 
     /* Should be one vpoll object */
 
-    final VPoll vpoll = (VPoll)ical.getComponent(Component.VPOLL);
-    for (final Object o: vpoll.getVoters()) {
-      final Participant voter = (Participant)o;
-
+    final VPoll vpoll = ical.getComponent(Component.VPOLL);
+    for (final Participant voter: vpoll.getVoters()) {
       final CalendarAddress ca =
               voter.getProperty(Property.CALENDAR_ADDRESS);
       if (ca == null) {
@@ -607,9 +605,7 @@ public class IcalUtil {
 
       final Map<Integer, Component> comps = new HashMap<>();
 
-      for (final Object o: ical.getComponents()) {
-        final Component comp = (Component)o;
-
+      for (final Component comp: ical.getComponents()) {
         final PollItemId pid = comp.getProperty(Property.POLL_ITEM_ID);
         if (pid == null) {
           continue;

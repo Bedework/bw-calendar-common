@@ -39,20 +39,15 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.parameter.FbType;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.DtEnd;
-import net.fortuna.ical4j.model.property.DtStart;
-import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Organizer;
-
-import java.util.Iterator;
 
 /** Class to provide utility methods for translating to BwFreeBusy from ical4j classes
  *
  * @author Mike Douglass   douglm  rpi.edu
  */
 public class BwFreeBusyUtil extends IcalUtil {
-  private static BwLogger logger =
+  private static final BwLogger logger =
           new BwLogger().setLoggedClass(BwFreeBusyUtil.class);
   
   /**
@@ -68,41 +63,39 @@ public class BwFreeBusyUtil extends IcalUtil {
     }
 
     try {
-      PropertyList pl = val.getProperties();
+      final PropertyList<Property> pl = val.getProperties();
 
       if (pl == null) {
         // Empty VEvent
         return null;
       }
 
-      BwEvent fb = new BwEventObj();
-      EventInfo ei = new EventInfo(fb);
+      final BwEvent fb = new BwEventObj();
+      final EventInfo ei = new EventInfo(fb);
 
-      ChangeTable chg = ei.getChangeset(cb.getPrincipal().getPrincipalRef());
+      final ChangeTable chg = ei.getChangeset(cb.getPrincipal().getPrincipalRef());
 
       fb.setEntityType(IcalDefs.entityTypeFreeAndBusy);
 
       setDates(cb.getPrincipal().getPrincipalRef(),
                ei,
-               (DtStart)pl.getProperty(Property.DTSTART),
-               (DtEnd)pl.getProperty(Property.DTEND),
-               (Duration)pl.getProperty(Property.DURATION));
+               pl.getProperty(Property.DTSTART),
+               pl.getProperty(Property.DTEND),
+               pl.getProperty(Property.DURATION));
 
-      Iterator it = pl.iterator();
-
-      while (it.hasNext()) {
-        Property prop = (Property)it.next();
-
+      for (final Property prop: pl) {
         String pval = prop.getValue();
         if ((pval != null) && (pval.length() == 0)) {
           pval = null;
         }
 
-        PropertyInfoIndex pi = PropertyInfoIndex.fromName(prop.getName());
+        final PropertyInfoIndex pi = PropertyInfoIndex.fromName(
+                prop.getName());
         if (pi == null) {
-          logger.debug("Unknown property with name " + prop.getName() +
-                                " class " + prop.getClass() +
-                                " and value " + pval);
+          logger.debug(
+                  "Unknown property with name " + prop.getName() +
+                          " class " + prop.getClass() +
+                          " and value " + pval);
           continue;
         }
 
@@ -110,7 +103,7 @@ public class BwFreeBusyUtil extends IcalUtil {
           case ATTENDEE:
             /* ------------------- Attendee -------------------- */
 
-            BwAttendee att = getAttendee(cb, (Attendee)prop);
+            final BwAttendee att = getAttendee(cb, (Attendee)prop);
             fb.addAttendee(att);
             chg.addValue(pi, att);
 
@@ -142,10 +135,10 @@ public class BwFreeBusyUtil extends IcalUtil {
           case FREEBUSY:
             /* ------------------- freebusy -------------------- */
 
-            FreeBusy fbusy = (FreeBusy)prop;
-            PeriodList perpl = fbusy.getPeriods();
-            Parameter par = getParameter(fbusy, "FBTYPE");
-            int fbtype;
+            final FreeBusy fbusy = (FreeBusy)prop;
+            final PeriodList perpl = fbusy.getPeriods();
+            final Parameter par = getParameter(fbusy, "FBTYPE");
+            final int fbtype;
 
             if (par == null) {
               fbtype = BwFreeBusyComponent.typeBusy;
@@ -159,20 +152,19 @@ public class BwFreeBusyUtil extends IcalUtil {
               fbtype = BwFreeBusyComponent.typeFree;
             } else {
               if (logger.debug()) {
-                logger.debug("Unsupported parameter " + par.getName());
+                logger.debug(
+                        "Unsupported parameter " + par.getName());
               }
 
-              throw new IcalMalformedException("parameter " + par.getName());
+              throw new IcalMalformedException(
+                      "parameter " + par.getName());
             }
 
-            BwFreeBusyComponent fbc = new BwFreeBusyComponent();
+            final BwFreeBusyComponent fbc = new BwFreeBusyComponent();
 
             fbc.setType(fbtype);
 
-            Iterator perit = perpl.iterator();
-            while (perit.hasNext()) {
-              Period per = (Period)perit.next();
-
+            for (final Period per: perpl) {
               fbc.addPeriod(per);
             }
 
@@ -184,7 +176,7 @@ public class BwFreeBusyUtil extends IcalUtil {
           case ORGANIZER:
             /* ------------------- Organizer -------------------- */
 
-            BwOrganizer org = getOrganizer(cb, (Organizer)prop);
+            final BwOrganizer org = getOrganizer(cb, (Organizer)prop);
             fb.setOrganizer(org);
             chg.addValue(pi, org);
 
@@ -201,16 +193,16 @@ public class BwFreeBusyUtil extends IcalUtil {
           default:
             if (logger.debug()) {
               logger.debug("Unsupported property with class " +
-                                    prop.getClass() +
-                                    " and value " + pval);
+                                   prop.getClass() +
+                                   " and value " + pval);
             }
         }
       }
 
       return ei;
-    } catch (CalFacadeException cfe) {
+    } catch (final CalFacadeException cfe) {
       throw cfe;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }
   }

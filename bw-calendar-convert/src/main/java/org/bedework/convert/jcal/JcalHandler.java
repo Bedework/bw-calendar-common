@@ -34,13 +34,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
-import net.fortuna.ical4j.model.component.Participant;
-import net.fortuna.ical4j.model.component.VAvailability;
-import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VPoll;
-import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
@@ -56,7 +52,7 @@ import java.util.Collection;
  * @version 1.0
  */
 public class JcalHandler implements Serializable {
-  private static BwLogger logger =
+  private static final BwLogger logger =
           new BwLogger().setLoggedClass(JcalHandler.class);
 
   private final static JsonFactory jsonFactory;
@@ -100,8 +96,8 @@ public class JcalHandler implements Serializable {
       jgen.writeString("vcalendar");
       jgen.writeStartArray();
 
-      for (final Object o: cal.getProperties()) {
-        JsonProperty.addFields(jgen, (Property)o);
+      for (final Property p: cal.getProperties()) {
+        JsonProperty.addFields(jgen, p);
       }
 
       jgen.writeEndArray(); // End event properties
@@ -111,8 +107,7 @@ public class JcalHandler implements Serializable {
 
       jgen.writeStartArray(); // for components
 
-      for (final Object o: cal.getComponents()) {
-        final Component comp = (Component)o;
+      for (final Component comp: cal.getComponents()) {
         outComp(jgen, comp);
       }
 
@@ -147,7 +142,7 @@ public class JcalHandler implements Serializable {
       jgen.writeStartArray(); // for components
 
       for (final EventInfo ei: vals) {
-        BwEvent ev = ei.getEvent();
+        final BwEvent ev = ei.getEvent();
 
         final Component comp;
         if (ev.getEntityType() == IcalDefs.entityTypeFreeAndBusy) {
@@ -189,8 +184,8 @@ public class JcalHandler implements Serializable {
       jgen.writeString(comp.getName().toLowerCase());
       jgen.writeStartArray();
 
-      for (final Object o: comp.getProperties()) {
-        JsonProperty.addFields(jgen, (Property)o);
+      for (final Property p: comp.getProperties()) {
+        JsonProperty.addFields(jgen, p);
       }
 
       jgen.writeEndArray(); // End event properties
@@ -199,29 +194,12 @@ public class JcalHandler implements Serializable {
        */
       jgen.writeStartArray();
 
-      ComponentList<?> cl = null;
-      if (comp instanceof VEvent) {
-        cl = ((VEvent)comp).getAlarms();
-      } else if (comp instanceof VToDo) {
-        cl = ((VToDo)comp).getAlarms();
-      //} else if (comp instanceof VJournal) {
-      //} else if (comp instanceof VFreeBusy) {
-      } else if (comp instanceof VAvailability) {
-        cl = ((VAvailability)comp).getAvailable();
-      //} else if (comp instanceof Available) {
-      } else if (comp instanceof VPoll) {
-        cl = ((VPoll)comp).getVoters();
-      } else if (comp instanceof Participant) {
-        cl = comp.getComponents();
-      }
+      if (comp instanceof ComponentContainer) {
+        final ComponentList<Component> cl = ((ComponentContainer<Component>)comp).getComponents();
 
-      if (cl != null) {
-        for (final Object o: cl) {
-          outComp(jgen, (Component)o);
-        }
-        if (comp instanceof VPoll) {
-          for (final Object o: ((VPoll)comp).getCandidates()) {
-            outComp(jgen, (Component)o);
+        if (cl != null) {
+          for (final Component c: cl) {
+            outComp(jgen, c);
           }
         }
       }
@@ -229,7 +207,7 @@ public class JcalHandler implements Serializable {
       jgen.writeEndArray(); // end subcomponents
 
       jgen.writeEndArray(); // end event
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }
   }

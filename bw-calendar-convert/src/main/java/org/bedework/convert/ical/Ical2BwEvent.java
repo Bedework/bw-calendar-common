@@ -82,7 +82,7 @@ import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Concept;
 import net.fortuna.ical4j.model.property.DateListProperty;
-import net.fortuna.ical4j.model.property.DateProperty;
+import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Due;
@@ -94,11 +94,13 @@ import net.fortuna.ical4j.model.property.PercentComplete;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.PollWinner;
 import net.fortuna.ical4j.model.property.Priority;
+import net.fortuna.ical4j.model.property.RecurrenceId;
 import net.fortuna.ical4j.model.property.RelatedTo;
 import net.fortuna.ical4j.model.property.RequestStatus;
 import net.fortuna.ical4j.model.property.Resources;
 import net.fortuna.ical4j.model.property.Sequence;
 import net.fortuna.ical4j.model.property.Summary;
+import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
 
 import java.util.Collection;
@@ -223,16 +225,14 @@ public class Ical2BwEvent extends IcalUtil {
                 val.getName());
       }
 
-      Property prop;
-
       // Get the guid from the component
 
       String guid = null;
 
-      prop = pl.getProperty(Property.UID);
-      if (prop != null) {
-        testXparams(prop, hasXparams);
-        guid = prop.getValue();
+      final Uid uidp = pl.getProperty(Property.UID);
+      if (uidp != null) {
+        testXparams(uidp, hasXparams);
+        guid = uidp.getValue();
       }
 
       if (guid == null) {
@@ -248,10 +248,10 @@ public class Ical2BwEvent extends IcalUtil {
       String rid = null;
       TimeZone ridTz = null;
 
-      prop = pl.getProperty(Property.RECURRENCE_ID);
-      if (prop != null) {
-        testXparams(prop, hasXparams);
-        ridObj = BwDateTime.makeBwDateTime((DateProperty)prop);
+      final RecurrenceId ridp = pl.getProperty(Property.RECURRENCE_ID);
+      if (ridp != null) {
+        testXparams(ridp, hasXparams);
+        ridObj = BwDateTime.makeBwDateTime(ridp);
 
         if (ridObj.getRange() != null) {
           /* XXX What do I do with it? */
@@ -468,8 +468,7 @@ public class Ical2BwEvent extends IcalUtil {
       IcalUtil.setDates(cb.getPrincipal().getPrincipalRef(),
                         evinfo, dtStart, dtEnd, duration);
 
-      for (final Object aPl: pl) {
-        prop = (Property)aPl;
+      for (final Property prop: pl) {
         testXparams(prop, hasXparams);
 
         //debug("ical prop " + prop.getClass().getName());
@@ -1181,18 +1180,18 @@ public class Ical2BwEvent extends IcalUtil {
         final Component valCopy = val.copy();
 
         /* Remove potentially large values */
-        prop = valCopy.getProperty(Property.DESCRIPTION);
-        if (prop != null) {
-          prop.setValue(null);
+        final Description desp = valCopy.getProperty(Property.DESCRIPTION);
+        if (desp != null) {
+          desp.setValue(null);
         }
 
-        prop = valCopy.getProperty(Property.ATTACH);
+        final Attach attachp = valCopy.getProperty(Property.ATTACH);
         // Don't store the entire attachment - we just need the parameters.
-        if (prop != null) {
-          final Value v = prop.getParameter(Parameter.VALUE);
+        if (attachp != null) {
+          final Value v = attachp.getParameter(Parameter.VALUE);
 
           if (v != null) {
-            prop.setValue(String.valueOf(prop.getValue().hashCode()));
+            attachp.setValue(String.valueOf(attachp.getValue().hashCode()));
           }
         }
 

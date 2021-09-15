@@ -207,8 +207,8 @@ public class JsonProperty implements Serializable {
 
       jgen.writeStartArray();
 
-      for (final Object o: val) {
-        jgen.writeNumber((Integer)o);
+      for (final Integer i: val) {
+        jgen.writeNumber(i);
       }
 
       jgen.writeEndArray();
@@ -343,9 +343,7 @@ public class JsonProperty implements Serializable {
 
       jgen.writeStartArray();
 
-      for (final Object o: pl) {
-        final Period per = (Period)o;
-
+      for (final Period per: pl) {
         final StringBuilder sb = new StringBuilder(XcalUtil.getXmlFormatDateTime(
                 per.getStart().toString()));
         sb.append("/");

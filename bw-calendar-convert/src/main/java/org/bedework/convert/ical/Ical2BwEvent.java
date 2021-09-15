@@ -54,6 +54,7 @@ import org.bedework.util.timezones.Timezones;
 import org.bedework.util.xml.tagdefs.XcalTags;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.Parameter;
@@ -66,11 +67,14 @@ import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.component.Available;
 import net.fortuna.ical4j.model.component.Participant;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VAvailability;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
 import net.fortuna.ical4j.model.component.VJournal;
+import net.fortuna.ical4j.model.component.VLocation;
 import net.fortuna.ical4j.model.component.VPoll;
+import net.fortuna.ical4j.model.component.VResource;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.AltRep;
 import net.fortuna.ical4j.model.parameter.FbType;
@@ -197,6 +201,8 @@ public class Ical2BwEvent extends IcalUtil {
     try {
       final PropertyList<Property> pl = val.getProperties();
       boolean vpoll = false;
+      boolean event = false;
+      boolean task = false;
 
       if (pl == null) {
         // Empty component
@@ -207,8 +213,10 @@ public class Ical2BwEvent extends IcalUtil {
 
       if (val instanceof VEvent) {
         entityType = IcalDefs.entityTypeEvent;
+        event = true;
       } else if (val instanceof VToDo) {
         entityType = IcalDefs.entityTypeTodo;
+        task = true;
       } else if (val instanceof VJournal) {
         entityType = IcalDefs.entityTypeJournal;
       } else if (val instanceof VFreeBusy) {
@@ -430,7 +438,7 @@ public class Ical2BwEvent extends IcalUtil {
       } else if (evinfo.getEvent().getEntityType() != entityType) {
         return Response.notOk(resp, failed,
                               "org.bedework.mismatched.entity.type: " +
-                                      val.toString());
+                                      val);
       }
 
       final ChangeTable chg = evinfo.getChangeset(
@@ -792,8 +800,8 @@ public class Ical2BwEvent extends IcalUtil {
 
             fbc.setType(fbtype);
 
-            for (final Object per : perpl) {
-              fbc.addPeriod((Period)per);
+            for (final Period per : perpl) {
+              fbc.addPeriod(per);
             }
 
             ev.addFreeBusyPeriod(fbc);
@@ -1132,17 +1140,99 @@ public class Ical2BwEvent extends IcalUtil {
         }
       }
 
-      if (val instanceof VAvailability) {
-        final var avlResp = processAvailable(cb, cal, ical,
-                                             (VAvailability)val, evinfo);
-        if (!avlResp.isOk()) {
-          return Response.fromResponse(resp, avlResp);
+      /* =================== Process sub-components =============== */
+
+      final ComponentList<Component> subComps;
+
+      if (val instanceof ComponentContainer) {
+        subComps = ((ComponentContainer<Component>)val).getComponents();
+      } else {
+        subComps = null;
+      }
+
+      final Set<Integer> pids;
+      if (vpoll) {
+        pids = new TreeSet<>();
+        final BwEvent vp = evinfo.getEvent();
+
+        if (!Util.isEmpty(vp.getPollItems())) {
+          vp.clearPollItems();
         }
-      } else if (!(val instanceof Available)) {
-        VAlarmUtil.processComponentAlarms(cb, val, ev, currentPrincipal, chg);
-        if (val instanceof VPoll) {
-          processVoters((VPoll)val, evinfo, cb, chg, mergeAttendees);
-          processCandidates((VPoll)val, evinfo, chg);
+      } else {
+        pids = null;
+      }
+
+      if (!Util.isEmpty(subComps)) {
+        for (final var subComp: subComps) {
+          if (subComp instanceof Available) {
+            if (!(val instanceof VAvailability)) {
+              return Response.error(resp, "AVAILABLE only valid in VAVAILABLE");
+            }
+            final var avlResp = processAvailable(cb, cal,
+                                                 ical,
+                                                 (VAvailability)val,
+                                                 (Available)subComp,
+                                                 evinfo);
+            if (!avlResp.isOk()) {
+              return Response.fromResponse(resp, avlResp);
+            }
+            continue;
+          }
+
+          if (subComp instanceof Participant) {
+            if (vpoll) {
+              final var vresp = processVoter(cb,
+                                             (VPoll)val,
+                                             (Participant)subComp,
+                                             evinfo,
+                                             chg,
+                                             mergeAttendees);
+              if (!vresp.isOk()) {
+                return Response.fromResponse(resp, vresp);
+              }
+              continue;
+            }
+
+            logger.warn("Unimplemented Participant object");
+            continue;
+          }
+
+          if (subComp instanceof VResource) {
+            logger.warn("Unimplemented VResource object");
+            continue;
+          }
+
+          if (subComp instanceof VLocation) {
+            logger.warn("Unimplemented VLocation object");
+            continue;
+          }
+
+          if (subComp instanceof VAlarm) {
+            final var aresp = VAlarmUtil.processAlarm(cb,
+                                                      val,
+                                                      (VAlarm)subComp,
+                                                      ev,
+                                                      currentPrincipal,
+                                                      chg);
+            if (!aresp.isOk()) {
+              return Response.fromResponse(resp, aresp);
+            }
+            continue;
+          }
+
+          if (vpoll && (event || task)) {
+            final var vresp = processCandidate((VPoll)val,
+                                               subComp,
+                                               evinfo,
+                                               pids,
+                                               chg);
+            if (!vresp.isOk()) {
+              return Response.fromResponse(resp, vresp);
+            }
+            continue;
+          }
+
+          logger.warn("Unimplemented Component object: " + subComp);
         }
       }
 
@@ -1334,7 +1424,7 @@ public class Ical2BwEvent extends IcalUtil {
 
     if (cs != null) {
       for (final BwContact c1: cs) {
-        if (c.getCn().equals(sval)) {
+        if (c1.getCn().equals(sval)) {
           // Already present
           return true;
         }
@@ -1401,80 +1491,70 @@ public class Ical2BwEvent extends IcalUtil {
                                            final BwCalendar cal,
                                            final Icalendar ical,
                                            final VAvailability val,
+                                           final Available avl,
                                            final EventInfo vavail) {
     final var resp = new Response();
 
-    final ComponentList<Available> avls = val.getAvailable();
-
-    if (Util.isEmpty(avls)) {
-      return resp;
+    final GetEntityResponse<EventInfo> availi =
+            toEvent(cb, cal, ical, avl,
+                    false);
+    if (!resp.isOk()) {
+      return Response.fromResponse(resp, availi);
     }
 
-    for (final Available avl : avls) {
-      final GetEntityResponse<EventInfo> availi =
-              toEvent(cb, cal, ical, avl,
-                      false);
-      if (!resp.isOk()) {
-        return Response.fromResponse(resp, availi);
-      }
+    final var ei = availi.getEntity();
+    ei.getEvent().setOwnerHref(
+            vavail.getEvent().getOwnerHref());
 
-      final var ei = availi.getEntity();
-      ei.getEvent().setOwnerHref(
-              vavail.getEvent().getOwnerHref());
-
-      vavail.addContainedItem(ei);
-      vavail.getEvent().addAvailableUid(ei.getEvent().getUid());
-    }
+    vavail.addContainedItem(ei);
+    vavail.getEvent().addAvailableUid(ei.getEvent().getUid());
 
     return resp;
   }
 
-  private static void processVoters(final VPoll val,
-                                    final EventInfo vpoll,
-                                    final IcalCallback cb,
-                                    final ChangeTable changes,
-                                    final boolean mergeAttendees) throws CalFacadeException {
+  private static Response processVoter(final IcalCallback cb,
+                                       final VPoll val,
+                                       final Participant part,
+                                       final EventInfo vpoll,
+                                       final ChangeTable changes,
+                                       final boolean mergeAttendees) {
+    final ComponentList<Participant> voters = val.getVoters();
 
-    try {
-      final ComponentList<Participant> voters = val.getVoters();
-
-      if (Util.isEmpty(voters)) {
-        return;
-      }
-
-      final Set<String> vcuas = new TreeSet<>();
-      final BwEvent event = vpoll.getEvent();
-
-      if (!Util.isEmpty(event.getVoters())) {
-        event.clearVoters();
-      }
-
-      for (final Participant comp: voters) {
-        final String voter = comp.toString();
-        event.addVoter(voter);
-
-        changes.addValue(PropertyInfoIndex.VOTER, voter);
-
-        final Property p = comp.getProperty(CALENDAR_ADDRESS);
-
-        if (p == null) {
-          throw new CalFacadeException("XXX - no calendar address");
-        }
-
-        final String vcua = p.getValue();
-
-        if (vcuas.contains(vcua)) {
-          throw new CalFacadeException("XXX - duplicate VOTER for " + vcua);
-        }
-
-        processVoter((CalendarAddress)p, vpoll, cb, changes, mergeAttendees);
-        vcuas.add(vcua);
-      }
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
-    } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+    if (Util.isEmpty(voters)) {
+      return Response.ok();
     }
+
+    //final Set<String> vcuas = new TreeSet<>();
+    final BwEvent event = vpoll.getEvent();
+
+    if (!Util.isEmpty(event.getVoters())) {
+      event.clearVoters();
+    }
+
+    final String voter = part.toString();
+    event.addVoter(voter);
+
+    changes.addValue(PropertyInfoIndex.VOTER, voter);
+
+    final Property p = part.getProperty(CALENDAR_ADDRESS);
+
+    if (p == null) {
+      return Response.error(new Response(),
+                            "Voter - no calendar address");
+    }
+
+    /* Was checking for duplicates
+      final String vcua = p.getValue();
+
+      if (vcuas.contains(vcua)) {
+        return Response.error(new Response(),
+                              "Voter - duplicate VOTER for " + vcua);
+      }
+      vcuas.add(vcua);
+      */
+
+    processVoter((CalendarAddress)p, vpoll, cb, changes, mergeAttendees);
+    return Response.ok();
   }
 
   private static void processVoter(final CalendarAddress ca,
@@ -1522,57 +1602,40 @@ public class Ical2BwEvent extends IcalUtil {
     }
   }
 
-  private static void processCandidates(final VPoll val,
+  private static Response processCandidate(final VPoll val,
+                                           final Component comp,
                                         final EventInfo vpoll,
-                                        final ChangeTable changes) throws CalFacadeException {
+                                        final Set<Integer> pids,
+                                        final ChangeTable changes) {
+    final BwEvent event = vpoll.getEvent();
 
-    try {
-      final ComponentList<?> cands = val.getCandidates();
+    final String pollItem = comp.toString();
+    event.addPollItem(pollItem);
 
-      if (Util.isEmpty(cands)) {
-        return;
-      }
+    changes.addValue(PropertyInfoIndex.POLL_ITEM, pollItem);
 
-      final Set<Integer> pids = new TreeSet<>();
-      final BwEvent event = vpoll.getEvent();
+    final Property p = comp.getProperty(Property.POLL_ITEM_ID);
 
-      if (!Util.isEmpty(event.getPollItems())) {
-        event.clearPollItems();
-      }
+    if (p == null) {
+      return Response.error(new Response(),
+                            "VPoll candidate - no poll item id");
+    }
 
-      for (final Object o: cands) {
-        final Component comp = (Component)o;
+    final int pid = ((PollItemId)p).getPollitemid();
 
-        final String pollItem = comp.toString();
-        event.addPollItem(pollItem);
+    if (pids.contains(pid)) {
+      return Response.error(new Response(),
+                            "VPoll candidate - duplicate poll item id " + pid);
+    }
 
-        changes.addValue(PropertyInfoIndex.POLL_ITEM, pollItem);
-
-        final Property p = comp.getProperty(Property.POLL_ITEM_ID);
-
-        if (p == null) {
-          throw new CalFacadeException("XXX - no poll item id");
-        }
-
-        final int pid = ((PollItemId)p).getPollitemid();
-
-        if (pids.contains(pid)) {
-          throw new CalFacadeException("XXX - duplicate poll item id " + pid);
-        }
-
-        pids.add(pid);
+    pids.add(pid);
 
 //        EventInfo cand = toEvent(cb, cal, ical, (Component)o, true,
 //                                 false);
 //        cand.getEvent().setOwnerHref(vpoll.getEvent().getOwnerHref());
 
 //        vpoll.addContainedItem(cand);
-      }
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
-    } catch (final Throwable t) {
-      throw new CalFacadeException(t);
-    }
+    return Response.ok();
   }
 
   /* See if the master event is already in the collection of events

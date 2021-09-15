@@ -40,13 +40,13 @@ public class JcalTranslator extends IcalTranslator {
   public String toJcal(final EventInfo val,
                        final int methodType) throws CalFacadeException {
     String currentPrincipal = null;
-    BwPrincipal principal = cb.getPrincipal();
+    final BwPrincipal principal = cb.getPrincipal();
 
     if (principal != null) {
       currentPrincipal = principal.getPrincipalRef();
     }
 
-    List<EventInfo> eis = new ArrayList<>();
+    final List<EventInfo> eis = new ArrayList<>();
 
     eis.add(val);
     return JcalHandler.toJcal(eis, methodType,
@@ -75,7 +75,7 @@ public class JcalTranslator extends IcalTranslator {
                         final Writer wtr) throws CalFacadeException {
 
     String currentPrincipal = null;
-    BwPrincipal principal = cb.getPrincipal();
+    final BwPrincipal principal = cb.getPrincipal();
 
     if (principal != null) {
       currentPrincipal = principal.getPrincipalRef();

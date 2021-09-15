@@ -168,8 +168,8 @@ public class XmlTranslator extends IcalTranslator {
       addIcalTimezones(cal, vals);
 
       // Emit timezones
-      for (final Object o: cal.getComponents()) {
-        if (!(o instanceof VTimeZone)) {
+      for (final Component comp: cal.getComponents()) {
+        if (!(comp instanceof VTimeZone)) {
           continue;
         }
 
@@ -178,7 +178,7 @@ public class XmlTranslator extends IcalTranslator {
           componentsOpen = true;
         }
 
-        xmlComponent(xml, (Component)o);
+        xmlComponent(xml, comp);
       }
     }
 
@@ -189,36 +189,33 @@ public class XmlTranslator extends IcalTranslator {
       currentPrincipal = principal.getPrincipalRef();
     }
 
-    for (final Object o : vals) {
-      if (o instanceof EventInfo) {
-        final EventInfo ei = (EventInfo)o;
-        final BwEvent ev = ei.getEvent();
+    for (final EventInfo ei: vals) {
+      final BwEvent ev = ei.getEvent();
 
-        final EventTimeZonesRegistry tzreg = new EventTimeZonesRegistry(
-                this, ev);
+      final EventTimeZonesRegistry tzreg = new EventTimeZonesRegistry(
+              this, ev);
 
-        final Component comp;
-        if (ev.getEntityType() == IcalDefs.entityTypeFreeAndBusy) {
-          comp = VFreeUtil.toVFreeBusy(ev);
-        } else {
-          comp = BwEvent2Ical.convert(ei, false, tzreg,
-                                      currentPrincipal);
-        }
+      final Component comp;
+      if (ev.getEntityType() == IcalDefs.entityTypeFreeAndBusy) {
+        comp = VFreeUtil.toVFreeBusy(ev);
+      } else {
+        comp = BwEvent2Ical.convert(ei, false, tzreg,
+                                    currentPrincipal);
+      }
 
-        if (!componentsOpen) {
-          xml.openTag(XcalTags.components);
-          componentsOpen = true;
-        }
+      if (!componentsOpen) {
+        xml.openTag(XcalTags.components);
+        componentsOpen = true;
+      }
 
-        xmlComponent(xml, comp);
+      xmlComponent(xml, comp);
 
-        if (ei.getNumOverrides() > 0) {
-          for (final EventInfo oei : ei.getOverrides()) {
-            xmlComponent(xml, BwEvent2Ical.convert(oei,
-                                                   true,
-                                                   tzreg,
-                                                   currentPrincipal));
-          }
+      if (ei.getNumOverrides() > 0) {
+        for (final EventInfo oei : ei.getOverrides()) {
+          xmlComponent(xml, BwEvent2Ical.convert(oei,
+                                                 true,
+                                                 tzreg,
+                                                 currentPrincipal));
         }
       }
     }
@@ -292,8 +289,8 @@ public class XmlTranslator extends IcalTranslator {
     if ((cl != null) && (cl.size() > 0)){
       xml.openTag(XcalTags.components);
 
-      for (final Object o: cl) {
-        xmlComponent(xml, (Component)o);
+      for (final Component c: cl) {
+        xmlComponent(xml, c);
       }
 
       xml.closeTag(XcalTags.components);

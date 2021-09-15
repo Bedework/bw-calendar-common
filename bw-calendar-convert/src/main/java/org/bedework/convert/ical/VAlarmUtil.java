@@ -27,6 +27,7 @@ import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
+import org.bedework.util.misc.response.Response;
 
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;
@@ -36,7 +37,6 @@ import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VPoll;
 import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.Related;
 import net.fortuna.ical4j.model.property.Action;
@@ -64,127 +64,112 @@ public class VAlarmUtil extends IcalUtil {
    * collection
    *
    * @param cb          IcalCallback object
-   * @param val
-   * @param ev
+   * @param val the parent component
+   * @param va the alarm
+   * @param ev bedework event object
    * @param currentPrincipal - href for current authenticated user
-   * @param chg
-   * @throws CalFacadeException
+   * @param chg change table
+   * @throws CalFacadeException on fatal error
    */
-  public static void processComponentAlarms(final IcalCallback cb,
-                                            final Component val,
-                                            final BwEvent ev,
-                                            final String currentPrincipal,
-                                            final ChangeTable chg) throws CalFacadeException {
-    try {
-      final ComponentList<VAlarm> als;
+  public static Response processAlarm(final IcalCallback cb,
+                                      final Component val,
+                                      final VAlarm va,
+                                      final BwEvent ev,
+                                      final String currentPrincipal,
+                                      final ChangeTable chg) {
+    final PropertyList<Property> pl = va.getProperties();
 
-      if (val instanceof VEvent) {
-        als = ((VEvent)val).getAlarms();
-      } else if (val instanceof VToDo) {
-        als = ((VToDo)val).getAlarms();
-      } else if (val instanceof VPoll) {
-        als = ((VPoll)val).getAlarms();
-      } else {
-        return;
-      }
+    if (pl == null) {
+      // Empty VAlarm
+      return Response.error(new Response(), "Invalid alarm list");
+    }
 
-      if ((als == null) || als.isEmpty()) {
-        return;
-      }
+    Property prop;
+    final BwAlarm al;
 
-      for (final VAlarm va: als) {
-        final PropertyList<Property> pl = va.getProperties();
-
-        if (pl == null) {
-          // Empty VAlarm
-          throw new IcalMalformedException("Invalid alarm list");
-        }
-
-        Property prop;
-        final BwAlarm al;
-
-        /* XXX Handle mozilla alarm stuff in a way that might work better with other clients.
+    /* XXX Handle mozilla alarm stuff in a way that might work better with other clients.
          *
          */
 
-        prop = pl.getProperty("X-MOZ-LASTACK");
-        final boolean mozlastAck = prop != null;
+    prop = pl.getProperty("X-MOZ-LASTACK");
+    final boolean mozlastAck = prop != null;
 
-        String mozSnoozeTime = null;
-        if (mozlastAck) {
-          prop = pl.getProperty("X-MOZ-SNOOZE-TIME");
+    String mozSnoozeTime = null;
+    if (mozlastAck) {
+      prop = pl.getProperty("X-MOZ-SNOOZE-TIME");
 
-          if (prop == null) {
-            // lastack and no snooze - presume dismiss so delete alarm
-            continue;
-          }
+      if (prop == null) {
+        // lastack and no snooze - presume dismiss so delete alarm
+        return Response.ok();
+      }
 
-          mozSnoozeTime = prop.getValue(); // UTC time
-        }
+      mozSnoozeTime = prop.getValue(); // UTC time
+    }
 
-        // All alarm types require action and trigger
+    // All alarm types require action and trigger
 
-        prop = pl.getProperty(Property.ACTION);
-        if (prop == null) {
-          throw new IcalMalformedException("Invalid alarm");
-        }
+    prop = pl.getProperty(Property.ACTION);
+    if (prop == null) {
+      return Response.error(new Response(),
+                            "Invalid alarm");
+    }
 
-        final String actionStr = prop.getValue();
+    final String actionStr = prop.getValue();
 
-        final TriggerVal tr = getTrigger(pl, "NONE".equals(actionStr));
+    final TriggerVal tr = getTrigger(pl, "NONE".equals(actionStr));
 
-        if (mozSnoozeTime != null) {
-          tr.trigger = mozSnoozeTime;
-          tr.triggerDateTime = true;
-          tr.triggerStart = false;
-        }
+    if (mozSnoozeTime != null) {
+      tr.trigger = mozSnoozeTime;
+      tr.triggerDateTime = true;
+      tr.triggerStart = false;
+    }
 
-        final DurationRepeat dr = getDurationRepeat(pl);
+    final DurationRepeat dr = getDurationRepeat(pl);
 
-        if ("EMAIL".equals(actionStr)) {
-          al = BwAlarm.emailAlarm(ev.getCreatorHref(),
+    if ("EMAIL".equals(actionStr)) {
+      al = BwAlarm.emailAlarm(ev.getCreatorHref(),
+                              tr,
+                              dr.duration, dr.repeat,
+                              getOptStr(pl, "ATTACH"),
+                              getReqStr(pl, "DESCRIPTION"),
+                              getReqStr(pl, "SUMMARY"),
+                              null);
+
+      final Iterator<?> atts = getReqStrs(pl, "ATTENDEE");
+
+      while (atts.hasNext()) {
+        al.addAttendee(getAttendee(cb, (Attendee)atts.next()));
+      }
+    } else if ("AUDIO".equals(actionStr)) {
+      al = BwAlarm.audioAlarm(ev.getCreatorHref(),
+                              tr,
+                              dr.duration, dr.repeat,
+                              getOptStr(pl, "ATTACH"));
+    } else if ("DISPLAY".equals(actionStr)) {
+      al = BwAlarm.displayAlarm(ev.getCreatorHref(),
+                                tr,
+                                dr.duration, dr.repeat,
+                                getReqStr(pl, "DESCRIPTION"));
+    } else if ("PROCEDURE".equals(actionStr)) {
+      al = BwAlarm.procedureAlarm(ev.getCreatorHref(),
                                   tr,
                                   dr.duration, dr.repeat,
-                                  getOptStr(pl, "ATTACH"),
-                                  getReqStr(pl, "DESCRIPTION"),
-                                  getReqStr(pl, "SUMMARY"),
-                                  null);
-
-          final Iterator<?> atts = getReqStrs(pl, "ATTENDEE");
-
-          while (atts.hasNext()) {
-            al.addAttendee(getAttendee(cb, (Attendee)atts.next()));
-          }
-        } else if ("AUDIO".equals(actionStr)) {
-          al = BwAlarm.audioAlarm(ev.getCreatorHref(),
-                                  tr,
-                                  dr.duration, dr.repeat,
-                                  getOptStr(pl, "ATTACH"));
-        } else if ("DISPLAY".equals(actionStr)) {
-          al = BwAlarm.displayAlarm(ev.getCreatorHref(),
-                                    tr,
-                                    dr.duration, dr.repeat,
-                                    getReqStr(pl, "DESCRIPTION"));
-        } else if ("PROCEDURE".equals(actionStr)) {
-          al = BwAlarm.procedureAlarm(ev.getCreatorHref(),
-                                      tr,
-                                      dr.duration, dr.repeat,
-                                      getReqStr(pl, "ATTACH"),
-                                      getOptStr(pl, "DESCRIPTION"));
-        } else if ("NONE".equals(actionStr)) {
-          al = BwAlarm.noneAlarm(ev.getCreatorHref(),
-                                 tr,
-                                 dr.duration, dr.repeat,
-                                 getOptStr(pl, "DESCRIPTION"));
-        } else {
-          al = BwAlarm.otherAlarm(ev.getCreatorHref(),
-                                  actionStr,
-                                  tr,
-                                  dr.duration, dr.repeat,
+                                  getReqStr(pl, "ATTACH"),
                                   getOptStr(pl, "DESCRIPTION"));
-        }
+    } else if ("NONE".equals(actionStr)) {
+      al = BwAlarm.noneAlarm(ev.getCreatorHref(),
+                             tr,
+                             dr.duration, dr.repeat,
+                             getOptStr(pl, "DESCRIPTION"));
+    } else {
+      al = BwAlarm.otherAlarm(ev.getCreatorHref(),
+                              actionStr,
+                              tr,
+                              dr.duration, dr.repeat,
+                              getOptStr(pl, "DESCRIPTION"));
+    }
 
-        /* Mozilla is add xprops to the containing event to set the snooze time.
+    /* Mozilla is add xprops to the containing event to set the snooze time.
          * Seems wrong - there could be multiple alarms.
          *
          * We possibly want to try this sort of trick..
@@ -215,40 +200,36 @@ public class VAlarmUtil extends IcalUtil {
 
          */
 
-        for (final Property property: pl) {
-          prop = property;
+    for (final Property property: pl) {
+      prop = property;
 
-          if (prop instanceof XProperty) {
-            /* ------------------------- x-property --------------------------- */
+      if (prop instanceof XProperty) {
+        /* ------------------------- x-property --------------------------- */
 
-            final XProperty xp = (XProperty)prop;
+        final XProperty xp = (XProperty)prop;
 
-            al.addXproperty(new BwXproperty(xp.getName(),
-                                            xp.getParameters()
-                                              .toString(),
-                                            xp.getValue()));
-            continue;
-          }
-
-          if (prop instanceof Uid) {
-            final Uid p = (Uid)prop;
-
-            al.addXproperty(BwXproperty.makeIcalProperty(p.getName(),
-                                                         p.getParameters()
-                                                          .toString(),
-                                                         p.getValue()));
-            continue;
-          }
-        }
-
-        al.setOwnerHref(currentPrincipal);
-        chg.addValue(PropertyInfoIndex.VALARM, al);
+        al.addXproperty(new BwXproperty(xp.getName(),
+                                        xp.getParameters()
+                                          .toString(),
+                                        xp.getValue()));
+        continue;
       }
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
-    } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+
+      if (prop instanceof Uid) {
+        final Uid p = (Uid)prop;
+
+        al.addXproperty(BwXproperty.makeIcalProperty(p.getName(),
+                                                     p.getParameters()
+                                                      .toString(),
+                                                     p.getValue()));
+        //continue;
+      }
     }
+
+    al.setOwnerHref(currentPrincipal);
+    chg.addValue(PropertyInfoIndex.VALARM, al);
+
+    return Response.ok();
   }
 
   /** Process any alarms.
@@ -256,7 +237,7 @@ public class VAlarmUtil extends IcalUtil {
    * @param ev the event
    * @param comp representing the event
    * @param currentPrincipal - href for current authenticated user
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   public static void processEventAlarm(final BwEvent ev,
                                        final Component comp,
@@ -266,12 +247,12 @@ public class VAlarmUtil extends IcalUtil {
       return;
     }
 
-    Collection<BwAlarm> als = ev.getAlarms();
+    final Collection<BwAlarm> als = ev.getAlarms();
     if ((als == null) || als.isEmpty()) {
       return;
     }
 
-    ComponentList<VAlarm> vals;
+    final ComponentList<VAlarm> vals;
 
     if (comp instanceof VEvent) {
       vals = ((VEvent)comp).getAlarms();
@@ -282,7 +263,7 @@ public class VAlarmUtil extends IcalUtil {
                                    comp.getName());
     }
 
-    for (BwAlarm alarm: als) {
+    for (final BwAlarm alarm: als) {
       /* Only add alarms for the current authenticated user */
       if (!currentPrincipal.equals(alarm.getOwnerHref())) {
         continue;
@@ -295,15 +276,15 @@ public class VAlarmUtil extends IcalUtil {
   private static VAlarm setAlarm(final BwEvent ev,
                                  final BwAlarm val) throws CalFacadeException {
     try {
-      VAlarm alarm = new VAlarm();
+      final VAlarm alarm = new VAlarm();
 
-      int atype = val.getAlarmType();
-      String action;
+      final int atype = val.getAlarmType();
+      final String action;
 
       if (atype != BwAlarm.alarmTypeOther) {
         action = BwAlarm.alarmTypes[atype];
       } else {
-        List<BwXproperty> xps = val.getXicalProperties("ACTION");
+        final List<BwXproperty> xps = val.getXicalProperties("ACTION");
 
         action = xps.get(0).getValue();
       }
@@ -311,10 +292,10 @@ public class VAlarmUtil extends IcalUtil {
       addProperty(alarm, new Action(action));
 
       if (val.getTriggerDateTime()) {
-        DateTime dt = new DateTime(val.getTrigger());
+        final DateTime dt = new DateTime(val.getTrigger());
         addProperty(alarm, new Trigger(dt));
       } else {
-        Trigger tr = new Trigger(new Dur(val.getTrigger()));
+        final Trigger tr = new Trigger(new Dur(val.getTrigger()));
         if (!val.getTriggerStart()) {
           addParameter(tr, Related.END);
         } else {
@@ -354,7 +335,7 @@ public class VAlarmUtil extends IcalUtil {
         addProperty(alarm, new Summary(val.getSummary()));
 
         if (val.getNumAttendees() > 0) {
-          for (BwAttendee att: val.getAttendees()) {
+          for (final BwAttendee att: val.getAttendees()) {
             addProperty(alarm, setAttendee(att));
           }
         }
@@ -379,9 +360,9 @@ public class VAlarmUtil extends IcalUtil {
       }
 
       return alarm;
-    } catch (CalFacadeException cfe) {
+    } catch (final CalFacadeException cfe) {
       throw cfe;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }
   }

@@ -275,8 +275,7 @@ public class IcalUtil {
       }
 
       try {
-        xparl.add(new ParameterBuilder()
-                .factories(parameterFactorySupplier.get())
+        xparl.add(new ParameterBuilder(parameterFactorySupplier.get())
                 .name(xpar.getName().toUpperCase()).value(xval).build());
 
       } catch (final URISyntaxException e) {

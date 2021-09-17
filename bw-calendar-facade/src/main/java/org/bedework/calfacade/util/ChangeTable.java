@@ -623,10 +623,10 @@ public class ChangeTable implements Logged, Serializable {
         break;
 
       case ATTENDEE:
-        if (ev.getEntityType() == IcalDefs.entityTypeVpoll) {
+        //if (ev.getEntityType() == IcalDefs.entityTypeVpoll) {
           // Skip so as not to disturb the attendees property - we deal with it as VOTER
-          break;
-        }
+        //  break;
+        //}
         originalVals = ev.getAttendees();
 
 /*        diff(ent, originalVals);
@@ -751,10 +751,13 @@ public class ChangeTable implements Logged, Serializable {
           // Skip so as not to disturb the attendees property
           break;
         }
-        originalVals = ev.getAttendees();
+        originalVals = ev.getVoters();
 
         if (checkMulti(ent, originalVals, update)) {
-          ev.setAttendees((Set<BwAttendee>)ent.getAddedValues());
+          ev.clearVoters();
+          for (final var v: (Set<String>)ent.getAddedValues()) {
+            ev.addVoter(v);
+          }
         }
         break;
 

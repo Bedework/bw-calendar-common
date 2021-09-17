@@ -4969,7 +4969,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
       final String[] ct = getCtoken().split("-");
 
       return new LastModified(ct[0]).getDate().getTime() * 1000000 +
-              Integer.parseInt(ct[1], 16) * 100;
+              Integer.parseInt(ct[1], 16) * 100L;
     } catch (final Throwable t) {
       throw new CalFacadeException(t);
     }

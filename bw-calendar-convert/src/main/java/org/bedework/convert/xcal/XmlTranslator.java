@@ -27,15 +27,14 @@ import ietf.params.xml.ns.icalendar_2.VjournalType;
 import ietf.params.xml.ns.icalendar_2.VtodoType;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.ParameterList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.Recur;
-import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Version;
@@ -276,14 +275,12 @@ public class XmlTranslator extends IcalTranslator {
       xml.closeTag(XcalTags.properties);
     }
 
-    ComponentList<?> cl = null;
+    final ComponentList<?> cl;
 
-    if (val instanceof VTimeZone) {
-      cl = ((VTimeZone)val).getObservances();
-    } else if (val instanceof VEvent) {
-      cl = ((VEvent)val).getAlarms();
-    } else if (val instanceof VToDo) {
-      cl = ((VToDo)val).getAlarms();
+    if (val instanceof ComponentContainer) {
+      cl = ((ComponentContainer<?>)val).getComponents();
+    } else {
+      cl = null;
     }
 
     if ((cl != null) && (cl.size() > 0)){

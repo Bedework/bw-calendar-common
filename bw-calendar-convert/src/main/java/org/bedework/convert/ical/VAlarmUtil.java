@@ -252,12 +252,12 @@ public class VAlarmUtil extends IcalUtil {
       return;
     }
 
-    final ComponentList<VAlarm> vals;
+    final ComponentList<Component> vals;
 
     if (comp instanceof VEvent) {
-      vals = ((VEvent)comp).getAlarms();
+      vals = ((VEvent)comp).getComponents();
     } else if (comp instanceof VToDo) {
-      vals = ((VToDo)comp).getAlarms();
+      vals = ((VToDo)comp).getComponents();
     } else {
       throw new RuntimeException("org.bedework.invalid.component.type " +
                                    comp.getName());

@@ -665,13 +665,13 @@ public class BwEvent2Ical extends IcalUtil {
         final Map<String, Participant> voters = parseVpollVoters(val);
 
         for (final Participant v: voters.values()) {
-          ((VPoll)comp).getVoters().add(v);
+          ((VPoll)comp).getComponents().add(v);
         }
 
         final Map<Integer, Component> comps = parseVpollCandidates(val);
 
         for (final Component candidate: comps.values()) {
-          ((VPoll)comp).getCandidates().add(candidate);
+          ((VPoll)comp).getComponents().add(candidate);
         }
       }
 

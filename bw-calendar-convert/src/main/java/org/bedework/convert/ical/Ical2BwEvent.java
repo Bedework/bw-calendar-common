@@ -1577,7 +1577,7 @@ public class Ical2BwEvent extends IcalUtil {
     */
 
     if (vpoll.getNewEvent() || !mergeAttendees) {
-      chg.addValue(PropertyInfoIndex.VOTER, IcalUtil.getVoter(cb, ca));
+      chg.addValue(PropertyInfoIndex.ATTENDEE, IcalUtil.getVoter(cb, ca));
       return;
     }
 
@@ -1589,14 +1589,14 @@ public class Ical2BwEvent extends IcalUtil {
                  * response. We don't allow them to change other voters
                * whatever the PUT content says.
                */
-      chg.addValue(PropertyInfoIndex.VOTER, IcalUtil.getVoter(cb, ca));
+      chg.addValue(PropertyInfoIndex.ATTENDEE, IcalUtil.getVoter(cb, ca));
       return;
     }
 
     // Use the value we currently have
     for (final BwAttendee att: ev.getAttendees()) {
       if (pUri.equals(att.getAttendeeUri())) {
-        chg.addValue(PropertyInfoIndex.VOTER, att.clone());
+        chg.addValue(PropertyInfoIndex.ATTENDEE, att.clone());
         break;
       }
     }

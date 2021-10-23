@@ -84,6 +84,12 @@ public class BwXproperty extends BwDbentity<BwXproperty>
   /** Display name parameter */
   public final static String bedeworkDisplayName = "X-BEDEWORK-PARAM-DISPLAYNAME";
 
+  /** alias path parameter */
+  public final static String bedeworkParamPath = "X-BEDEWORK-PARAM-PATH";
+
+  /** alias target parameter */
+  public final static String bedeworkParamAliasPath = "X-BEDEWORK-PARAM-ALIASPATH";
+
   /* ====================================================================
    *                        Scheduling notification properties
    * ==================================================================== */
@@ -594,6 +600,36 @@ public class BwXproperty extends BwDbentity<BwXproperty>
     }
 
     return new BwXproperty(bedeworkIcalProp, sb.toString(), value);
+  }
+
+  /** Make an xproperty to hold an unknown ical property
+   *
+   * @param displayName - topical area display name
+   * @param aliasUri - uri without leading "bwcal://"
+   * @param aliasPath - target
+   * @param topicalAreaPath - path of topical area
+   * @return an xproperty
+   */
+  public static BwXproperty makeBwAlias(final String displayName,
+                                        final String aliasUri,
+                                        final String aliasPath,
+                                        final String topicalAreaPath) {
+    final StringBuilder sb =
+            new StringBuilder(bedeworkDisplayName)
+                    .append("=")
+                    .append(displayName)
+
+                    .append(";")
+                    .append(bedeworkParamPath)
+                    .append("=")
+                    .append(aliasUri)
+
+                    .append(";")
+                    .append(bedeworkParamAliasPath)
+                    .append("=")
+                    .append(aliasPath);
+
+    return new BwXproperty(bedeworkAlias, sb.toString(), topicalAreaPath);
   }
 
   /** Make an xproperty to hold a dav property

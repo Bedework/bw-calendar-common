@@ -388,12 +388,13 @@ public class CalSvcIPars implements Serializable {
                                           final boolean allowSuperUser,
                                           final boolean service,
                                           final boolean publicAdmin,
+                                          final String calSuite,
                                           final boolean allowCreateEprops,
                                           final boolean readonly) {
     return new CalSvcIPars(logId,
                            authUser,
                            runAsUser,
-                           null,    // calsuite
+                           calSuite,
                            publicAdmin,
                            false, // public auth
                            allowSuperUser,   // allow SuperUser

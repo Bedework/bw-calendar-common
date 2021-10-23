@@ -26,7 +26,12 @@ import org.bedework.calfacade.base.PropertiesEntity;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
+import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.util.misc.response.Response;
 import org.bedework.util.xml.FromXmlCallback;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,7 +151,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
 
   private Set<BwProperty> properties;
 
-  /** Property names - which will be prefixed by the bedework namespace */
+  /* Property names - which will be prefixed by the bedework namespace */
 
   /** preferred locale */
   public static final String propertyPreferredLocale = "userpref:preferrred-locale";
@@ -156,6 +161,9 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
 
   /** last locale */
   public static final String propertyLastLocale = "userpref:last-locale";
+
+  /** category mapping for this calsuite  */
+  public static final String propertyCategoryMapping = "userpref:category-mapping";
 
   /** approvers for this calsuite  */
   public static final String propertyCalsuiteApprovers = "userpref:calsuite-approvers";
@@ -517,7 +525,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
   @Override
   @NoDump
   public int getNumProperties() {
-    Set<BwProperty> p = getProperties();
+    final Set<BwProperty> p = getProperties();
     if (p == null) {
       return 0;
     }
@@ -527,13 +535,13 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
 
   @Override
   public BwProperty findProperty(final String name) {
-    Collection<BwProperty> props = getProperties();
+    final Collection<BwProperty> props = getProperties();
 
     if (props == null) {
       return null;
     }
 
-    for (BwProperty prop: props) {
+    for (final BwProperty prop: props) {
       if (name.equals(prop.getName())) {
         return prop;
       }
@@ -587,9 +595,9 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
       return null;
     }
 
-    TreeSet<BwProperty> ts = new TreeSet<>();
+    final TreeSet<BwProperty> ts = new TreeSet<>();
 
-    for (BwProperty p: getProperties()) {
+    for (final BwProperty p: getProperties()) {
       ts.add((BwProperty)p.clone());
     }
 
@@ -599,6 +607,84 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
   /* ====================================================================
    *                   Property convenience methods
    * ==================================================================== */
+
+  /**
+   * @param val  yaml style category mapping.
+   */
+  public void setCategoryMapping(final String val) {
+    setProp(propertyCategoryMapping, val);
+  }
+
+  /**
+   * @return yaml style category mapping.
+   */
+  @NoDump
+  public String getCategoryMapping() {
+    return getProp(propertyCategoryMapping);
+  }
+
+  public static class CategoryMapping {
+    private String from;
+    private String to;
+    private boolean topicalArea;
+
+    public void setFrom(final String val) {
+      from = val;
+    }
+
+    public String getFrom() {
+      return from;
+    }
+
+    public void setTo(final String val) {
+      to = val;
+    }
+
+    public String getTo() {
+      return to;
+    }
+
+    public void setTopicalArea(final boolean val) {
+      topicalArea = val;
+    }
+
+    public boolean isTopicalArea() {
+      return topicalArea;
+    }
+  }
+
+  public static class CategoryMappings {
+    private List<CategoryMapping> mappings;
+
+    public void setMappings(final List<CategoryMapping> val) {
+      mappings = val;
+    }
+
+    public List<CategoryMapping> getMappings() {
+      return mappings;
+    }
+  }
+
+  public GetEntityResponse<CategoryMappings> readCategoryMappings() {
+    return checkCategoryMappings(getCategoryMapping());
+  }
+
+  public GetEntityResponse<CategoryMappings> checkCategoryMappings(final String mappings) {
+    final GetEntityResponse<CategoryMappings> ger =
+            new GetEntityResponse<>();
+    if (mappings == null) {
+      return ger;
+    }
+
+    final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+    try {
+      ger.setEntity(mapper.readValue(mappings, CategoryMappings.class));
+      return ger;
+    } catch (final Throwable t) {
+      return Response.error(ger, t);
+    }
+  }
 
   /**
    * @param val  Comma separated calsuite approvers.
@@ -789,7 +875,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
         return;
       }
 
-      for (BwProperty p: catuids) {
+      for (final BwProperty p: catuids) {
         removeProperty(p);
       }
 
@@ -1046,6 +1132,15 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
     public static final String propertyMaxEntitySize = "NOTuserpref:max-entity-size";
     public static final String propertyQuotaUsed = "NOTuserpref:quota-used-bytes";
 */
+    if (getCategoryMapping() != null) {
+      try {
+        readCategoryMappings();
+        ts.append("readCategoryMappings()", "ok");
+      } catch (final Throwable t) {
+        t.printStackTrace();
+        ts.append("readCategoryMappings()", t.getMessage());
+      }
+    }
 
     return ts.toString();
   }
@@ -1067,7 +1162,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
     int minutes = 0;
 
     try {
-      int hours = Integer.parseInt(val.substring(0, 2));
+      final int hours = Integer.parseInt(val.substring(0, 2));
       minutes = Integer.parseInt(val.substring(2, 4));
       if ((hours < 0) || (hours > 24)) {
         badval = true;
@@ -1076,7 +1171,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
       } else {
         minutes *= (hours * 60);
       }
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       badval = true;
     }
 
@@ -1110,7 +1205,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
    */
   @NoDump
   private long getLongProp(final String name) {
-    BwProperty prop = findProperty(name);
+    final BwProperty prop = findProperty(name);
 
     if (prop == null) {
       return 0;

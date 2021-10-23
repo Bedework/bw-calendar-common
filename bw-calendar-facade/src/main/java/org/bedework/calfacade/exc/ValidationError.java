@@ -80,6 +80,9 @@ public class ValidationError implements Serializable {
   /** Error: invalid page size. */
   public static final String invalidPageSize = prefix + "invalid.pagesize";
 
+  /** Error: invalid preference field. */
+  public static final String invalidPref = prefix + "invalid.pref";
+
   /** Error: invalid workday end. */
   public static final String invalidPrefWorkDayEnd = prefix + "invalid.prefworkdayend";
 

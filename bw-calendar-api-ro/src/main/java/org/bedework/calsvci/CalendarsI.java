@@ -22,8 +22,10 @@ import org.bedework.calfacade.AliasesInfo;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwPrincipal;
+import org.bedework.calfacade.CollectionAliases;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.synch.wsmessages.SubscriptionStatusResponseType;
+import org.bedework.util.misc.response.GetEntityResponse;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -129,7 +131,7 @@ public interface CalendarsI extends Serializable {
    * some access.
    *
    * @param  cal          parent calendar
-   * @return Collection   of BwCalendar
+   * @return Collection   of BwCalendar (empty if no children)
    * @throws CalFacadeException on fatal error
    */
   Collection<BwCalendar> getChildren(BwCalendar cal) throws CalFacadeException;
@@ -323,6 +325,12 @@ public interface CalendarsI extends Serializable {
   BwCalendar resolveAliasIdx(BwCalendar val,
                              boolean resolveSubAlias,
                              boolean freeBusy) throws CalFacadeException;
+
+  /**
+   * @param val a collection to check
+   * @return response with status and info.
+   */
+  GetEntityResponse<CollectionAliases> getAliasInfo(BwCalendar val);
 
   /** */
   enum CheckSubscriptionResult {

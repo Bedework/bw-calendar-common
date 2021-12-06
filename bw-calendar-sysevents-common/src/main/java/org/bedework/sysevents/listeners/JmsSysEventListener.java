@@ -24,6 +24,7 @@ import org.bedework.sysevents.NotificationException;
 import org.bedework.sysevents.events.SysEvent;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
+import org.bedework.util.misc.Util;
 
 import java.io.InvalidClassException;
 import java.util.Properties;
@@ -140,9 +141,7 @@ public abstract class JmsSysEventListener
     } catch (final NotificationException ne) {
       ne.printStackTrace();
     } catch (final JMSException je) {
-      final Throwable t = je.getCause();
-
-      if (t instanceof InvalidClassException) {
+      if (Util.causeIs(je, InvalidClassException.class)) {
         /* Probably an old message - just ignore it. */
         warn("Ignoring message of unknown class");
       }

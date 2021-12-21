@@ -14,6 +14,13 @@
   <description>Common calendar classes and code for bedework</description>
   <url>https://github.com/Bedework/bw-calendar-common</url>
 
+  <scm>
+    <connection>scm:git:git@github.com:Bedework/bw-calendar-common.git</connection>
+    <developerConnection>scm:git:git@github.com:Bedework/bw-calendar-common.git</developerConnection>
+    <url>https://github.com/Bedework/bw-calendar-common</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <modules>
     <module>bw-calendar-annotations</module>
     <module>bw-calendar-convert</module>

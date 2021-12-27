@@ -32,6 +32,7 @@ import org.bedework.calfacade.configs.SystemProperties;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.mail.MailConfigProperties;
 import org.bedework.calfacade.svc.CalSvcIPars;
+import org.bedework.calfacade.util.Sysprop;
 import org.bedework.calsvci.CalSvcFactoryDefault;
 import org.bedework.calsvci.CalSvcI;
 import org.bedework.common.sysmon.BwSysMonitor;
@@ -88,6 +89,9 @@ public final class ConfigurationsImpl
 
   private final Map<String, DirConfigProperties> dirConfigs = new HashMap<>();
 
+  private final boolean readOnlySystem =
+          Sysprop.readOnlySystem();
+
   private static final String cmdUtilClass =
           "org.bedework.tools.cmdutil.CmdUtil";
 
@@ -126,7 +130,9 @@ public final class ConfigurationsImpl
     try {
       checkMbeansInstalled();
 
-      authProperties = new ROAuthProperties(getAuthProps(true));
+      if (!readOnlySystem) {
+        authProperties = new ROAuthProperties(getAuthProps(true));
+      }
 
       unAuthProperties = new ROAuthProperties(getAuthProps(false));
     } catch (final CalFacadeException cfe) {
@@ -269,9 +275,11 @@ public final class ConfigurationsImpl
       register(getUnauthpropsName(), conf);
       conf.loadConfig();
 
-      conf = new AuthConf(Configurations.authPropsNamePart);
-      register(getAuthpropsName(), conf);
-      conf.loadConfig();
+      if (!readOnlySystem) {
+        conf = new AuthConf(Configurations.authPropsNamePart);
+        register(getAuthpropsName(), conf);
+        conf.loadConfig();
+      }
 
       /* ------------- System properties -------------------- */
       //final SystemConf sconf = new SystemConf(systemPropsNamePart);
@@ -285,10 +293,12 @@ public final class ConfigurationsImpl
       notificationProps = nc.getConfig();
 
       /* ------------- Mailer properties -------------------- */
-      final MailerConf mc = new MailerConf();
-      register(new ObjectName(mc.getServiceName()), mc);
-      mc.loadConfig();
-      mailProps = mc.getConfig();
+      if (!readOnlySystem) {
+        final MailerConf mc = new MailerConf();
+        register(new ObjectName(mc.getServiceName()), mc);
+        mc.loadConfig();
+        mailProps = mc.getConfig();
+      }
 
       /* ------------- Http properties -------------------- */
       final HttpOut ho =
@@ -310,19 +320,24 @@ public final class ConfigurationsImpl
       sysmon.start();
 
       /* ------------- GenKeys -------------------- */
-      final GenKeys gk = new GenKeys("org.bedework.bwengine.confuri");
-      register(new ObjectName(GenKeys.serviceName), gk);
-      gk.loadConfig();
+      if (!readOnlySystem) {
+        final GenKeys gk = new GenKeys(
+                "org.bedework.bwengine.confuri");
+        register(new ObjectName(GenKeys.serviceName), gk);
+        gk.loadConfig();
+      }
 
       /* ------------- Pooled buffers -------------------- */
       final PooledBuffers pb = new PooledBuffers();
       register(new ObjectName(pb.getServiceName()), pb);
 
       /* ------------- Synch properties -------------------- */
-      final SynchConf sc = new SynchConf();
-      register(new ObjectName(sc.getServiceName()), sc);
-      sc.loadConfig();
-      synchProps = sc.getConfig();
+      if (!readOnlySystem) {
+        final SynchConf sc = new SynchConf();
+        register(new ObjectName(sc.getServiceName()), sc);
+        sc.loadConfig();
+        synchProps = sc.getConfig();
+      }
 
       /* ------------- Directory interface properties ------------- */
       loadDirConfigs();
@@ -331,22 +346,30 @@ public final class ConfigurationsImpl
       configured = true;
 
       /* ------------- Change notifications  -------------------- */
-      startChgNote();
+      if (!readOnlySystem) {
+        startChgNote();
+      }
 
       /* ------------- Carddav ------------------------------------ */
       loadCardDav();
 
       /* ------------- CmdUtil --------------------- */
-      loadCmdUtil();
+      if (!readOnlySystem) {
+        loadCmdUtil();
+      }
 
       /* ------------- DumpRestore properties --------------------- */
-      loadDumpRestore();
+      if (!readOnlySystem) {
+        loadDumpRestore();
+      }
 
       /* ------------- Indexer properties ------------------------- */
       startIndexing();
 
       /* ------------- InoutSched --------------------------------- */
-      startScheduling();
+      if (!readOnlySystem) {
+        startScheduling();
+      }
 
       /* ------------- Autokiller --------------------------------- */
       startAutoKiller();

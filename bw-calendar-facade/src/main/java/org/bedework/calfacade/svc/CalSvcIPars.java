@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade.svc;
 
+import org.bedework.calfacade.util.Sysprop;
 import org.bedework.util.misc.ToString;
 
 import java.io.Serializable;
@@ -333,7 +334,7 @@ public class CalSvcIPars implements Serializable {
                            false,  // adminCanEditAllPublicSponsors
                            false, // sessionless
                            true,  // dontKill
-                           false, // readOnly
+                           Sysprop.readOnlySystem(), // readOnly
                            null, // clientId
                            false, // forRestore
                            true); // indexRebuild

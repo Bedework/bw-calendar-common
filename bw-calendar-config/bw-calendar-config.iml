@@ -21,7 +21,6 @@
     <orderEntry type="module" module-name="bw-xml-calws-soap" />
     <orderEntry type="library" name="Maven: javax.jws:javax.jws-api:1.1" level="project" />
     <orderEntry type="module" module-name="bw-xml-icalendar" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" level="project" />
     <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="module" module-name="bw-calendar-facade" />
@@ -42,7 +41,6 @@
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.13.0" level="project" />
     <orderEntry type="module" module-name="bw-webdav" />
-    <orderEntry type="module" module-name="bw-util-servlet" />
     <orderEntry type="module" module-name="bw-util-xml" />
     <orderEntry type="module" module-name="bw-caldav-util" />
     <orderEntry type="module" module-name="bw-xml-synchws" />
@@ -74,5 +72,7 @@
     <orderEntry type="library" name="Maven: javax.jms:javax.jms-api:2.0" level="project" />
     <orderEntry type="module" module-name="bw-util-jmx" />
     <orderEntry type="module" module-name="bw-util-config" />
+    <orderEntry type="module" module-name="bw-util-servlet" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.13.0" level="project" />
   </component>
 </module>

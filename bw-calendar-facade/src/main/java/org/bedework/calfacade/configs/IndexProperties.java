@@ -45,6 +45,45 @@ public interface IndexProperties {
   @MBeanInfo("Non-embedded indexer url")
   String getIndexerURL();
 
+  /**
+   *
+   * @param val the indexer service token
+   */
+  void setIndexerToken(String val);
+
+  /** Get the indexer service token
+   *
+   * @return service token for server
+   */
+  @MBeanInfo("Indexer service token")
+  String getIndexerToken();
+
+  /**
+   *
+   * @param val the indexer user account
+   */
+  void setIndexerUser(String val);
+
+  /** Get the indexer user account
+   *
+   * @return user account for server
+   */
+  @MBeanInfo("Indexer user account")
+  String getIndexerUser();
+
+  /**
+   *
+   * @param val the indexer user password
+   */
+  void setIndexerPw(String val);
+
+  /** Get the indexer user password
+   *
+   * @return user password for server
+   */
+  @MBeanInfo("Indexer user password")
+  String getIndexerPw();
+
   /** Set the cluster name
    *
    * @param val

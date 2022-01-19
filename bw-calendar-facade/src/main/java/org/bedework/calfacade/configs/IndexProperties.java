@@ -20,6 +20,7 @@ package org.bedework.calfacade.configs;
 
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.jmx.MBeanInfo;
+import org.bedework.util.opensearch.IndexingProperties;
 
 import java.util.List;
 
@@ -31,98 +32,7 @@ import java.util.List;
  *
  */
 @ConfInfo(elementName = "index-properties")
-public interface IndexProperties {
-  /** Set the indexer url
-   *
-   * @param val
-   */
-  void setIndexerURL(String val);
-
-  /** Get the indexer url
-   *
-   * @return url of server
-   */
-  @MBeanInfo("Non-embedded indexer url")
-  String getIndexerURL();
-
-  /**
-   *
-   * @param val the indexer service token
-   */
-  void setIndexerToken(String val);
-
-  /** Get the indexer service token
-   *
-   * @return service token for server
-   */
-  @MBeanInfo("Indexer service token")
-  String getIndexerToken();
-
-  /**
-   *
-   * @param val the indexer user account
-   */
-  void setIndexerUser(String val);
-
-  /** Get the indexer user account
-   *
-   * @return user account for server
-   */
-  @MBeanInfo("Indexer user account")
-  String getIndexerUser();
-
-  /**
-   *
-   * @param val the indexer user password
-   */
-  void setIndexerPw(String val);
-
-  /** Get the indexer user password
-   *
-   * @return user password for server
-   */
-  @MBeanInfo("Indexer user password")
-  String getIndexerPw();
-
-  /** Set the cluster name
-   *
-   * @param val
-   */
-  void setClusterName(String val);
-
-  /** Get the cluster name
-   *
-   * @return name
-   */
-  @MBeanInfo("cluster name")
-  String getClusterName();
-
-  /** Set the node name
-   *
-   * @param val
-   */
-  void setNodeName(String val);
-
-  /** Get the node name
-   *
-   * @return name
-   */
-  @MBeanInfo("node name")
-  String getNodeName();
-
-  /** Set the data directory for embedded
-   *
-   * @param val
-   */
-  void setDataDir(String val);
-
-  /** Get the data directory for embedded
-   *
-   * @return name
-   */
-  @MBeanInfo("data directory for embedded")
-  String getDataDir();
-
+public interface IndexProperties extends IndexingProperties {
   /** Set the indexer config location
    *
    * @param val

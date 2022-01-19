@@ -76,6 +76,11 @@
 
     <dependency>
       <groupId>org.bedework</groupId>
+      <artifactId>bw-util-opensearch</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.bedework</groupId>
       <artifactId>bw-util-security</artifactId>
     </dependency>
 

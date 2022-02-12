@@ -10,13 +10,13 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="bw-calendar-facade" />
-    <orderEntry type="module" module-name="bw-calendar-annotations" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-calendar-annotations:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="bw-access" />
     <orderEntry type="module" module-name="bw-util2-vcard" />
     <orderEntry type="module" module-name="bw-util-json" />
     <orderEntry type="module" module-name="bw-util-http" />
-    <orderEntry type="module" module-name="bw-util-config" />
-    <orderEntry type="module" module-name="bw-util-jmx" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-config:5.0.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:5.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.14" level="project" />
     <orderEntry type="module" module-name="bw-util-indexing" />

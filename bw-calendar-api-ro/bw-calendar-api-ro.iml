@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:commons-text:1.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.9" level="project" />
     <orderEntry type="module" module-name="bw-calendar-facade" />
-    <orderEntry type="module" module-name="bw-calendar-annotations" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-calendar-annotations:4.0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="bw-access" />
     <orderEntry type="module" module-name="bw-util-caching" />
     <orderEntry type="module" module-name="bw-util2-calendar" />
@@ -31,8 +31,8 @@
     <orderEntry type="module" module-name="bw-util-json" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.13.0" level="project" />
     <orderEntry type="module" module-name="bw-util-http" />
-    <orderEntry type="module" module-name="bw-util-config" />
-    <orderEntry type="module" module-name="bw-util-jmx" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-config:5.0.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.bedework:bw-util-jmx:5.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.14" level="project" />
     <orderEntry type="module" module-name="bw-util-indexing" />

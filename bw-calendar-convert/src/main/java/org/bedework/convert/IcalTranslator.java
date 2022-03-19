@@ -329,14 +329,16 @@ public class IcalTranslator implements Logged, Serializable {
 
         cal = bldr.build(rdr);
       } else if ("application/calendar+json".equals(contentType)) {
-        final JcalCalendarBuilder bldr = new JcalCalendarBuilder(ic);
+        final JcalCalendarBuilder bldr = new JcalCalendarBuilder(
+                ic);
 
         cal = bldr.build(rdr);
       } else {
         final CalendarBuilder bldr =
                 new CalendarBuilder(new CalendarParserImpl(), ic);
 
-        final UnfoldingReader ufrdr = new UnfoldingReader(rdr, true);
+        final UnfoldingReader ufrdr = new UnfoldingReader(rdr,
+                                                          true);
 
         cal = bldr.build(ufrdr);
       }
@@ -724,7 +726,7 @@ public class IcalTranslator implements Logged, Serializable {
     }
   }
 
-  private static void setSystemProperties() {
+  protected static void setSystemProperties() {
     try {
       System.setProperty("ical4j.unfolding.relaxed", "true");
       System.setProperty("ical4j.parsing.relaxed", "true");

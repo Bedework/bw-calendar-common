@@ -35,6 +35,7 @@ import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.base.StartEndComponent;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.DifferResult;
+import org.bedework.convert.ical.IcalUtil;
 import org.bedework.jsforj.impl.JSFactory;
 import org.bedework.jsforj.impl.values.dataTypes.JSDurationImpl;
 import org.bedework.jsforj.impl.values.dataTypes.JSLocalDateTimeImpl;
@@ -77,6 +78,8 @@ import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
+import net.fortuna.ical4j.model.component.Participant;
+import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Geo;
@@ -88,6 +91,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.bedework.calfacade.BwXproperty.bedeworkParticipant;
 import static org.bedework.convert.BwDiffer.differs;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternateDescription;
@@ -337,27 +341,7 @@ public class BwEvent2JsCal {
 
       /* ------------------- Contact -------------------- */
 
-      final var contacts = val.getContacts();
-      final DifferResult<BwContact, ?> contDiff =
-              differs(BwContact.class,
-                      PropertyInfoIndex.CONTACT,
-                      contacts, master);
-      if (contDiff.differs) {
-        for (final BwContact c: contacts) {
-          final var parts = jsval.getParticipants(true);
-          final var jsContact =
-                  parts.makeEntry(c.getUid()).getValue();
-
-          final var roles = jsContact.getRoles(true);
-          roles.add(roleContact);
-
-          if (c.getEmail() != null) {
-            jsContact.setEmail(c.getEmail());
-          }
-          jsContact.setDescription(c.getCn().getValue());
-          addLink(jsContact, c.getLink(), linkRelAlternate);
-        }
-      }
+      doContacts(val, master, jsval, jsCalMaster);
 
       /* ------------------- Cost -------------------- */
 
@@ -1446,12 +1430,16 @@ public class BwEvent2JsCal {
       return;
     }
 
+    final var xparts = IcalUtil.parseParticipants(
+            event.getXproperties(bedeworkParticipant));
+
     if ((master == null) || partDiff.addAll) {
       // Just add to js
       makeAttendees(jsval,
                     jsCalMaster,
                     jsval.getParticipants(true),
-                    attendees);
+                    attendees,
+                    xparts);
       return;
     }
 
@@ -1504,7 +1492,8 @@ public class BwEvent2JsCal {
       makeAttendees(jsval,
                     jsCalMaster,
                     jsval.getParticipants(true),
-                    partDiff.added);
+                    partDiff.added,
+                    xparts);
     }
 
     if (!Util.isEmpty(partDiff.differ)) {
@@ -1541,7 +1530,8 @@ public class BwEvent2JsCal {
   private static void makeAttendees(final JSCalendarObject jsval,
                                     final JSCalendarObject master,
                                     final JSParticipants participants,
-                                    final Set<BwAttendee> attendees) {
+                                    final Set<BwAttendee> attendees,
+                                    final List<Participant> parts) {
     /* Note below we add participants in two passes - groups first
        then the rest. This is because an attendee with a MEMBER
        parameter needs to refer to a group participant by the id
@@ -1551,14 +1541,14 @@ public class BwEvent2JsCal {
       if (!"group".equalsIgnoreCase(att.getCuType())) {
         continue;
       }
-      makeAttendee(jsval, master, participants, att);
+      makeAttendee(jsval, master, participants, att, parts);
     }
 
     for (final BwAttendee att: attendees) {
       if ("group".equalsIgnoreCase(att.getCuType())) {
         continue;
       }
-      makeAttendee(jsval, master, participants, att);
+      makeAttendee(jsval, master, participants, att, parts);
     }
   }
 
@@ -1571,7 +1561,8 @@ public class BwEvent2JsCal {
   private static void makeAttendee(final JSCalendarObject jsval,
                                    final JSCalendarObject master,
                                    final JSParticipants participants,
-                                   final BwAttendee att) {
+                                   final BwAttendee att,
+                                   final List<Participant> parts) {
     final var part = participants.makeParticipant().getValue();
 
     // We do attendee before organizer so this should be fine.
@@ -1658,6 +1649,30 @@ public class BwEvent2JsCal {
     temp = att.getSentBy();
     if (temp != null) {
       part.setInvitedBy(temp);
+    }
+
+    /* Go through gthe participants looking for a calendar address match
+     */
+    for (final var participant: parts) {
+      final CalendarAddress calAddr = participant.getCalendarAddress();
+      if (calAddr == null) {
+        continue;
+      }
+
+      if (calAddr.getValue().equals(att.getAttendeeUri())) {
+        // Fill in any extra values
+        final var desc = participant.getDescription();
+        if (desc != null) {
+          part.setDescription(desc.getValue());
+        }
+
+        // locationId
+        // participationComment
+        // invitedBy
+        // links
+
+        break;
+      }
     }
   }
 
@@ -1912,6 +1927,79 @@ public class BwEvent2JsCal {
       jsval.setProperty(JSPropertyNames.categories + "/" +
                                 xp.getValue(), true);
     }
+  }
+
+  /* ------------------- Contacts -------------------- */
+
+  private static void doContacts(final BwEvent event,
+                                 final EventInfo master,
+                                 final JSCalendarObject jsval,
+                                 final JSCalendarObject jsCalMaster) {
+    final var contacts = event.getContacts();
+    final DifferResult<BwContact, ?> cDiff =
+            differs(BwContact.class,
+                    PropertyInfoIndex.CONTACT,
+                    contacts, master);
+    if (!cDiff.differs) {
+      return;
+    }
+
+    final JSParticipants jscontacts = jsval.getParticipants(true);
+
+    if ((master == null) || cDiff.addAll) {
+      // Just add to js
+      for (final BwContact c: contacts) {
+        addContact(jscontacts, c);
+      }
+
+      return;
+    }
+
+    // Everything from here needs to be treated as a patch so
+    // jsVal must be an override.
+
+    final JSOverride override = (JSOverride)jsval;
+
+    if (cDiff.removeAll) {
+      override.setNull(JSPropertyNames.categories);
+      for (final BwContact c: contacts) {
+        jscontacts.remove(c.getCn().getValue());
+      }
+      return;
+    }
+
+    if (!Util.isEmpty(cDiff.removed)) {
+      for (final BwContact c: cDiff.removed) {
+        jscontacts.remove(c.getCn().getValue());
+      }
+    }
+
+    for (final BwContact c: cDiff.added) {
+      addContact(jscontacts, c);
+    }
+  }
+
+  private static void addContact(final JSParticipants jscontacts,
+                                 final BwContact c) {
+    final var jsContact =
+            jscontacts.makeEntry(c.getUid()).getValue();
+
+    final var roles = jsContact.getRoles(true);
+    roles.add(roleContact);
+
+    if (c.getEmail() != null) {
+      jsContact.setEmail(c.getEmail());
+    }
+
+    final String value = c.getCn().getValue();
+    final int pos = value.indexOf(",");
+    if (pos > 0) {
+      jsContact.setName(value.substring(0, pos));
+    } else {
+      jsContact.setName(value);
+    }
+    jsContact.setDescription(value);
+    addLink(jsContact, c.getLink(), linkRelAlternate);
   }
 
   /* ------------------- Location -------------------- */

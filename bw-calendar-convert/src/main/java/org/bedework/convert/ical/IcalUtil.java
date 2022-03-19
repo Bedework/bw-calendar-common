@@ -62,6 +62,7 @@ import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.component.Participant;
+import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VPoll;
 import net.fortuna.ical4j.model.parameter.AltRep;
 import net.fortuna.ical4j.model.parameter.Cn;
@@ -517,7 +518,7 @@ public class IcalUtil {
 
   /**
    * @param poll the poll entity
-   * @return Parsed PARTICPANT components map - key is voter cua.
+   * @return Parsed PARTICIPANT components map - key is voter cua.
    */
   public static Map<String, Participant> parseVpollVoters(final BwEvent poll) {
     final StringBuilder sb = new StringBuilder();
@@ -570,6 +571,70 @@ public class IcalUtil {
     }
 
     return voters;
+  }
+
+  /**
+   * @param xprops String participant objects
+   * @return Parsed PARTICIPANT components list.
+   */
+  public static List<Participant> parseParticipants(final List<BwXproperty> xprops) {
+    final List<Participant> participants = new ArrayList<>();
+
+    final StringBuilder sb = new StringBuilder();
+
+    if (Util.isEmpty(xprops)) {
+      return participants;
+    }
+
+    // Better if ical4j supported sub-component parsing
+
+    sb.append("BEGIN:VCALENDAR\n");
+    sb.append("PRODID://Bedework.org//BedeWork V3.9//EN\n");
+    sb.append("VERSION:2.0\n");
+    sb.append("BEGIN:VEVENT\n");
+    sb.append("UID:0123\n");
+
+    boolean found = false;
+    for (final var xp: xprops) {
+      if (!xp.getName().equals(BwXproperty.bedeworkParticipant)) {
+        continue;
+      }
+
+      found = true;
+      sb.append(xp.getValue());
+    }
+
+    if (!found) {
+      return participants;
+    }
+
+    sb.append("END:VEVENT\n");
+    sb.append("END:VCALENDAR\n");
+
+    final StringReader sr = new StringReader(sb.toString());
+
+    final Icalendar ic = new Icalendar();
+
+    final CalendarBuilder bldr = new CalendarBuilder(new CalendarParserImpl(), ic);
+
+    final UnfoldingReader ufrdr = new UnfoldingReader(sr, true);
+
+    final Calendar ical;
+    try {
+      ical = bldr.build(ufrdr);
+    } catch (final IOException | ParserException e) {
+      throw new RuntimeException(e);
+    }
+
+    /* Should be one event object */
+
+    final VEvent ev = ical.getComponent(Component.VEVENT);
+    for (final Component comp:
+            ev.getComponents().getComponents("PARTICIPANT")) {
+      participants.add((Participant)comp);
+    }
+
+    return participants;
   }
 
   /**

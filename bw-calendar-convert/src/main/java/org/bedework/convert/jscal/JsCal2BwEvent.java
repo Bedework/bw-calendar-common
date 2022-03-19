@@ -287,6 +287,8 @@ public class JsCal2BwEvent {
       ev.setSummary(val.getTitle());
     }
 
+    ev.setRecurring(false);
+
     for (final JSProperty<?> prop: val.getProperties()) {
       final var pname = prop.getName();
       final var pval = prop.getValue();
@@ -529,13 +531,14 @@ public class JsCal2BwEvent {
       return true;
     }
 
-    for (final var partProp: value.get()) {
+    for (final var key: value.getKeys()) {
+      final var partProp = value.get(key);
       var processed = false;
       final JSParticipant part = partProp.getValue();
       final var roles = part.getRoles(true).get();
 
       if (roles.contains(roleContact)) {
-        if (!doContact(resp, cb, chg, ev, part)) {
+        if (!doContact(resp, cb, chg, ev, key, part)) {
           return false;
         }
         processed = true;
@@ -553,7 +556,6 @@ public class JsCal2BwEvent {
         }
         processed = true;
       }
-
     }
 
     return true;
@@ -564,6 +566,7 @@ public class JsCal2BwEvent {
           final IcalCallback cb,
           final ChangeTable chg,
           final BwEvent ev,
+          final String partKey,
           final JSParticipant value) {
     final var cn = new BwString(null, value.getDescription());
     final var cResp = cb.findContact(cn);
@@ -744,9 +747,9 @@ public class JsCal2BwEvent {
       dtc = dt.getComponents();
     }
 
-    private final String utcFormat = "%4d%2d%2dT%2d%2d%2dZ";
-    private final String dateTimeFormat = "%4d%2d%2dT%2d%2d%2d";
-    private final String dateFormat = "%4d%2d%2d";
+    private final String utcFormat = "%04d%02d%02dT%02d%02d%02dZ";
+    private final String dateTimeFormat = "%04d%02d%02dT%02d%02d%02d";
+    private final String dateFormat = "%04d%02d%02d";
 
     String format(final boolean dtOnly) {
       if (dtc.isUtc()) {

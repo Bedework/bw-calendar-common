@@ -3,6 +3,7 @@
 */
 package org.bedework.convert.jscal;
 
+import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwVersion;
@@ -10,15 +11,19 @@ import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.EventTimeZonesRegistry;
 import org.bedework.convert.IcalTranslator;
+import org.bedework.convert.Icalendar;
 import org.bedework.jsforj.impl.JSFactory;
 import org.bedework.jsforj.impl.JSMapper;
 import org.bedework.jsforj.model.JSCalendarObject;
+import org.bedework.jsforj.model.JSEvent;
 import org.bedework.jsforj.model.JSGroup;
 import org.bedework.jsforj.model.JSPropertyNames;
+import org.bedework.jsforj.model.JSTask;
 import org.bedework.jsforj.model.JSTypes;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.misc.response.GetEntityResponse;
 
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.TreeSet;
@@ -96,9 +101,67 @@ public class JSCalTranslator extends IcalTranslator {
     obj.writeValue(wtr, mapper);
   }
 
+  @Override
+  public Icalendar fromIcal(final BwCalendar col,
+                            final Reader rdr,
+                            final String contentType,
+                            final boolean mergeAttendees) {
+    final Icalendar ic = new Icalendar();
+
+    setSystemProperties();
+    final var jscal = new JSMapper().parse(rdr);
+
+    if (jscal == null) {
+      return ic;
+    }
+
+    final String prodid = jscal.getStringProperty(JSPropertyNames.prodId);
+    if (prodid != null) {
+      ic.setProdid(prodid);
+    }
+
+    ic.setMethod(jscal.getStringProperty(JSPropertyNames.method));
+
+    if (jscal instanceof JSGroup) {
+      // Look for components in the group
+      final var group = (JSGroup)jscal;
+      for (final var entry: group.getEntries()) {
+        toBw(cb, entry, col, ic);
+      }
+    } else {
+      toBw(cb, jscal, col, ic);
+    }
+
+    return ic;
+  }
+
   /* ====================================================================
                       Private methods
      ==================================================================== */
+
+  private void toBw(final IcalCallback cb,
+                    final JSCalendarObject val,
+                    final BwCalendar col,
+                    final Icalendar ic) {
+    if (!(val instanceof JSEvent) &&
+            !(val instanceof JSTask)) {
+      return;
+    }
+
+    final GetEntityResponse<EventInfo> eiResp =
+            JsCal2BwEvent.toEvent(cb, val, col, ic);
+
+    if (eiResp.isError()) {
+      if (eiResp.getException() != null) {
+        throw new RuntimeException(eiResp.getException());
+      }
+      throw new RuntimeException(eiResp.toString());
+    }
+
+    if (eiResp.isOk()) {
+      ic.addComponent(eiResp.getEntity());
+    }
+  }
 
   private void addToGroup(final JSGroup group,
                           final EventInfo val,

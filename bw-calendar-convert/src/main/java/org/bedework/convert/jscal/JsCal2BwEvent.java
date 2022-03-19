@@ -202,6 +202,8 @@ public class JsCal2BwEvent {
 
     setValues(resp, cb, chg, ridObj, evinfo, val);
 
+    chg.processChanges(ev, true, false);
+
     resp.setEntity(evinfo);
     return Response.ok(resp);
   }

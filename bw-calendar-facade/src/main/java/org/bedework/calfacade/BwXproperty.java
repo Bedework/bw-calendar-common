@@ -143,6 +143,10 @@ public class BwXproperty extends BwDbentity<BwXproperty>
    */
   public final static String bedeworkRelatedTo = "X-BEDEWORK-RELATED-TO";
 
+  /** Holds a participant object
+   */
+  public final static String bedeworkParticipant = "X-BEDEWORK-PARTICIPANT";
+
   /* ====================================================================
    *                        Exchange synch properties
    * ==================================================================== */
@@ -389,6 +393,8 @@ public class BwXproperty extends BwDbentity<BwXproperty>
     xskip.add(bedeworkSchedulingReplyUpdate);
 
     xskip.add(bedeworkRelatedTo);
+
+    xskip.add(bedeworkParticipant);
   }
 
   public static class XpropInfo {

@@ -4,6 +4,7 @@
 package org.bedework.convert.jscal;
 
 import org.bedework.calfacade.BwAlarm;
+import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
@@ -39,6 +40,7 @@ import org.bedework.jsforj.model.values.dataTypes.JSDateTime;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.logging.BwLogger;
+import org.bedework.util.misc.Util;
 import org.bedework.util.misc.response.GetEntityResponse;
 import org.bedework.util.misc.response.Response;
 import org.bedework.util.timezones.Timezones;
@@ -614,7 +616,147 @@ public class JsCal2BwEvent {
           final ChangeTable chg,
           final BwEvent ev,
           final JSParticipant value) {
+    final var calAddr = getSendTo("imip", value);
+    if (calAddr == null) {
+      return true; // No calendar address
+    }
+
+    final var attendee = new BwAttendee();
+    attendee.setAttendeeUri(calAddr);
+
+    if (value.getParticipationStatus() != null) {
+      attendee.setPartstat(value.getParticipationStatus().toUpperCase());
+    }
+    if (value.getExpectReply()) {
+      attendee.setRsvp(true);
+    }
+
+    if (value.getName() != null) {
+      attendee.setCn(value.getName());
+    }
+
+    final var cuType = iCalCutype(value.getKind());
+    if (cuType != null) {
+      attendee.setCuType(cuType);
+    }
+
+    // delegated from
+    // delegated to
+
+    final var links = value.getLinks(false);
+    JSLink link = null;
+    if (links != null) {
+      for (final var linkP: links.get()) {
+        final var l = linkP.getValue();
+        if (linkRelAlternate.equals(l.getRel())) {
+          link = l;
+          break;
+        }
+      }
+    }
+
+    if (link != null) {
+      attendee.setDir(link.getHref());
+    }
+
+    final var lang = value.getLanguage();
+    if (lang != null) {
+      attendee.setLanguage(lang);
+    }
+
+    final var roles = value.getRoles(false);
+
+    if (roles != null) {
+      attendee.setRole(iCalRole(roles.get()));
+    }
+
+    // scheduleAgent
+    // getScheduleStatus
+    // ...
+
+    chg.addValue(PropertyInfoIndex.ATTENDEE, attendee);
+
     return true;
+  }
+
+  private static String getSendTo(final String key,
+                                  final JSParticipant value) {
+    final var sendTo = value.getSendTo(false);
+    if (sendTo == null) {
+      return null; // No calendar address
+    }
+
+    final var imipAddr = sendTo.get(key);
+
+    if ((imipAddr == null) || (imipAddr.getValue() == null)) {
+      return null; // No send to for calendar address
+    }
+
+    return imipAddr.getValue().getStringValue();
+  }
+
+  private static String iCalCutype(final String jsCalCutype) {
+    if (jsCalCutype == null) {
+      return null;
+    }
+
+    if ("location".equalsIgnoreCase(jsCalCutype)) {
+      return "room";
+    }
+
+    return jsCalCutype.toUpperCase();
+  }
+
+  private static String iCalRole(final List<String> roles) {
+    if (Util.isEmpty(roles)) {
+      return null;
+    }
+
+    /*
+      "CHAIR" -> "chair"
+      "REQ-PARTICIPANT" -> "attendee"
+      "OPT-PARTICIPANT" -> "attendee", "optional"
+      "NON-PARTICIPANT" -> "attendee", "informational"
+     */
+
+    boolean attendee = false;
+    boolean chair = false;
+    boolean optional = false;
+    boolean informational = false;
+
+    for (final var val: roles) {
+      switch (val.toLowerCase()) {
+        case "attendee":
+          attendee = true;
+          continue;
+        case "chair":
+          chair = true;
+          continue;
+        case "optional":
+          optional = true;
+          continue;
+        case "informational":
+          informational = true;
+      }
+    }
+
+    if (!attendee) {
+      return null;
+    }
+
+    if (chair) {
+      return "CHAIR";
+    }
+
+    if (optional) {
+      return "OPT-PARTICIPANT";
+    }
+
+    if (informational) {
+      return "NON-PARTICIPANT";
+    }
+
+    return "REQ-PARTICIPANT";
   }
 
   private static boolean doCreated(

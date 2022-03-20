@@ -1651,7 +1651,7 @@ public class BwEvent2JsCal {
       part.setInvitedBy(temp);
     }
 
-    /* Go through gthe participants looking for a calendar address match
+    /* Go through the participants looking for a calendar address match
      */
     for (final var participant: parts) {
       final CalendarAddress calAddr = participant.getCalendarAddress();

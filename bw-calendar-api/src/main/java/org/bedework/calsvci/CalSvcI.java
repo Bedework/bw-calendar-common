@@ -36,6 +36,7 @@ import org.bedework.calfacade.mail.MailerIntf;
 import org.bedework.calfacade.svc.BwPreferences;
 import org.bedework.sysevents.events.SysEventBase;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Collection;
@@ -129,9 +130,13 @@ public interface CalSvcI
 
   /**
    * @return a blob
-   * @throws CalFacadeException on fatal error
    */
-  Blob getBlob(byte[] val) throws CalFacadeException;
+  Blob getBlob(byte[] val);
+
+  /**
+   * @return a blob
+   */
+  Blob getBlob(InputStream val, long length);
 
   /** Call to reassociate an entity with the current database session
    *

@@ -192,6 +192,11 @@ public class BwContact extends BwEventProperty<BwContact>
   @Override
   @NoDump
   public String getCollateValue() {
+    if ((getCn() == null) || (getCn().getValue() == null)) {
+      // Should not happen
+      return "<nocn>";
+    }
+
     return getCn().getValue();
   }
 

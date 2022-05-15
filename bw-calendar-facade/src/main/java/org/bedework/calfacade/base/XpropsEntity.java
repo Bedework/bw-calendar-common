@@ -19,7 +19,10 @@
 package org.bedework.calfacade.base;
 
 import org.bedework.calfacade.BwXproperty;
+import org.bedework.calfacade.annotations.NoDump;
+import org.bedework.calfacade.annotations.ical.NoProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** An entity that can have one or more x-properties will implement this interface.
@@ -56,6 +59,33 @@ public interface XpropsEntity {
    * @return list of matching properties - never null
    */
   List<BwXproperty> getXicalProperties(String val);
+
+  /** REturn x-properties not skipped
+   *
+   * @return list of matching properties - never null
+   */
+  @NoProxy
+  @NoDump
+  default List<BwXproperty> getXnonskipProperties() {
+    final List<BwXproperty> res = new ArrayList<>();
+    final List<BwXproperty> xs = getXproperties();
+    if (xs == null) {
+      return res;
+    }
+
+    for (final BwXproperty x: xs) {
+      if (x == null) {
+        continue;
+      }
+
+      if (x.getSkip()) {
+        continue;
+      }
+      res.add(x);
+    }
+
+    return res;
+  }
 
   /** Remove all instances of the named property.
    *

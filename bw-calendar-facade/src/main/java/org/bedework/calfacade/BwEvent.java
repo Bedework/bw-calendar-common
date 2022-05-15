@@ -4029,7 +4029,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return overrides;
   }
 
-  /** Set the calendar color property
+  /** Set the event color property
    *
    * @param val color value
    */
@@ -4039,9 +4039,9 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     color = val;
   }
 
-  /** Get the calendar color property
+  /** Get the event color property
    *
-   * @return String calendar color
+   * @return String event color
    */
   @NoProxy
   @NoWrap

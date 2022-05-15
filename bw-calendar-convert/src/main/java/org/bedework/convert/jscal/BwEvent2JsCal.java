@@ -294,17 +294,33 @@ public class BwEvent2JsCal {
 
       /* ------------------- Class -------------------- */
 
-      final String clazz = val.getClassification();
-      final DifferResult<String, ?> classDiff =
-              differs(String.class,
-                      PropertyIndex.PropertyInfoIndex.CLASS,
-                      clazz, master);
-      if (classDiff.differs) {
-        if (clazz.equalsIgnoreCase("confidential")) {
-          jsval.setProperty(JSPropertyNames.privacy, "secret");
-        } else {
-          jsval.setProperty(JSPropertyNames.privacy,
-                            clazz.toLowerCase());
+      {
+        final String clazz = val.getClassification();
+        final DifferResult<String, ?> classDiff =
+                differs(String.class,
+                        PropertyIndex.PropertyInfoIndex.CLASS,
+                        clazz, master);
+        if (classDiff.differs) {
+          if (clazz.equalsIgnoreCase("confidential")) {
+            jsval.setProperty(JSPropertyNames.privacy, "secret");
+          } else {
+            jsval.setProperty(JSPropertyNames.privacy,
+                              clazz.toLowerCase());
+          }
+        }
+      }
+
+      /* ------------------- Color -------------------- */
+
+      {
+        final String color = val.getColor();
+        final DifferResult<String, ?> colorDiff =
+                differs(String.class,
+                        PropertyInfoIndex.COLOR,
+                        color, master);
+        if (colorDiff.differs) {
+          jsval.setProperty(JSPropertyNames.color,
+                            color);
         }
       }
 
@@ -1223,11 +1239,19 @@ public class BwEvent2JsCal {
   }
 
   private static void makeAlarm(final JSAlerts alerts,
-                                     final BwAlarm alarm) {
+                                final BwAlarm alarm) {
     final var jsalarm = alerts.makeAlert().getValue();
 
     final var action = getAction(alarm.getAlarmType());
     jsalarm.setAction(action);
+
+    if (alarm.getSummary() != null) {
+      jsalarm.setTitle(alarm.getSummary());
+    }
+
+    if (alarm.getDescription() != null) {
+      jsalarm.setDescription(alarm.getDescription());
+    }
 
     if (alarm.getTriggerDateTime()) {
       // Absolute

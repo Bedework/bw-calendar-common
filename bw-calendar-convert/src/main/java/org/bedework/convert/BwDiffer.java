@@ -62,7 +62,7 @@ public class BwDiffer {
    *
    * @param pi index to identify property
    * @param val value to compare
-   * @param master true if this is a recurring instance
+   * @param master non-null if this is a recurring instance
    * @return differ result
    */
   @SuppressWarnings("unchecked")
@@ -248,6 +248,10 @@ public class BwDiffer {
 
       case VALARM:
         return (DifferResult<T, CT>)cmpObjval((Set<BwAlarm>)val, ev.getAlarms());
+
+      case VLOCATION:
+        return (DifferResult<T, CT>)cmpObjval((List<BwXproperty>)val,
+                                              ev.getXproperties(BwXproperty.xBedeworkVLocation));
 
       case XPROP:
         return (DifferResult<T, CT>)cmpObjval((List<BwXproperty>)val, ev.getXproperties());

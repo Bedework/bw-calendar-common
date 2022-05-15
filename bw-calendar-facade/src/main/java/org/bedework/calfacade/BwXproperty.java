@@ -265,6 +265,8 @@ public class BwXproperty extends BwDbentity<BwXproperty>
 
   public final static String xBedeworkContact = "X-BEDEWORK-CONTACT";
 
+  public final static String xBedeworkVLocation = "X-BEDEWORK-VLOCATION";
+
   /* ====================================================================
    *                        location fields
    * ==================================================================== */
@@ -358,6 +360,8 @@ public class BwXproperty extends BwDbentity<BwXproperty>
     xskipJsp.add(bedeworkIcalProp);
 
     xskipJsp.add(bedeworkDavProp);
+
+    xskipJsp.add(xBedeworkVLocation);
 
     xskipJsp.add(pollItemId);
 

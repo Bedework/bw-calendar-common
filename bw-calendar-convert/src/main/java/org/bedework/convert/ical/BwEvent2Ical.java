@@ -40,6 +40,7 @@ import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
@@ -104,12 +105,15 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
+import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
 
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 
 /** Class to provide utility methods for translating to VEvent ical4j classes
  *
@@ -397,38 +401,7 @@ public class BwEvent2Ical extends IcalUtil {
 
       /* ------------------- Location -------------------- */
 
-      if (!vpoll) {
-        final BwLocation loc = val.getLocation();
-        if (loc != null) {
-          prop = new Location(loc.getCombinedValues());
-
-          pl.add(langProp(uidProp(prop, loc.getUid()), loc.getAddress()));
-
-          addXproperty(pl, BwXproperty.xBedeworkLocationAddr,
-                       null, loc.getAddressField());
-          addXproperty(pl, BwXproperty.xBedeworkLocationRoom,
-                       null, loc.getRoomField());
-          addXproperty(pl, BwXproperty.xBedeworkLocationAccessible,
-                       null, String.valueOf(loc.getAccessible()));
-          addXproperty(pl, BwXproperty.xBedeworkLocationSfield1,
-                       null, loc.getSubField1());
-          addXproperty(pl, BwXproperty.xBedeworkLocationSfield2,
-                       null, loc.getSubField2());
-          addXproperty(pl, BwXproperty.xBedeworkLocationGeo,
-                       null, loc.getGeouri());
-          addXproperty(pl, BwXproperty.xBedeworkLocationStreet,
-                       null, loc.getStreet());
-          addXproperty(pl, BwXproperty.xBedeworkLocationCity,
-                       null, loc.getCity());
-          addXproperty(pl, BwXproperty.xBedeworkLocationState,
-                       null, loc.getState());
-          addXproperty(pl, BwXproperty.xBedeworkLocationZip,
-                       null, loc.getZip());
-          addXproperty(pl, BwXproperty.xBedeworkLocationLink,
-                       null, loc.getLink());
-
-        }
-      }
+      doLocation(val, pl, comp, vpoll);
 
       /* ------------------- Organizer -------------------- */
 
@@ -680,6 +653,73 @@ public class BwEvent2Ical extends IcalUtil {
       throw cfe;
     } catch (final Throwable t) {
       throw new CalFacadeException(t);
+    }
+  }
+
+  public static void doLocation(final BwEvent val,
+                                final PropertyList<Property> pl,
+                                final Component comp,
+                                final boolean vpoll) {
+    if (!vpoll) {
+      final BwLocation loc = val.getLocation();
+      if (loc != null) {
+        var prop = new Location(loc.getCombinedValues());
+
+        pl.add(langProp(uidProp(prop, loc.getUid()), loc.getAddress()));
+
+        final var compContainer = (ComponentContainer<Component>)comp;
+        final var vlocRes = toVlocation(loc, Relto.start);
+        if (vlocRes.isError()) {
+          throw new RuntimeException(vlocRes.getMessage());
+        }
+
+        if (vlocRes.isOk()) {
+          compContainer.getComponents()
+                       .add(vlocRes.getEntity());
+        }
+
+        final var vlocsRes = getVlocations(val);
+
+        if (vlocsRes.isError()) {
+          throw new RuntimeException(vlocsRes.getMessage());
+        }
+
+        if (vlocsRes.isOk()) {
+          for (final var vloc: vlocsRes.getEntities()) {
+            // Don't duplicate the one representing start
+            final var relTo = vloc.getProperty(RELATIVE_TO);
+            if (ImmutableRelativeTo.START.equals(relTo)) {
+              continue;
+            }
+            compContainer.getComponents()
+                         .add(vloc);
+          }
+        }
+
+        addXproperty(pl, BwXproperty.xBedeworkLocationAddr,
+                     null, loc.getAddressField());
+        addXproperty(pl, BwXproperty.xBedeworkLocationRoom,
+                     null, loc.getRoomField());
+        addXproperty(pl, BwXproperty.xBedeworkLocationAccessible,
+                     null, String.valueOf(loc.getAccessible()));
+        addXproperty(pl, BwXproperty.xBedeworkLocationSfield1,
+                     null, loc.getSubField1());
+        addXproperty(pl, BwXproperty.xBedeworkLocationSfield2,
+                     null, loc.getSubField2());
+        addXproperty(pl, BwXproperty.xBedeworkLocationGeo,
+                     null, loc.getGeouri());
+        addXproperty(pl, BwXproperty.xBedeworkLocationStreet,
+                     null, loc.getStreet());
+        addXproperty(pl, BwXproperty.xBedeworkLocationCity,
+                     null, loc.getCity());
+        addXproperty(pl, BwXproperty.xBedeworkLocationState,
+                     null, loc.getState());
+        addXproperty(pl, BwXproperty.xBedeworkLocationZip,
+                     null, loc.getZip());
+        addXproperty(pl, BwXproperty.xBedeworkLocationLink,
+                     null, loc.getLink());
+
+      }
     }
   }
 

@@ -63,6 +63,7 @@ import static org.bedework.jsforj.model.values.JSRoles.roleContact;
 import static org.bedework.jsforj.model.values.JSRoles.roleInformational;
 import static org.bedework.jsforj.model.values.JSRoles.roleOptional;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CATEGORIES;
+import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.COLOR;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CREATED;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.DESCRIPTION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ESTIMATED_DURATION;
@@ -231,6 +232,15 @@ public class JsCal2BwEvent {
       return;
     }
 
+    /* ------------------- Color -------------------- */
+
+    if (val.hasProperty(JSPropertyNames.color)) {
+      final var color = val.getColor();
+      if (chg.changed(COLOR, ev.getColor(), color)) {
+        ev.setColor(color);
+      }
+    }
+
     /* ------------------- Created -------------------- */
     if (!doCreated(resp, cb, chg, ev,
                       val.getStringProperty(JSPropertyNames.created))) {
@@ -252,6 +262,9 @@ public class JsCal2BwEvent {
       }
     }
 
+    /* ------------- Description Content type--------------- */
+    // Not used
+
     /* ------------------- Estimated Duration -------------------- */
 
     if (val.hasProperty(JSPropertyNames.estimatedDuration)) {
@@ -261,9 +274,6 @@ public class JsCal2BwEvent {
         ev.setEstimatedDuration(estd);
       }
     }
-
-    /* ------------- Description Content type--------------- */
-    // Not used
 
     /* ------------------- keywords -------------------- */
     if (!doKeywords(resp, cb, chg, ev,
@@ -397,18 +407,32 @@ public class JsCal2BwEvent {
 
       final BwAlarm al;
 
+      String summary = alert.getTitle();
+      String desc = alert.getDescription();
+
+      if (summary == null) {
+        summary = ev.getSummary();
+      }
+
+      if (desc == null) {
+        desc = ev.getDescription();
+      }
+
       if (JSAlert.alertActionDisplay.equals(action)) {
         al = BwAlarm.displayAlarm(ev.getCreatorHref(),
                                          tr,
                                          null, 0,
-                                         ev.getSummary());
+                                         summary);
       } else if (JSAlert.alertActionEmail.equals(action)) {
+        if (desc == null) {
+          desc = summary;
+        }
         al = BwAlarm.emailAlarm(ev.getCreatorHref(),
                                        tr,
                                        null, 0,
                                        null, // Attach
-                                       ev.getDescription(),
-                                       ev.getSummary(),
+                                       desc,
+                                       summary,
                                        null);
       } else {
         continue;

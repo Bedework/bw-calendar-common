@@ -23,6 +23,7 @@ import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
+import org.bedework.calfacade.BwLocation;
 import org.bedework.calfacade.BwOrganizer;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.BwXproperty.Xpar;
@@ -33,11 +34,19 @@ import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.convert.Icalendar;
+import org.bedework.schemaorg.impl.SOMapper;
+import org.bedework.schemaorg.model.SOTypes;
+import org.bedework.schemaorg.model.values.SOGeoCoordinates;
+import org.bedework.schemaorg.model.values.SOPlace;
+import org.bedework.schemaorg.model.values.SOPostalAddress;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
+import org.bedework.util.misc.response.GetEntitiesResponse;
+import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.util.misc.response.Response;
 import org.bedework.util.timezones.Timezones;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
@@ -48,6 +57,7 @@ import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.data.UnfoldingReader;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
@@ -63,7 +73,9 @@ import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.component.Participant;
 import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.component.VLocation;
 import net.fortuna.ical4j.model.component.VPoll;
+import net.fortuna.ical4j.model.component.VToDo;
 import net.fortuna.ical4j.model.parameter.AltRep;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
@@ -78,6 +90,7 @@ import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.ScheduleStatus;
+import net.fortuna.ical4j.model.parameter.Schema;
 import net.fortuna.ical4j.model.parameter.SentBy;
 import net.fortuna.ical4j.model.parameter.StayInformed;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -90,15 +103,21 @@ import net.fortuna.ical4j.model.property.DtEnd;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.Due;
 import net.fortuna.ical4j.model.property.Duration;
+import net.fortuna.ical4j.model.property.LocationType;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.Repeat;
+import net.fortuna.ical4j.model.property.StructuredData;
 import net.fortuna.ical4j.model.property.Trigger;
+import net.fortuna.ical4j.model.property.Uid;
+import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
+import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -123,6 +142,8 @@ public class IcalUtil {
 
   private static final Supplier<List<ParameterFactory<?>>> parameterFactorySupplier =
           new DefaultParameterFactorySupplier();
+
+  private static final SOMapper somapper = new SOMapper();
 
   /* *
    * @param p ical4j Property
@@ -516,6 +537,115 @@ public class IcalUtil {
     return part;
   }
 
+  enum Relto {
+    start,
+    end,
+    none
+  }
+
+  /**
+   * @param loc the location
+   * @return A VLOCATION object.
+   */
+  public static GetEntityResponse<VLocation> toVlocation(
+          final BwLocation loc,
+          final Relto relTo) {
+    final GetEntityResponse<VLocation> resp = new GetEntityResponse<>();
+    final VLocation vloc = new VLocation();
+
+    try {
+      final var plist = vloc.getProperties();
+      final SOPlace pl =
+              (SOPlace)somapper.getJFactory().newValue(SOTypes.typePlace);
+
+      final SOPostalAddress pa =
+              (SOPostalAddress)somapper.getJFactory()
+                                       .newValue(SOTypes.typePostalAddress);
+
+      plist.add(new Uid(loc.getUid()));
+      pa.setIdentifier(loc.getUid());
+
+      if (relTo == Relto.start) {
+        plist.add(ImmutableRelativeTo.START);
+      } else if (relTo == Relto.end) {
+        plist.add(ImmutableRelativeTo.END);
+      }
+
+      if (loc.getGeouri() != null) {
+        final var geouri = new URI(loc.getGeouri());
+        plist.add(new Url(geouri));
+        final SOGeoCoordinates geo =
+                (SOGeoCoordinates)somapper.getJFactory()
+                                          .newValue(SOTypes.typeGeoCoordinates);
+
+        geo.setURI(geouri);
+        pl.setGeo(geo);
+      }
+
+      if (loc.getLoctype() != null) {
+        plist.add(new LocationType(loc.getLoctype()));
+      }
+
+      pa.setName("Albany Capitol Buildings");
+      pa.setStreetAddress(loc.getStreet());
+      pa.setAddressLocality(loc.getCity());
+      pa.setAddressRegion(loc.getState());
+      pa.setAddressCountry(loc.getCountry());
+      pa.setPostalCode(loc.getZip());
+
+      pl.setAddress(pa);
+
+      final var sdata = new StructuredData(
+              pl.writeValueAsStringFormatted(somapper));
+      sdata.getParameters().add(new Schema(somapper.getSchema("Place")));
+
+      plist.add(sdata);
+    } catch (final Throwable t) {
+      return Response.error(resp, t);
+    }
+
+    resp.setEntity(vloc);
+    return Response.ok(resp);
+  }
+
+  public static GetEntitiesResponse<VLocation> getVlocations(
+          final BwEvent ev) {
+    final var geresp = new GetEntitiesResponse<VLocation>();
+    final var xlocs = ev.getXproperties(BwXproperty.xBedeworkVLocation);
+
+    if (Util.isEmpty(xlocs)) {
+      return Response.notFound(geresp);
+    }
+
+    // Better if ical4j supported sub-component parsing
+
+    final StringBuilder sb = new StringBuilder();
+
+    sb.append("BEGIN:VCALENDAR\n");
+    sb.append("PRODID://Bedework.org//BedeWork V3.9//EN\n");
+    sb.append("VERSION:2.0\n");
+    sb.append("BEGIN:VTODO\n");
+    sb.append("UID:0123\n");
+
+    for (final var xloc: xlocs) {
+      sb.append(xloc.getValue());
+    }
+
+    sb.append("END:VTODO\n");
+    sb.append("END:VCALENDAR\n");
+
+    final Calendar ical = fromBuilder(sb);
+
+    final VToDo comp = ical.getComponent(Component.VTODO);
+
+    final var vlocs = ((ComponentContainer<?>)comp).getComponents(Component.VLOCATION);
+    for (final var o: vlocs) {
+      geresp.addEntity((VLocation)o);
+    }
+
+    return geresp;
+  }
+
   /**
    * @param poll the poll entity
    * @return Parsed PARTICIPANT components map - key is voter cua.
@@ -540,20 +670,7 @@ public class IcalUtil {
     sb.append("END:VPOLL\n");
     sb.append("END:VCALENDAR\n");
 
-    final StringReader sr = new StringReader(sb.toString());
-
-    final Icalendar ic = new Icalendar();
-
-    final CalendarBuilder bldr = new CalendarBuilder(new CalendarParserImpl(), ic);
-
-    final UnfoldingReader ufrdr = new UnfoldingReader(sr, true);
-
-    final Calendar ical;
-    try {
-      ical = bldr.build(ufrdr);
-    } catch (final IOException | ParserException e) {
-      throw new RuntimeException(e);
-    }
+    final Calendar ical = fromBuilder(sb);
 
     final Map<String, Participant> voters = new HashMap<>();
 
@@ -571,6 +688,22 @@ public class IcalUtil {
     }
 
     return voters;
+  }
+
+  private static Calendar fromBuilder(final StringBuilder sb) {
+    final StringReader sr = new StringReader(sb.toString());
+
+    final Icalendar ic = new Icalendar();
+
+    final CalendarBuilder bldr = new CalendarBuilder(new CalendarParserImpl(), ic);
+
+    final UnfoldingReader ufrdr = new UnfoldingReader(sr, true);
+
+    try {
+      return bldr.build(ufrdr);
+    } catch (final IOException | ParserException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -611,20 +744,7 @@ public class IcalUtil {
     sb.append("END:VEVENT\n");
     sb.append("END:VCALENDAR\n");
 
-    final StringReader sr = new StringReader(sb.toString());
-
-    final Icalendar ic = new Icalendar();
-
-    final CalendarBuilder bldr = new CalendarBuilder(new CalendarParserImpl(), ic);
-
-    final UnfoldingReader ufrdr = new UnfoldingReader(sr, true);
-
-    final Calendar ical;
-    try {
-      ical = bldr.build(ufrdr);
-    } catch (final IOException | ParserException e) {
-      throw new RuntimeException(e);
-    }
+    final Calendar ical = fromBuilder(sb);
 
     /* Should be one event object */
 
@@ -656,32 +776,20 @@ public class IcalUtil {
 
     sb.append("END:VCALENDAR\n");
 
-    try {
-      final StringReader sr = new StringReader(sb.toString());
+    final Calendar ical = fromBuilder(sb);
 
-      final Icalendar ic = new Icalendar();
+    final Map<Integer, Component> comps = new HashMap<>();
 
-      final CalendarBuilder bldr = new CalendarBuilder(new CalendarParserImpl(), ic);
-
-      final UnfoldingReader ufrdr = new UnfoldingReader(sr, true);
-
-      final Calendar ical = bldr.build(ufrdr);
-
-      final Map<Integer, Component> comps = new HashMap<>();
-
-      for (final Component comp: ical.getComponents()) {
-        final PollItemId pid = comp.getProperty(Property.POLL_ITEM_ID);
-        if (pid == null) {
-          continue;
-        }
-
-        comps.put(pid.getPollitemid(), comp);
+    for (final Component comp: ical.getComponents()) {
+      final PollItemId pid = comp.getProperty(Property.POLL_ITEM_ID);
+      if (pid == null) {
+        continue;
       }
 
-      return comps;
-    } catch (final ParserException | IOException e) {
-      throw new RuntimeException(e);
+      comps.put(pid.getPollitemid(), comp);
     }
+
+    return comps;
   }
 
   /** copy pars from attendee

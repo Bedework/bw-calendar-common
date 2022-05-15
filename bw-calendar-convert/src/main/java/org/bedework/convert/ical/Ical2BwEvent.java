@@ -106,6 +106,7 @@ import net.fortuna.ical4j.model.property.Sequence;
 import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.XProperty;
+import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
 
 import java.util.Collection;
 import java.util.Set;
@@ -114,6 +115,8 @@ import java.util.TreeSet;
 import javax.xml.ws.Holder;
 
 import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
+import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
+import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
 import static org.bedework.util.misc.response.Response.Status.failed;
 import static org.bedework.util.misc.response.Response.Status.ok;
 
@@ -831,53 +834,10 @@ public class Ical2BwEvent extends IcalUtil {
 
           case LOCATION:
             /* ------------------- Location -------------------- */
-            BwLocation loc = null;
-            //String uid = getUidPar(prop);
-
-            /* At the moment Mozilla lightning is broken and this leads to all
-           * sorts of problems.
-            if (uid != null) {
-              loc = cb.getLocation(uid);
-            }
-           */
-
-            lang = IcalUtil.getLang(prop);
-            BwString addr = null;
-
-            if (pval != null) {
-              if (loc == null) {
-                addr = new BwString(lang, pval);
-
-                final var fcResp = cb.findLocation(addr);
-                if (fcResp.isError()) {
-                  return Response.fromResponse(resp, fcResp);
-                }
-
-                if (fcResp.isOk()) {
-                  loc = fcResp.getEntity();
-                }
-              }
-
-              if (loc == null) {
-                loc = BwLocation.makeLocation();
-                loc.setAddress(addr);
-                cb.addLocation(loc);
-              }
-            }
-
-            final BwLocation evloc = ev.getLocation();
-
-            if (chg.changed(pi, evloc, loc)) {
-              // CHGTBL - this only shows that it's a different location object
-              ev.setLocation(loc);
-            } else if ((loc != null) && (evloc != null)) {
-              // See if the value is changed
-              final String evval = evloc.getAddress().getValue();
-              final String inval = loc.getAddress().getValue();
-              if (!evval.equals(inval)) {
-                chg.changed(pi, evval, inval);
-                evloc.getAddress().setValue(inval);
-              }
+            final var plresp = processLocation(cb, ev,
+                                               val, prop, pval, chg);
+            if (plresp.isError()) {
+              return Response.fromResponse(resp, plresp);
             }
 
             break;
@@ -1465,6 +1425,120 @@ public class Ical2BwEvent extends IcalUtil {
       hasXparams.value = true;
     }
   }
+
+  private static Response processLocation(final IcalCallback cb,
+                                          final BwEvent ev,
+                                          final Component val,
+                                          final Property prop,
+                                          final String pval,
+                                          final ChangeTable chg) {
+    final var resp = new Response();
+    BwLocation loc = null;
+
+            /* See if there's a VLOCATION - if so use that
+               TODO - handle multiple
+             */
+
+    // The one equivalent to our single location
+    VLocation mainVloc = null;
+    ev.removeXproperties(BwXproperty.xBedeworkVLocation);
+
+    if (val instanceof ComponentContainer) {
+      final var vlocs =
+              ((ComponentContainer<VLocation>)val).getComponents(VLocation.VLOCATION);
+
+      if (!Util.isEmpty(vlocs)) {
+        for (final var vloc: vlocs) {
+          final var relto = vloc.getProperty(RELATIVE_TO);
+
+          if (relto != null) {
+            if (relto.equals(START)) {
+              mainVloc = vloc;
+            } else if (relto.equals(ImmutableRelativeTo.END) &&
+                    (mainVloc == null)) {
+              mainVloc = vloc;
+            }
+          }
+        }
+
+        if (mainVloc == null) {
+          // Use first or only
+          mainVloc = vlocs.get(0);
+        }
+
+        final var xp = new BwXproperty(BwXproperty.xBedeworkVLocation,
+                                       null,
+                                       vlocs.toString());
+        ev.addXproperty(xp);
+      }
+    }
+
+    if (mainVloc != null) {
+      final var puid = mainVloc.getUid();
+      if (puid != null) {
+        final var lresp = cb.getLocation(puid.getValue());
+        if (lresp.isError()) {
+          return lresp;
+        }
+
+        if (lresp.isNotFound()) {
+          // Manufacture one
+        } else {
+          loc = lresp.getEntity();
+        }
+      }
+    } else {
+      //String uid = getUidPar(prop);
+
+      /* At the moment Mozilla lightning is broken and this leads to all
+       * sorts of problems.
+        if (uid != null) {
+          loc = cb.getLocation(uid);
+        }
+       */
+      final String lang = IcalUtil.getLang(prop);
+      BwString addr = null;
+
+      if (pval != null) {
+        if (loc == null) {
+          addr = new BwString(lang, pval);
+
+          final var fcResp = cb.findLocation(addr);
+          if (fcResp.isError()) {
+            return fcResp;
+          }
+
+          if (fcResp.isOk()) {
+            loc = fcResp.getEntity();
+          }
+        }
+
+        if (loc == null) {
+          loc = BwLocation.makeLocation();
+          loc.setAddress(addr);
+          cb.addLocation(loc);
+        }
+      }
+    }
+
+    final BwLocation evloc = ev.getLocation();
+
+    if (chg.changed(PropertyInfoIndex.LOCATION, evloc, loc)) {
+      // CHGTBL - this only shows that it's a different location object
+      ev.setLocation(loc);
+    } else if ((loc != null) && (evloc != null)) {
+      // See if the value is changed
+      final String evval = evloc.getAddress().getValue();
+      final String inval = loc.getAddress().getValue();
+      if (!evval.equals(inval)) {
+        chg.changed(PropertyInfoIndex.LOCATION, evval, inval);
+        evloc.getAddress().setValue(inval);
+      }
+    }
+
+    return Response.ok();
+  }
+
   private static void processTimezones(final BwEvent ev,
                                        final Icalendar ical,
                                        final ChangeTable chg) {

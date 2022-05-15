@@ -73,7 +73,9 @@ public class BwLocation extends BwEventProperty<BwLocation>
   private static final int subf2Index = 3;
   private static final int accessibleIndex = 4;
   private static final int geouriIndex = 5; // See rfc5870
-  
+  private static final int loctypeIndex = 6; // See rfc9073
+  private static final int countryIndex = 7;
+
   private BwString subaddress;
   private Splitter subaddressSplit;
   private FieldSplitter keysSplit;
@@ -228,6 +230,40 @@ public class BwLocation extends BwEventProperty<BwLocation>
   @IcalProperty(pindex = PropertyInfoIndex.GEOURI_FLD)
   public String getGeouri() {
     return fetchAddressSplit().getFld(geouriIndex);
+  }
+
+  /** Set the location type part of the main address of the location.
+   *
+   * @param val the loctype for the location
+   */
+  public void setLoctype(final String val) {
+    assignAddressField(loctypeIndex, val);
+  }
+
+  /** get the location type part of the main address of the location.
+   *
+   * @return the geouri part of the location
+   */
+  @IcalProperty(pindex = PropertyInfoIndex.LOCTYPE_FLD)
+  public String getLoctype() {
+    return fetchAddressSplit().getFld(loctypeIndex);
+  }
+
+  /** Set the country part of the main address of the location.
+   *
+   * @param val the country for the location
+   */
+  public void setCountry(final String val) {
+    assignAddressField(countryIndex, val);
+  }
+
+  /** get the country part of the main address of the location.
+   *
+   * @return the country part of the location
+   */
+  @IcalProperty(pindex = PropertyInfoIndex.COUNTRY_FLD)
+  public String getCountry() {
+    return fetchAddressSplit().getFld(countryIndex);
   }
 
   public void setStatus(final String val) {

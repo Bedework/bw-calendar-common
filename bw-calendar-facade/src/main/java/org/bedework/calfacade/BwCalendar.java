@@ -760,11 +760,11 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   @Override
   public Set<BwProperty> getProperties(final String name) {
-    final TreeSet<BwProperty> ps = new TreeSet<>();
-
     if (getNumProperties() == 0) {
       return null;
     }
+
+    final TreeSet<BwProperty> ps = new TreeSet<>();
 
     for (final BwProperty p: getProperties()) {
       if (p.getName().equals(name)) {

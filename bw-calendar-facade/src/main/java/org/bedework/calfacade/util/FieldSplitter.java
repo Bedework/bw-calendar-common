@@ -91,14 +91,17 @@ public class FieldSplitter {
     }
 
     final StringBuilder fld = new StringBuilder();
+    boolean first = true;
     for (final String s: flds) {
-      if (fld.length() != 0) {
+      if (!first) {
         fld.append(fieldDelimiter);
       }
 
       if (s != null) {
         fld.append(s);
       }
+
+      first = false;
     }
 
     return fld.toString();

@@ -57,13 +57,13 @@ public interface CategorisedEntity {
   int getNumCategories();
 
   /**
-   * @param val
+   * @param val the category to add
    * @return boolean true if added.
    */
   boolean addCategory(BwCategory val);
 
   /**
-   * @param val
+   * @param val the category to remove
    * @return boolean true if removed.
    */
   boolean removeCategory(BwCategory val);

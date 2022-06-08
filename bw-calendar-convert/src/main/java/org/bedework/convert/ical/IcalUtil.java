@@ -82,6 +82,7 @@ import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.DelegatedFrom;
 import net.fortuna.ical4j.model.parameter.DelegatedTo;
 import net.fortuna.ical4j.model.parameter.Dir;
+import net.fortuna.ical4j.model.parameter.Email;
 import net.fortuna.ical4j.model.parameter.Encoding;
 import net.fortuna.ical4j.model.parameter.FmtType;
 import net.fortuna.ical4j.model.parameter.Language;
@@ -817,26 +818,37 @@ public class IcalUtil {
       if (temp != null) {
         pars.add(new CuType(temp));
       }
+
+      temp = val.getEmail();
+      if (temp != null) {
+        pars.add(new Email(temp));
+      }
+
       temp = val.getDelegatedFrom();
       if (temp != null) {
         pars.add(new DelegatedFrom(temp));
       }
+
       temp = val.getDelegatedTo();
       if (temp != null) {
         pars.add(new DelegatedTo(temp));
       }
+
       temp = val.getDir();
       if (temp != null) {
         pars.add(new Dir(temp));
       }
+
       temp = val.getLanguage();
       if (temp != null) {
         pars.add(new Language(temp));
       }
+
       temp = val.getMember();
       if (temp != null) {
         pars.add(new Member(temp));
       }
+
       temp = val.getRole();
       if (temp != null) {
         pars.add(new Role(temp));
@@ -917,6 +929,7 @@ public class IcalUtil {
     att.setMember(getOptStr(pars, "MEMBER"));
     att.setScheduleStatus(getOptStr(pars, "SCHEDULE-STATUS"));
     att.setSentBy(getOptStr(pars, "SENT-BY"));
+    att.setEmail(getOptStr(pars, "EMAIL"));
 
     final Parameter par = pars.getParameter("RSVP");
     if (par != null) {

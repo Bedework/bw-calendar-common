@@ -21,6 +21,7 @@ package org.bedework.calfacade;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.base.Differable;
+import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -28,16 +29,22 @@ import org.bedework.util.misc.Util;
 /** Represent an attendee. An attendee entry is associated with a single event
  * and gives the participation status of the attendee for that event.
  *
- * <p>For 3.10 the sentBy column is used to store the type, response and
- * stay-informed parameters. If the first char is not "\t" it's all sentBy</p>
+ * <p>For 3.10 the sentBy column is used to store the stay-informed,
+ * response and sent-by parameters. If the first char is not ":" or "\t"
+ * it's all sentBy</p>
  *
- * <p>If it is - it has form<ul>
+ * <p>If it is ":" - it has form<ul>
  *    <li>":"</li>
  *    <li>"F" or "T"</li>
  *    <li>int string value</li>
  *    <li>":"</li>
  *    <li>Remainder is sent-by</li>
  *    </ul>
+ *
+ *  <p>Additionally we assumed that the presence of the ":" indicated
+ *  a voter.
+ *
+ *  <p>If it starts with "\t" it's using the FieldSplitter
  *
  *  @author Mike Douglass   douglm - rpi.edu
  */
@@ -48,6 +55,16 @@ public class BwAttendee extends BwDbentity<BwAttendee>
 
   /** Could be a voter */
   public final static int typeVoter = 1;
+
+  public static final String fieldDelimiter = "\t";
+  // Index starts at 1 to ensure leading delimiter
+  private static final int stayInformedIndex = 1;
+  private static final int responseIndex = 2;
+  private static final int typeIndex = 3;
+  private static final int emailIndex = 4;
+  private static final int sentByIndex = 5;
+
+  private FieldSplitter sentBySplit;
 
   /* Params fields */
 
@@ -138,37 +155,7 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @param  val the type
    */
   public void setType(final int val) {
-    final String sb = getSentByVal();
-
-    if (val == typeAttendee) {
-      // Ensure sent by val is plain
-      if (sb == null) {
-        return;
-      }
-
-      if (!sb.startsWith(":")) {
-        return;
-      }
-
-      final String sbpart = sb.substring(sb.indexOf(":", 2));
-
-      if (sbpart.length() == 0) {
-        setSentByVal(null);
-      } else {
-        setSentByVal(sbpart);
-      }
-
-      return;
-    }
-
-    if (sb == null) {
-      setSentByVal(":F0:");
-      return;
-    }
-
-    if (!sb.startsWith(":")) {
-      setSentByVal(":F0:" + sb);
-    }
+    assignSentByField(typeIndex, String.valueOf(val));
   }
 
   /** Get the type - attendee/voter
@@ -176,13 +163,13 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @return int
    */
   public int getType() {
-    final String sb = getSentByVal();
+    final String s = fetchSentByField(typeIndex);
 
-    if ((sb == null) || !sb.startsWith(":")) {
+    if (s == null) {
       return typeAttendee;
     }
 
-    return typeVoter;
+    return Integer.parseInt(s);
   }
 
   /** Set the cn
@@ -350,22 +337,7 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @param  val   String sentBy
    */
   public void setSentBy(final String val) {
-    final String sb = getSentByVal();
-
-    if ((sb == null) || !sb.startsWith(":")) {
-      setSentByVal(val);
-      return;
-    }
-
-    final String sbpart;
-
-    if (val == null) {
-      sbpart = "";
-    } else{
-      sbpart = val;
-    }
-
-    setSentByVal(sb.substring(0, sb.indexOf(":", 2) + 1) + sbpart);
+    assignSentByField(sentByIndex, val);
   }
 
   /** Get the sentBy
@@ -373,19 +345,23 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @return String     sentBy
    */
   public String getSentBy() {
-    final String sb = getSentByVal();
+    return fetchSentByField(sentByIndex);
+  }
 
-    if ((sb == null) || !sb.startsWith(":")) {
-      return sb;
-    }
+  /** Set the email param
+   *
+   *  @param  val   String email
+   */
+  public void setEmail(final String val) {
+    assignSentByField(emailIndex, val);
+  }
 
-    final String sbpart = sb.substring(sb.indexOf(":", 2) + 1);
-
-    if (sbpart.length() == 0) {
-      return null;
-    }
-
-    return sbpart;
+  /** Get the email
+   *
+   *  @return String  email
+   */
+  public String getEmail() {
+    return fetchSentByField(emailIndex);
   }
 
   /** Set the sentBy
@@ -487,17 +463,7 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @param  val response for voter
    */
   public void setResponse(final int val) {
-    final String sb = getSentByVal();
-
-    if (sb == null) {
-      setSentByVal(":F" + val + ":");
-      return;
-    }
-
-    final String sbpart = sb.substring(sb.indexOf(":", 2) + 1);
-    final String sipart = sb.substring(1, 2);
-
-    setSentByVal(":" + sipart + val + ":" + sbpart);
+    assignSentByField(responseIndex, String.valueOf(val));
   }
 
   /** Get the response
@@ -505,14 +471,13 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @return int
    */
   public int getResponse() {
-    final String sb = getSentByVal();
+    final String s = fetchSentByField(responseIndex);
 
-    if ((sb == null) || !sb.startsWith(":")) {
+    if (s == null) {
       return 0;
     }
 
-    return Integer.parseInt(sb.substring(2,
-                                         sb.indexOf(":", 2)));
+    return Integer.parseInt(s);
   }
 
   /**
@@ -520,7 +485,6 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @param  val true/false for stay-informed
    */
   public void setStayInformed(final boolean val) {
-    final String sb = getSentByVal();
     final String sival;
 
     if (val) {
@@ -529,12 +493,7 @@ public class BwAttendee extends BwDbentity<BwAttendee>
       sival = "F";
     }
 
-    if (sb == null) {
-      setSentByVal(":" + sival + "0:");
-      return;
-    }
-
-    setSentByVal(":" + sival + sb.substring(2));
+    assignSentByField(stayInformedIndex, sival);
   }
 
   /**
@@ -542,13 +501,7 @@ public class BwAttendee extends BwDbentity<BwAttendee>
    *  @return boolean
    */
   public boolean getStayInformed() {
-    final String sb = getSentByVal();
-
-    if ((sb == null) || !sb.startsWith(":")) {
-      return false;
-    }
-
-    return sb.charAt(1) == 'T';
+    return "T".equals(fetchSentByField(stayInformedIndex));
   }
 
   /** Copy this objects values into the parameter
@@ -604,6 +557,67 @@ public class BwAttendee extends BwDbentity<BwAttendee>
            (Util.compareStrings(val.getRole(), getRole()) != 0) ||
            (Util.compareStrings(val.getSentByVal(), getSentByVal()) != 0) ||
            (Util.compareStrings(val.getAttendeeUri(), getAttendeeUri()) != 0);
+  }
+
+  private void assignSentByField(final int index, final String val) {
+    fixSentBy();
+    storeSentByField(index, val);
+  }
+
+  private String fetchSentByField(final int index) {
+    fixSentBy();
+    return fetchSentBySplit().getFld(index);
+  }
+
+  private void fixSentBy() {
+    final String sb = getSentByVal();
+
+    if ((sb == null) || sb.startsWith(fieldDelimiter)) {
+      return;
+    }
+
+    if (sb.startsWith(":")) {
+      // Old packed form - type voter
+      final var fs = sb.split(":");
+
+      fixSentByField(fs, 1, stayInformedIndex);
+      fixSentByField(fs, 2, responseIndex);
+      fixSentByField(fs, 3, sentByIndex);
+      storeSentByField(typeIndex, String.valueOf(typeVoter));
+    } else {
+      // Unpacked sentBy
+
+      storeSentByField(sentByIndex, sb);
+    }
+  }
+
+  private void fixSentByField(final String[] fields,
+                              final int oldIndex,
+                              final int splitterIndex) {
+    if (oldIndex >= fields.length) {
+      return;
+    }
+
+    final var f = fields[oldIndex];
+    if ((f == null) || (f.length() == 0)) {
+      return;
+    }
+
+    storeSentByField(splitterIndex, f);
+  }
+
+  private void storeSentByField(final int index, final String val) {
+    fetchSentBySplit().setFld(index, val);
+    setSentByVal(fetchSentBySplit().getCombined());
+  }
+
+  private FieldSplitter fetchSentBySplit() {
+    if (sentBySplit == null) {
+      sentBySplit = new FieldSplitter(fieldDelimiter);
+      sentBySplit.setVal(getSentByVal());
+    }
+
+    return sentBySplit;
   }
 
   /* ====================================================================

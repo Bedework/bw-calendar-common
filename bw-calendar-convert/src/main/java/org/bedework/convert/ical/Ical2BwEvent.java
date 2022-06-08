@@ -117,6 +117,7 @@ import javax.xml.ws.Holder;
 import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
+import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
 import static org.bedework.util.misc.response.Response.Status.failed;
 import static org.bedework.util.misc.response.Response.Status.ok;
 
@@ -524,51 +525,12 @@ public class Ical2BwEvent extends IcalUtil {
           case ATTENDEE:
             /* ------------------- Attendee -------------------- */
 
-            if (methodType == ScheduleMethods.methodTypePublish) {
-              if (cb.getStrictness() == IcalCallback.conformanceStrict) {
-                return Response.notOk(resp, failed,
-                                      CalFacadeException.attendeesInPublish);
-              }
-
-              //if (cb.getStrictness() == IcalCallback.conformanceWarn) {
-              //  warn("Had attendees for PUBLISH");
-              //}
-            }
-
-            final Attendee attPr = (Attendee)prop;
-
-            if (evinfo.getNewEvent() || !mergeAttendees) {
-              chg.addValue(pi, IcalUtil.getAttendee(cb, attPr));
-            } else {
-              final String pUri = cb.getCaladdr(attPr.getValue());
-
-              if (pUri.equals(attUri)) {
-                /* Only update for our own attendee
-                 * We're doing a PUT and this must be the attendee updating their
-                 * partstat. We don't allow them to change other attendees
-                 * whatever the PUT content says.
-                 */
-                chg.addValue(pi, IcalUtil.getAttendee(cb, attPr));
-              } else {
-                // Use the value we currently have
-                boolean found = false;
-                
-                for (final BwAttendee att: ev.getAttendees()) {
-                  if (pUri.equals(att.getAttendeeUri())) {
-                    chg.addValue(pi, att.clone());
-                    found = true;
-                    break;
-                  }
-                }
-                
-                if (!found) {
-                  // An added attendee
-                  final BwAttendee att = IcalUtil
-                          .getAttendee(cb, attPr);
-                  att.setPartstat(IcalDefs.partstatValNeedsAction);
-                  chg.addValue(pi, att);
-                }
-              }
+            final Response attResp = doAttendee(cb, chg,
+                                                evinfo, (Attendee)prop,
+                                                attUri, methodType,
+                                                mergeAttendees);
+            if (!attResp.isOk()) {
+              return Response.fromResponse(resp, attResp);
             }
 
             break;
@@ -1275,6 +1237,63 @@ public class Ical2BwEvent extends IcalUtil {
     }
   }
 
+  private static Response doAttendee(final IcalCallback cb,
+                                     final ChangeTable chg,
+                                     final EventInfo evinfo,
+                                     final Attendee attPr,
+                                     final String attUri,
+                                     final int methodType,
+                                     final boolean mergeAttendees) {
+    if (methodType == ScheduleMethods.methodTypePublish) {
+      if (cb.getStrictness() == IcalCallback.conformanceStrict) {
+        return Response.notOk(new Response(), failed,
+                              CalFacadeException.attendeesInPublish);
+      }
+
+      //if (cb.getStrictness() == IcalCallback.conformanceWarn) {
+      //  warn("Had attendees for PUBLISH");
+      //}
+    }
+
+    final BwEvent ev = evinfo.getEvent();
+
+    if (evinfo.getNewEvent() || !mergeAttendees) {
+      chg.addValue(ATTENDEE, IcalUtil.getAttendee(cb, attPr));
+    } else {
+      final String pUri = cb.getCaladdr(attPr.getValue());
+
+      if (pUri.equals(attUri)) {
+        /* Only update for our own attendee
+         * We're doing a PUT and this must be the attendee updating their
+         * partstat. We don't allow them to change other attendees
+         * whatever the PUT content says.
+         */
+        chg.addValue(ATTENDEE, IcalUtil.getAttendee(cb, attPr));
+      } else {
+        // Use the value we currently have
+        boolean found = false;
+
+        for (final BwAttendee att: ev.getAttendees()) {
+          if (pUri.equals(att.getAttendeeUri())) {
+            chg.addValue(ATTENDEE, att.clone());
+            found = true;
+            break;
+          }
+        }
+
+        if (!found) {
+          // An added attendee
+          final BwAttendee att = IcalUtil
+                  .getAttendee(cb, attPr);
+          att.setPartstat(IcalDefs.partstatValNeedsAction);
+          chg.addValue(ATTENDEE, att);
+        }
+      }
+    }
+
+    return Response.ok();
+  }
+
   /* Return true if value matches a category - which may be added as
    * a result
    */
@@ -1651,7 +1670,7 @@ public class Ical2BwEvent extends IcalUtil {
     */
 
     if (vpoll.getNewEvent() || !mergeAttendees) {
-      chg.addValue(PropertyInfoIndex.ATTENDEE, IcalUtil.getVoter(cb, ca));
+      chg.addValue(ATTENDEE, IcalUtil.getVoter(cb, ca));
       return;
     }
 
@@ -1663,14 +1682,14 @@ public class Ical2BwEvent extends IcalUtil {
                  * response. We don't allow them to change other voters
                * whatever the PUT content says.
                */
-      chg.addValue(PropertyInfoIndex.ATTENDEE, IcalUtil.getVoter(cb, ca));
+      chg.addValue(ATTENDEE, IcalUtil.getVoter(cb, ca));
       return;
     }
 
     // Use the value we currently have
     for (final BwAttendee att: ev.getAttendees()) {
       if (pUri.equals(att.getAttendeeUri())) {
-        chg.addValue(PropertyInfoIndex.ATTENDEE, att.clone());
+        chg.addValue(ATTENDEE, att.clone());
         break;
       }
     }

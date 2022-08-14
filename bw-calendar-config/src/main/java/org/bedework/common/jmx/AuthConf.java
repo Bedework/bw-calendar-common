@@ -29,19 +29,15 @@ import org.bedework.util.jmx.ConfigHolder;
 public class AuthConf extends ConfBase<AuthPropertiesImpl>
         implements AuthConfMBean, ConfigHolder<AuthPropertiesImpl> {
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
   /**
    * @param name of mbean
    */
   public AuthConf(final String name) {
-    super(getServiceName(name));
-
-    setConfigName(name);
-
-    setConfigPname(confuriPname);
-
-    //TzServerUtil.setTzConfigHolder(this);
+    super(getServiceName(name),
+          confDirName,
+          name);
   }
 
   /**

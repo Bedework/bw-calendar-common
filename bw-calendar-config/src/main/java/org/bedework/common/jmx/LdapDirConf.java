@@ -18,6 +18,7 @@
 */
 package org.bedework.common.jmx;
 
+import org.bedework.util.config.ConfigurationStore;
 
 /**
  * @author douglm
@@ -25,6 +26,12 @@ package org.bedework.common.jmx;
  */
 public class LdapDirConf extends DirConf<LdapConfigPropertiesImpl>
     implements LdapDirConfMBean {
+  public LdapDirConf(final String serviceName,
+                     final ConfigurationStore store,
+                     final String configName) {
+    super(serviceName, store, configName);
+  }
+
   /* ========================================================================
    * Conf properties
    * ======================================================================== */

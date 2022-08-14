@@ -114,18 +114,16 @@ public final class ConfigurationsImpl
           "org.bedework.inoutsched.BwInoutSched";
 
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
-  /**
+  /** This class acts as the mbean for the system properties
+   *
    * @throws CalFacadeException on error
    */
   public ConfigurationsImpl() throws CalFacadeException {
-    super("org.bedework.bwengine:service=Conf");
-
-    /* This class acts as the mbean for the system properties */
-
-    setConfigName(Configurations.systemPropsNamePart);
-    setConfigPname(confuriPname);
+    super("org.bedework.bwengine:service=Conf",
+          confDirName,
+          Configurations.systemPropsNamePart);
 
     try {
       checkMbeansInstalled();
@@ -302,8 +300,7 @@ public final class ConfigurationsImpl
 
       /* ------------- Http properties -------------------- */
       final HttpOut ho =
-              new HttpOut("org.bedework.bwengine.confuri",
-                          "org.bedework.bwengine",
+              new HttpOut("org.bedework.bwengine",
                           "httpConfig");
       register(new ObjectName(ho.getServiceName()), ho);
       ho.loadConfig();
@@ -321,8 +318,7 @@ public final class ConfigurationsImpl
 
       /* ------------- GenKeys -------------------- */
       if (!readOnlySystem) {
-        final GenKeys gk = new GenKeys(
-                "org.bedework.bwengine.confuri");
+        final GenKeys gk = new GenKeys("bwengine");
         register(new ObjectName(GenKeys.serviceName), gk);
         gk.loadConfig();
       }
@@ -469,8 +465,19 @@ public final class ConfigurationsImpl
       @SuppressWarnings("unchecked")
       final DirConf<DirConfigPropertiesImpl> dc =
               (DirConf<DirConfigPropertiesImpl>)ConfBase
-                      .makeObject(mbeanClassName);
-      dc.init(cs, objectName.toString(), dCfg, dn);
+                      .makeObject(
+                              mbeanClassName,
+                              objectName.toString(),
+                              cs,
+                              dn);
+
+      if (dc == null) {
+        error("Unable to create mbean class: " + mbeanClassName);
+        error("Skipping");
+        continue;
+      }
+
+      dc.setConfig(dCfg);
 
       dirConfigs.put(dn, dc);
 

@@ -27,16 +27,13 @@ import org.bedework.util.jmx.ConfBase;
 public class SynchConf extends ConfBase<SynchConfigImpl>
         implements SynchConfMBean {
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
   /**
    */
   public SynchConf() {
-    super(getServiceName("synch"));
+    super(getServiceName("synch"), confDirName, "synch");
 
-    setConfigName("synch");
-
-    setConfigPname(confuriPname);
   }
 
   /**

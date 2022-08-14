@@ -28,16 +28,13 @@ import org.bedework.util.jmx.ConfBase;
 public class MailerConf extends ConfBase<MailConfigPropertiesImpl>
         implements MailerConfMBean {
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
   /**
    */
   public MailerConf() {
-    super(getServiceName("mailer"));
-
-    setConfigName("mailer");
-
-    setConfigPname(confuriPname);
+    super(getServiceName("mailer"), confDirName,
+          "mailer");
   }
 
   /**

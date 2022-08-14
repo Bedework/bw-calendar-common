@@ -27,19 +27,13 @@ import org.bedework.util.jmx.ConfBase;
 public class CardDavInfoConf extends ConfBase<CardDavInfoImpl>
         implements CardDavInfoConfMBean {
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
   /**
    * @param name of service
    */
   public CardDavInfoConf(final String name) {
-    super(getServiceName(name));
-
-    setConfigName(name);
-
-    setConfigPname(confuriPname);
-
-    //TzServerUtil.setTzConfigHolder(this);
+    super(getServiceName(name), confDirName, name);
   }
 
   /**

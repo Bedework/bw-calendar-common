@@ -29,20 +29,16 @@ import org.bedework.util.jmx.ConfBase;
  */
 public class DirConf<X extends DirConfigPropertiesImpl> extends ConfBase<X>
     implements DirConfMBean {
-  /**
-   * @param configStore so we can load and store
-   * @param serviceName of the service
-   * @param cfg - the configuration
-   * @param cfgName its name
-   */
-  public void init(final ConfigurationStore configStore,
-                   final String serviceName,
-                   final X cfg,
-                   final String cfgName) {
-    setServiceName(serviceName);
-    setStore(configStore);
-    setConfigName(cfgName);
+  public DirConf(final String serviceName,
+                 final ConfigurationStore store,
+                 final String configName) {
+    super(serviceName, store, configName);
+  }
 
+  /**
+   * @param cfg - the configuration
+   */
+  public void setConfig(final X cfg) {
     this.cfg = cfg;
   }
 

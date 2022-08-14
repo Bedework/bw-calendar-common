@@ -35,18 +35,16 @@ import org.bedework.util.jmx.ConfBase;
 public class NotificationConf extends ConfBase<NotificationPropertiesImpl>
         implements NotificationConfMBean {
   /** Name of the property holding the location of the config data */
-  public static final String confuriPname = "org.bedework.bwengine.confuri";
+  private static final String confDirName = "bwengine";
 
   private CalSvcI svci;
 
   /**
    */
   public NotificationConf() {
-    super(getServiceName("notifications"));
-
-    setConfigName("notifications");
-
-    setConfigPname(confuriPname);
+    super(getServiceName("notifications"),
+          confDirName,
+          "notifications");
   }
 
   /**

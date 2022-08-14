@@ -75,6 +75,14 @@ public class BwSysMonitor extends ConfBase implements
 
   private ListenerThread processor;
 
+  /**
+   */
+  public BwSysMonitor() {
+    super(serviceName,
+          (String)null,
+          null);
+  }
+
   @Override
   public String getServiceName() {
     return serviceName;

@@ -300,8 +300,7 @@ public final class ConfigurationsImpl
 
       /* ------------- Http properties -------------------- */
       final HttpOut ho =
-              new HttpOut("org.bedework.bwengine",
-                          "httpConfig");
+              new HttpOut("bwengine", "httpConfig");
       register(new ObjectName(ho.getServiceName()), ho);
       ho.loadConfig();
       httpConfig = ho.getConfig();

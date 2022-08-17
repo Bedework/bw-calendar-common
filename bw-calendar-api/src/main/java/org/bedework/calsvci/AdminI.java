@@ -46,15 +46,15 @@ public interface AdminI extends Serializable {
                                                 int start,
                                                 int count) throws CalFacadeException;
 
-  /** Obtain the next batch of children names for the supplied path. A path of
-   * null will return the system roots. These are the names of stored entities,
-   * NOT the paths.
+  /** Obtain the next batch of children names for the supplied path.
+   *  A path of null will return the system roots. These are the names
+   *  of stored entities, NOT the paths.
    *
-   * @param parentPath
+   * @param parentPath for the container
    * @param start start index in the batch - 0 for the first
    * @param count count of results we want
    * @return collection of String names or null for no more
-   * @throws CalFacadeException
+   * @throws CalFacadeException on fatal error
    */
   public Collection<String> getChildEntities(String parentPath,
                                              int start,

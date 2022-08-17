@@ -408,7 +408,24 @@ public interface CalendarsI extends Serializable {
    * @throws CalFacadeException on fatal error
    */
   String getSyncToken(String path) throws CalFacadeException;
-  
+
+  /** Return true if the value represents a valid sync-token for
+   * the given path.
+   *
+   * For bedework the token is effectively the max sync-token of
+   * the collection and any child.
+   *
+   * We consider it invalid if it's not a valid date or too old
+   * or an exception occurs.
+   *
+   * @param token to test
+   * @param path to collection
+   * @return true for a valid sync-token
+   * @throws CalFacadeException on fatal error
+   */
+  boolean getSyncTokenIsValid(String token,
+                              String path) throws CalFacadeException;
+
   Set<BwCategory> getCategorySet(String href) throws CalFacadeException;
 
   BwCalendar getSpecial(BwPrincipal owner,

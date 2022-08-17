@@ -766,6 +766,16 @@ public final class ConfigurationsImpl
   }
 
   @Override
+  public void setSynchMaxMinutes(final int val) {
+    getConfig().setSynchMaxMinutes(val);
+  }
+
+  @Override
+  public int getSynchMaxMinutes() {
+    return getConfig().getSynchMaxMinutes();
+  }
+
+  @Override
   public void setEventregAdminToken(final String val) {
     getConfig().setEventregAdminToken(val);
   }

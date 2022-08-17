@@ -34,7 +34,7 @@ import java.util.List;
  */
 @ConfInfo(elementName = "system-properties")
 public interface SystemProperties extends CalDAVSystemProperties {
-  /** Set the default tzid
+ /** Set the default tzid
   *
   * @param val    String
   */
@@ -60,287 +60,300 @@ public interface SystemProperties extends CalDAVSystemProperties {
  @MBeanInfo("Systm identifier - used for uids etc.")
  String getSystemid();
 
-  /** Set the root users list. This is a comma separated list of accounts that
-   * have superuser status.
-   *
-   * @param val    String list of accounts
-   */
-  void setRootUsers(String val);
+ /** Set the root users list. This is a comma separated list of accounts that
+  * have superuser status.
+  *
+  * @param val    String list of accounts
+  */
+ void setRootUsers(String val);
 
-  /** Get the root users
-   *
-   * @return String   root users
-   */
-  @MBeanInfo("root users list. This is a comma separated list of accounts that" +
-  		" have superuser status")
-  String getRootUsers();
+ /** Get the root users
+  *
+  * @return String   root users
+  */
+ @MBeanInfo("root users list. This is a comma separated list of accounts that" +
+         " have superuser status")
+ String getRootUsers();
 
-  /** Set the calws soap web service WSDL uri - null for no service
-   *
-   * @param val    String
-   */
-  void setCalSoapWsWSDLURI(String val);
+ /** Set the calws soap web service WSDL uri - null for no service
+  *
+  * @param val    String
+  */
+ void setCalSoapWsWSDLURI(String val);
 
-  /** Get the calws soap web service WSDL uri - null for no service
-   *
-   * @return String
-   */
-  @MBeanInfo("Calws soap web service WSDL uri - null for no service")
-  String getCalSoapWsWSDLURI();
+ /** Get the calws soap web service WSDL uri - null for no service
+  *
+  * @return String
+  */
+ @MBeanInfo("Calws soap web service WSDL uri - null for no service")
+ String getCalSoapWsWSDLURI();
 
-  /** Set the userauth class
-   *
-   * @param val    String userauth class
-   */
-  void setUserauthClass(String val);
+ /** Set the userauth class
+  *
+  * @param val    String userauth class
+  */
+ void setUserauthClass(String val);
 
-  /**
-   *
-   * @return String
-   */
-  @MBeanInfo("userauth class")
-  String getUserauthClass();
+ /**
+  *
+  * @return String
+  */
+ @MBeanInfo("userauth class")
+ String getUserauthClass();
 
-  /** Set the mailer class
-   *
-   * @param val    String mailer class
-   */
-  void setMailerClass(String val);
+ /** Set the mailer class
+  *
+  * @param val    String mailer class
+  */
+ void setMailerClass(String val);
 
-  /**
-   *
-   * @return String
-   */
-  @MBeanInfo("mailer class")
-  String getMailerClass();
+ /**
+  *
+  * @return String
+  */
+ @MBeanInfo("mailer class")
+ String getMailerClass();
 
-  /** Set the admingroups class
-   *
-   * @param val    String admingroups class
-   */
-  void setAdmingroupsClass(String val);
+ /** Set the admingroups class
+  *
+  * @param val    String admingroups class
+  */
+ void setAdmingroupsClass(String val);
 
-  /**
-   *
-   * @return String
-   */
-  @MBeanInfo("admingroups class")
-  String getAdmingroupsClass();
+ /**
+  *
+  * @return String
+  */
+ @MBeanInfo("admingroups class")
+ String getAdmingroupsClass();
 
-  /** Set the usergroups class
-   *
-   * @param val    String usergroups class
-   */
-  void setUsergroupsClass(String val);
+ /** Set the usergroups class
+  *
+  * @param val    String usergroups class
+  */
+ void setUsergroupsClass(String val);
 
-  /**
-   *
-   * @return String
-   */
-  @MBeanInfo("usergroups class")
-  String getUsergroupsClass();
+ /**
+  *
+  * @return String
+  */
+ @MBeanInfo("usergroups class")
+ String getUsergroupsClass();
 
-  /** Set the supported locales list. This is maintained by getSupportedLocales and
-   * setSupportedLocales and is a comma separated list of locales in the usual
-   * form of the language, country and optional variant separated by "_"
-   *
-   * <p>The format is rigid, 2 letter language, 2 letter country. No spaces.
-   *
-   * @param val    String supported locales
-   */
-  void setLocaleList(String val);
+ /** Set the supported locales list. This is maintained by getSupportedLocales and
+  * setSupportedLocales and is a comma separated list of locales in the usual
+  * form of the language, country and optional variant separated by "_"
+  *
+  * <p>The format is rigid, 2 letter language, 2 letter country. No spaces.
+  *
+  * @param val    String supported locales
+  */
+ void setLocaleList(String val);
 
-  /** Get the supported locales
-   *
-   * @return String   supported locales
-   */
-  @MBeanInfo("Comma separated list of locales. " +
-  		"The format is rigid, 2 letter language, 2 letter country. No spaces.")
-  String getLocaleList();
+ /** Get the supported locales
+  *
+  * @return String   supported locales
+  */
+ @MBeanInfo("Comma separated list of locales. " +
+         "The format is rigid, 2 letter language, 2 letter country. No spaces.")
+ String getLocaleList();
 
-  /** Set the token for socket service
-   *
-   * @param val the token for socket service
-   */
-  void setSocketToken(String val);
+ /** Set the token for socket service
+  *
+  * @param val the token for socket service
+  */
+ void setSocketToken(String val);
 
-  /** Get the token for socket service
-   *
-   * @return token
-   */
-  @MBeanInfo("The token for socket service")
-  String getSocketToken();
+ /** Get the token for socket service
+  *
+  * @return token
+  */
+ @MBeanInfo("The token for socket service")
+ String getSocketToken();
 
-  /** Set the token for event reg admins
-   *
-   * @param val the token for event reg admins
-   */
-  void setEventregAdminToken(String val);
+ /** Set the max minutes allowed since last webdav synch
+  *
+  * @param val minutes
+  */
+ void setSynchMaxMinutes(int val);
 
-  /** Get the token for event reg admins
-   *
-   * @return token
-   */
-  @MBeanInfo("The token for event reg admins")
-  String getEventregAdminToken();
+ /** Get the minutes for the hung transaction killer
+  *
+  * @return minutes
+  */
+ @MBeanInfo("The max minutes allowed since last webdav synch")
+ int getSynchMaxMinutes();
 
-  /** Set the url for event reg service
-   *
-   * @param val the url for event reg service
-   */
-  void setEventregUrl(String val);
+ /** Set the token for event reg admins
+  *
+  * @param val the token for event reg admins
+  */
+ void setEventregAdminToken(String val);
 
-  /** Get the url for event reg service
-   *
-   * @return token
-   */
-  @MBeanInfo("The url for event reg service")
-  String getEventregUrl();
+ /** Get the token for event reg admins
+  *
+  * @return token
+  */
+ @MBeanInfo("The token for event reg admins")
+ String getEventregAdminToken();
 
-  /** Set the url prefix for the cache
-   *
-   * @param val the url prefix for the cache
-   */
-  void setCacheUrlPrefix(String val);
+ /** Set the url for event reg service
+  *
+  * @param val the url for event reg service
+  */
+ void setEventregUrl(String val);
 
-  /** Get the url prefix for the cache
-   *
-   * @return token
-   */
-  @MBeanInfo("The url prefix for the cache")
-  String getCacheUrlPrefix();
+ /** Get the url for event reg service
+  *
+  * @return token
+  */
+ @MBeanInfo("The url for event reg service")
+ String getEventregUrl();
 
-  /** Set the minutes for the hung transaction killer
-   *
-   * @param val minutes
-   */
-  void setAutoKillMinutes(int val);
+ /** Set the url prefix for the cache
+  *
+  * @param val the url prefix for the cache
+  */
+ void setCacheUrlPrefix(String val);
 
-  /** Get the minutes for the hung transaction killer
-   *
-   * @return minutes
-   */
-  @MBeanInfo("The minutes for the hung transaction killer")
-  int getAutoKillMinutes();
+ /** Get the url prefix for the cache
+  *
+  * @return token
+  */
+ @MBeanInfo("The url prefix for the cache")
+ String getCacheUrlPrefix();
 
-  /**
-   *
-   * @param val True if public events suggestion enabled
-   */
-  void setSuggestionEnabled(boolean val);
+ /** Set the minutes for the hung transaction killer
+  *
+  * @param val minutes
+  */
+ void setAutoKillMinutes(int val);
 
-  /**
-   *
-   * @return True if public events suggestion enabled
-   */
-  @MBeanInfo("True if public events suggestion enabled")
-  boolean getSuggestionEnabled();
+ /** Get the minutes for the hung transaction killer
+  *
+  * @return minutes
+  */
+ @MBeanInfo("The minutes for the hung transaction killer")
+ int getAutoKillMinutes();
 
-  /**
-   *
-   * @param val True if public events workflow enabled
-   */
-  void setWorkflowEnabled(boolean val);
+ /**
+  *
+  * @param val True if public events suggestion enabled
+  */
+ void setSuggestionEnabled(boolean val);
 
-  /**
-   *
-   * @return True if public events workflow enabled
-   */
-  @MBeanInfo("True if public events workflow enabled")
-  boolean getWorkflowEnabled();
+ /**
+  *
+  * @return True if public events suggestion enabled
+  */
+ @MBeanInfo("True if public events suggestion enabled")
+ boolean getSuggestionEnabled();
 
-  /** The root of the collections used for submission of public events by non-approvers.
-   *
-   * @param val - the path
-   */
-  void setWorkflowRoot(String val);
+ /**
+  *
+  * @param val True if public events workflow enabled
+  */
+ void setWorkflowEnabled(boolean val);
 
-  /**
-   * @return String
-   */
-  String getWorkflowRoot();
+ /**
+  *
+  * @return True if public events workflow enabled
+  */
+ @MBeanInfo("True if public events workflow enabled")
+ boolean getWorkflowEnabled();
 
-  /**
-   *
-   * @param val True if default logged in user access limited to subscriptions
-   */
-  void setUserSubscriptionsOnly(boolean val);
+ /** The root of the collections used for submission of public events by non-approvers.
+  *
+  * @param val - the path
+  */
+ void setWorkflowRoot(String val);
 
-  /**
-   *
-   * @return True if default logged in user access limited to subscriptions
-   */
-  @MBeanInfo("True if default logged in user access limited to subscriptions")
-  boolean getUserSubscriptionsOnly();
+ /**
+  * @return String
+  */
+ String getWorkflowRoot();
 
-  /**
-   * @return copy of this
-   */
-  SystemProperties cloneIt();
+ /**
+  *
+  * @param val True if default logged in user access limited to subscriptions
+  */
+ void setUserSubscriptionsOnly(boolean val);
 
-  /* sysevents properties
-   */
+ /**
+  *
+  * @return True if default logged in user access limited to subscriptions
+  */
+ @MBeanInfo("True if default logged in user access limited to subscriptions")
+ boolean getUserSubscriptionsOnly();
 
-  /**
-   *
-   * @param val the list of properties
-   */
-  void setSyseventsProperties(final List<String> val);
+ /**
+  * @return copy of this
+  */
+ SystemProperties cloneIt();
 
-  /**
-   *
-   * @return String val
-   */
-  @ConfInfo(collectionElementName = "syseventsProperty" ,
-            elementType = "java.lang.String")
-  List<String> getSyseventsProperties();
+ /* sysevents properties
+  */
 
-  /** Add a sysevents property
-   *
-   * @param name of property
-   * @param val of property
-   */
-  void addSyseventsProperty(final String name,
-                            final String val);
+ /**
+  *
+  * @param val the list of properties
+  */
+ void setSyseventsProperties(final List<String> val);
 
-  /** Get a sysevents property
-   *
-   * @param name of property
-   * @return value or null
-   */
-  @ConfInfo(dontSave = true)
-  String getSyseventsProperty(final String name);
+ /**
+  *
+  * @return String val
+  */
+ @ConfInfo(collectionElementName = "syseventsProperty" ,
+         elementType = "java.lang.String")
+ List<String> getSyseventsProperties();
 
-  /** Remove a sysevents property
-   *
-   * @param name of property
-   */
-  void removeSyseventsProperty(final String name);
+ /** Add a sysevents property
+  *
+  * @param name of property
+  * @param val of property
+  */
+ void addSyseventsProperty(final String name,
+                           final String val);
 
-  /** Set a sysevents property
-   *
-   * @param name of property
-   * @param val of property
-   */
-  @ConfInfo(dontSave = true)
-  void setSyseventsProperty(String name,
-                            String val);
+ /** Get a sysevents property
+  *
+  * @param name of property
+  * @return value or null
+  */
+ @ConfInfo(dontSave = true)
+ String getSyseventsProperty(final String name);
 
-  /** True to run in test mode. This will adversely affect performance
-   * but avoids some test failures due to asynchronous behavior.
-   *
-   * <p>DO NOT run in production mode with this on</p>.
-   *
-   * @param val true for test mode
-   */
-  void setTestMode(boolean val);
+ /** Remove a sysevents property
+  *
+  * @param name of property
+  */
+ void removeSyseventsProperty(final String name);
 
-  /**
-   * @return CalAddrPrefixes or null
-   */
-  @MBeanInfo("True to run in test mode. This will adversely affect performance\n" +
+ /** Set a sysevents property
+  *
+  * @param name of property
+  * @param val of property
+  */
+ @ConfInfo(dontSave = true)
+ void setSyseventsProperty(String name,
+                           String val);
+
+ /** True to run in test mode. This will adversely affect performance
+  * but avoids some test failures due to asynchronous behavior.
+  *
+  * <p>DO NOT run in production mode with this on</p>.
+  *
+  * @param val true for test mode
+  */
+ void setTestMode(boolean val);
+
+ /**
+  * @return CalAddrPrefixes or null
+  */
+ @MBeanInfo("True to run in test mode. This will adversely affect performance\n" +
          "   * but avoids some test failures due to asynchronous behavior.\n" +
          "   *\n" +
          "   * <p>DO NOT run in production mode with this on")
-  boolean getTestMode();
+ boolean getTestMode();
 }

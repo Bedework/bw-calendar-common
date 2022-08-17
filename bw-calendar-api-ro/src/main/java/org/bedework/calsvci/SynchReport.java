@@ -33,6 +33,10 @@ public class SynchReport {
    */
   private boolean truncated;
 
+  /** True if the token was valid
+   */
+  private final boolean tokenValid;
+
   /** Token for next time.
    */
   private final String token;
@@ -42,9 +46,11 @@ public class SynchReport {
    * @param token sync token
    */
   public SynchReport(final Set<SynchReportItem> items,
-                     final String token) {
+                     final String token,
+                     final boolean tokenValid) {
     this.items = items;
     this.token = token;
+    this.tokenValid = tokenValid;
   }
 
   /**
@@ -61,6 +67,14 @@ public class SynchReport {
    */
   public boolean getTruncated() {
     return truncated;
+  }
+
+  /**
+   *
+   * @return boolean true if token was valid
+   */
+  public boolean getTokenValid() {
+    return tokenValid;
   }
 
   /**

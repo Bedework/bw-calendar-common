@@ -256,6 +256,16 @@ public final class ROSystemProperties implements SystemProperties {
   }
 
   @Override
+  public void setSynchMaxMinutes(final int val) {
+    getConfig().setSynchMaxMinutes(val);
+  }
+
+  @Override
+  public int getSynchMaxMinutes() {
+    return getConfig().getSynchMaxMinutes();
+  }
+
+  @Override
   public void setEventregAdminToken(final String val) {
     throw new RuntimeException("Immutable"); // getConfig().setEventregAdminToken(val);
   }

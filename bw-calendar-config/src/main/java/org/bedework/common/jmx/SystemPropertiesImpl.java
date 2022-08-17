@@ -74,6 +74,8 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
 
   private String socketToken;
 
+  private int synchMaxMinutes;
+
   private String eventregAdminToken;
   private String eventregUrl;
 
@@ -273,6 +275,16 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   @Override
   public String getSocketToken() {
     return socketToken;
+  }
+
+  @Override
+  public void setSynchMaxMinutes(final int val) {
+    synchMaxMinutes = val;
+  }
+
+  @Override
+  public int getSynchMaxMinutes() {
+    return synchMaxMinutes;
   }
 
   @Override

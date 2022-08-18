@@ -125,6 +125,13 @@ public interface ResourcesI extends Serializable {
                    boolean copy,
                    boolean overwrite) throws CalFacadeException;
 
+  class ReindexCounts {
+    public long resources;
+    public long resourceContents;
+
+    public long skippedTombstonedResources;
+  }
+
   /** Reindex current users entities
    *
    * @param indexer to use for this operation
@@ -133,7 +140,7 @@ public interface ResourcesI extends Serializable {
    * @return number of resources and resourcecontents reindexed
    * @throws CalFacadeException on fatal error
    */
-  int[] reindex(BwIndexer indexer,
+  ReindexCounts reindex(BwIndexer indexer,
                 BwIndexer contentIndexer,
                 BwIndexer collectionIndexer) throws CalFacadeException;
 }

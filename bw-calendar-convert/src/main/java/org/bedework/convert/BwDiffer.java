@@ -215,10 +215,8 @@ public class BwDiffer {
                                               ev.getComments());
 
       case CONCEPT:
-        final var evConcepts =
-                ev.getXicalProperties("CONCEPT");
         return (DifferResult<T, CT>)cmpObjval((List<BwXproperty>)val,
-                                              evConcepts);
+                                              ev.getConcepts());
 
       case CONTACT:
         return (DifferResult<T, CT>)cmpObjval((Set<BwContact>)val, ev.getContacts());

@@ -131,10 +131,6 @@ public class BwXproperty extends BwDbentity<BwXproperty>
    */
   public final static String xparUid = "X-BEDEWORK-UID";
 
-  /** Used for concept property
-   */
-  public final static String bedeworkConcept = "X-BEDEWORK-CONCEPT";
-
   /** Maintain our cost
    */
   public final static String bedeworkCost = "X-BEDEWORK-COST";
@@ -362,8 +358,6 @@ public class BwXproperty extends BwDbentity<BwXproperty>
     xskipJsp.add(bedeworkIcal);
 
     xskipJsp.add(bedeworkIcalProp);
-
-    xskipJsp.add(bedeworkConcept);
 
     xskipJsp.add(bedeworkDavProp);
 

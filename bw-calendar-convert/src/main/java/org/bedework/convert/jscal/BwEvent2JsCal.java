@@ -1910,8 +1910,7 @@ public class BwEvent2JsCal {
                                  final EventInfo master,
                                  final JSCalendarObject jsval,
                                  final JSCalendarObject jsCalMaster) {
-    final List<BwXproperty> concepts =
-            event.getXicalProperties("CONCEPT");
+    final var concepts = event.getConcepts();
     final DifferResult<BwXproperty, List<BwXproperty>> cDiff =
             differs(BwXproperty.class,
                     PropertyInfoIndex.CONCEPT,
@@ -1924,8 +1923,8 @@ public class BwEvent2JsCal {
     if ((master == null) || cDiff.addAll) {
       // Just add to js
       final JSList<String> jscats = jsval.getCategories(true);
-      for (final BwXproperty xp: concepts) {
-        jscats.add(xp.getValue());
+      for (final var c: concepts) {
+        jscats.add(c.getValue());
       }
       return;
     }
@@ -1947,9 +1946,9 @@ public class BwEvent2JsCal {
       }
     }
 
-    for (final BwXproperty xp: cDiff.added) {
+    for (final var c: cDiff.added) {
       jsval.setProperty(JSPropertyNames.categories + "/" +
-                                xp.getValue(), true);
+                                c.getValue(), true);
     }
   }
 

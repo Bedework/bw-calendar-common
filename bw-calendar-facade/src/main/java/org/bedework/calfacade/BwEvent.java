@@ -1704,24 +1704,23 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
   @NoProxy
   @NoDump
   public List<BwXproperty> getXicalProperties(final String val) {
-    final List<BwXproperty> res = new ArrayList<>();
-    final List<BwXproperty> xs = getXproperties();
-    if (xs == null) {
-      return res;
+    final List<BwXproperty> icalProps = getXproperties(BwXproperty.bedeworkIcalProp);
+    if (icalProps.isEmpty()) {
+      return icalProps;
     }
 
-    for (final BwXproperty x: xs) {
+    final List<BwXproperty> res = new ArrayList<>();
+
+    for (final BwXproperty x: icalProps) {
       if (x == null) {
         continue;
       }
 
-      if (x.getName().equals(BwXproperty.bedeworkIcalProp)) {
-        final List<Xpar> xpars = x.getParameters();
+      final List<Xpar> xpars = x.getParameters();
 
-        final Xpar xp = xpars.get(0);
-        if (xp.getValue().equals(val)) {
-          res.add(x);
-        }
+      final Xpar xp = xpars.get(0);
+      if (xp.getValue().equals(val)) {
+        res.add(x);
       }
     }
 
@@ -2734,6 +2733,26 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     return rs.remove(val);
+  }
+
+  /* ====================================================================
+   *               Concept methods
+   * ==================================================================== */
+
+  @Override
+  @NoProxy
+  @NoDump
+  public List<BwXproperty> getConcepts() {
+    return getXicalProperties("CONCEPT");
+  }
+
+  @Override
+  @NoProxy
+  @NoDump
+  public BwXproperty makeConcept(final String val) {
+    return BwXproperty.makeIcalProperty("CONCEPT",
+                                        null,
+                                        val);
   }
 
   /* ====================================================================

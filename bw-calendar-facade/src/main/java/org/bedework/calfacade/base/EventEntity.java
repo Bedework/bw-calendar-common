@@ -29,7 +29,8 @@ import java.util.Comparator;
  */
 public interface EventEntity extends
         AlarmsEntity, AttachmentsEntity, AttendeesEntity,
-        CategorisedEntity, CommentedEntity, ContactedEntity,
+        CategorisedEntity, CommentedEntity, ConceptEntity,
+        ContactedEntity,
         DescriptionEntity<BwLongString>, RecurrenceEntity,
         ResourcedEntity, StartEndComponent, SummaryEntity,
         XpropsEntity, Comparator<BwEvent> {

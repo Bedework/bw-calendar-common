@@ -619,9 +619,7 @@ public class Ical2BwEvent extends IcalUtil {
             if (cval != null) {
               /* Got a concept */
               chg.addValue(PropertyInfoIndex.XPROP,
-                           BwXproperty.makeIcalProperty("CONCEPT",
-                                                        null,
-                                                        cval));
+                           ev.makeConcept(cval));
             }
 
             break;

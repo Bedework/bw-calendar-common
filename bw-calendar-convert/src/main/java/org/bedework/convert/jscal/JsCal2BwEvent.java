@@ -11,7 +11,6 @@ import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwString;
-import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
@@ -308,9 +307,6 @@ public class JsCal2BwEvent {
       final var pval = prop.getValue();
 
       switch (pname) {
-        case JSPropertyNames.color:
-          break;
-
         case JSPropertyNames.entries:
           break;
 
@@ -487,9 +483,7 @@ public class JsCal2BwEvent {
 
     for (final String cval: value.get()) {
       chg.addValue(PropertyInfoIndex.XPROP,
-                   BwXproperty.makeIcalProperty("CONCEPT",
-                                                null,
-                                                cval));
+                   ev.makeConcept(cval));
     }
 
     return true;

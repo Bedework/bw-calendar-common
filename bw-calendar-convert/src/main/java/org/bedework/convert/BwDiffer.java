@@ -249,7 +249,7 @@ public class BwDiffer {
 
       case VLOCATION:
         return (DifferResult<T, CT>)cmpObjval((List<BwXproperty>)val,
-                                              ev.getXproperties(BwXproperty.xBedeworkVLocation));
+                                              ev.getVlocations());
 
       case XPROP:
         return (DifferResult<T, CT>)cmpObjval((List<BwXproperty>)val, ev.getXproperties());

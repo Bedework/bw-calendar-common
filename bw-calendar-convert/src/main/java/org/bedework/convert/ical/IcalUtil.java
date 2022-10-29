@@ -587,7 +587,7 @@ public class IcalUtil {
         plist.add(new LocationType(loc.getLoctype()));
       }
 
-      pa.setName("Albany Capitol Buildings");
+      pa.setName(loc.getAddressField());
       pa.setStreetAddress(loc.getStreet());
       pa.setAddressLocality(loc.getCity());
       pa.setAddressRegion(loc.getState());

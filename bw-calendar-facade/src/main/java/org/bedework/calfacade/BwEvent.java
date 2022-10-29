@@ -1127,6 +1127,13 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return location;
   }
 
+  @NoDump
+  @NoProxy
+  @NoWrap
+  public List<BwXproperty> getVlocations() {
+    return getXproperties(BwXproperty.xBedeworkVLocation);
+  }
+
   /** Set the uid
    *
    * @param val    String uid

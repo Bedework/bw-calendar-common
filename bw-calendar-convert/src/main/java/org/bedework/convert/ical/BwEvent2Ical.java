@@ -663,7 +663,7 @@ public class BwEvent2Ical extends IcalUtil {
     if (!vpoll) {
       final BwLocation loc = val.getLocation();
       if (loc != null) {
-        var prop = new Location(loc.getCombinedValues());
+        final var prop = new Location(loc.getCombinedValues());
 
         pl.add(langProp(uidProp(prop, loc.getUid()), loc.getAddress()));
 

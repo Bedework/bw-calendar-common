@@ -1452,9 +1452,9 @@ public class Ical2BwEvent extends IcalUtil {
     final var resp = new Response();
     BwLocation loc = null;
 
-            /* See if there's a VLOCATION - if so use that
+    /* See if there's a VLOCATION - if so use that
                TODO - handle multiple
-             */
+     */
 
     // The one equivalent to our single location
     VLocation mainVloc = null;
@@ -1476,17 +1476,17 @@ public class Ical2BwEvent extends IcalUtil {
               mainVloc = vloc;
             }
           }
+
+          chg.addValue(PropertyInfoIndex.XPROP,
+                       new BwXproperty(BwXproperty.xBedeworkVLocation,
+                                       null,
+                                       vloc.toString()));
         }
 
         if (mainVloc == null) {
           // Use first or only
           mainVloc = vlocs.get(0);
         }
-
-        final var xp = new BwXproperty(BwXproperty.xBedeworkVLocation,
-                                       null,
-                                       vlocs.toString());
-        ev.addXproperty(xp);
       }
     }
 
@@ -1500,6 +1500,21 @@ public class Ical2BwEvent extends IcalUtil {
 
         if (lresp.isNotFound()) {
           // Manufacture one
+          final var addr = new BwString(null, pval);
+          final var fcResp = cb.findLocation(addr);
+          if (fcResp.isError()) {
+            return fcResp;
+          }
+
+          if (fcResp.isOk()) {
+            loc = fcResp.getEntity();
+          }
+
+          if (loc == null) {
+            loc = BwLocation.makeLocation();
+            loc.setAddress(addr);
+            cb.addLocation(loc);
+          }
         } else {
           loc = lresp.getEntity();
         }
@@ -1517,17 +1532,15 @@ public class Ical2BwEvent extends IcalUtil {
       BwString addr = null;
 
       if (pval != null) {
-        if (loc == null) {
-          addr = new BwString(lang, pval);
+        addr = new BwString(lang, pval);
 
-          final var fcResp = cb.findLocation(addr);
-          if (fcResp.isError()) {
-            return fcResp;
-          }
+        final var fcResp = cb.findLocation(addr);
+        if (fcResp.isError()) {
+          return fcResp;
+        }
 
-          if (fcResp.isOk()) {
-            loc = fcResp.getEntity();
-          }
+        if (fcResp.isOk()) {
+          loc = fcResp.getEntity();
         }
 
         if (loc == null) {

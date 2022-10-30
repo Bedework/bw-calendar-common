@@ -1156,6 +1156,33 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
     return getQproperty(XcalTags.xBedeworkLocationKey);
   }
 
+  /** Mark this collection as a primary collection
+   *
+   * @param val true for primary
+   */
+  @NoProxy
+  @NoDump
+  @NoWrap
+  public void setPrimaryCollection(final boolean val) {
+    if (val) {
+      setQproperty(XcalTags.xBedeworkPrimaryCollection, "true");
+    } else {
+      removeQproperty(XcalTags.xBedeworkPrimaryCollection);
+    }
+  }
+
+  /** Is this collection a primary collection?
+   *
+   * @return true/false
+   */
+  @NoProxy
+  @NoDump
+  @NoWrap
+  public boolean getPrimaryCollection() {
+    return Boolean.parseBoolean(
+            getQproperty(XcalTags.xBedeworkPrimaryCollection));
+  }
+
   /** Set the orgsync public only property
    *
    * @param val orgsync public only property

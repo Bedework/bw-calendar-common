@@ -71,6 +71,8 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
      submissions root was unused.
    */
 
+  public static final String fieldDelimiter = "\t";
+
   // Fields1
   private static final int rootCollectionPathIndex = 0;
 
@@ -281,7 +283,8 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
 
   private FieldSplitter fetchFields1Split() {
     if (fields1Split == null) {
-      fields1Split = new FieldSplitter(getFields1());
+      fields1Split = new FieldSplitter(fieldDelimiter);
+      fields1Split.setVal(getFields1());
     }
 
     return fields1Split;
@@ -294,7 +297,8 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
 
   private FieldSplitter fetchFields2Split() {
     if (fields2Split == null) {
-      fields2Split = new FieldSplitter(getFields2());
+      fields2Split = new FieldSplitter(fieldDelimiter);
+      fields2Split.setVal(getFields2());
     }
 
     return fields2Split;
@@ -302,7 +306,7 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
 
   private void assignFields2Field(final int index, final String val) {
     fetchFields2Split().setFld(index, val);
-    setFields2(fetchFields1Split().getCombined());
+    setFields2(fetchFields2Split().getCombined());
   }
 
   /* ====================================================================

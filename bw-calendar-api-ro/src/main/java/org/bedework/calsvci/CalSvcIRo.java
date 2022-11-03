@@ -21,7 +21,7 @@ package org.bedework.calsvci;
 import org.bedework.access.CurrentAccess;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwStats;
-import org.bedework.calfacade.base.BwShareableDbentity;
+import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.configs.AuthProperties;
 import org.bedework.calfacade.configs.SystemProperties;
 import org.bedework.calfacade.exc.CalFacadeException;
@@ -298,7 +298,7 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * @return CurrentAccess never null on return
    * @throws CalFacadeException if returnResult false and no access
    */
-  CurrentAccess checkAccess(BwShareableDbentity<?> ent,
+  CurrentAccess checkAccess(ShareableEntity ent,
                             int desiredAccess,
                             boolean returnResult)
           throws CalFacadeException;

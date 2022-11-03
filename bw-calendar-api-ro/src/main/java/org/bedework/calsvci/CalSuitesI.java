@@ -39,14 +39,14 @@ public interface CalSuitesI extends Serializable {
    * @param name of calsuite
    * @param adminGroupName - name of the admin group
    * @param rootCollectionPath  The root collection
-   * @param submissionsPath The submissions root
+   * @param description of the calsuite
    * @return BwCalSuiteWrapper for new object
    * @throws CalFacadeException on fatal error
    */
   BwCalSuiteWrapper add(String name,
                         String adminGroupName,
                         String rootCollectionPath,
-                        String submissionsPath) throws CalFacadeException;
+                        String description) throws CalFacadeException;
 
   /** Set the current calendar suite.
    *
@@ -91,13 +91,13 @@ public interface CalSuitesI extends Serializable {
    * @param cs     BwCalSuiteWrapper object
    * @param adminGroupName - name of the admin group
    * @param rootCollectionPath The root collection
-   * @param submissionsPath The submissions root
+   * @param description of the calsuite
    * @throws CalFacadeException on fatal error
    */
   void update(BwCalSuiteWrapper cs,
               String adminGroupName,
               String rootCollectionPath,
-              String submissionsPath) throws CalFacadeException;
+              String description) throws CalFacadeException;
 
   /** Delete a calendar suite object
    *

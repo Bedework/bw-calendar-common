@@ -30,10 +30,10 @@ import org.bedework.calfacade.annotations.NoDump;
  */
 @Dump(elementName="locpr", keyFields={"account"})
 @NoDump({"byteSize"})
-public class BwLocpr extends BwPrincipal {
-  /* ====================================================================
+public class BwLocpr extends BwPrincipal<BwLocpr> {
+  /* ==============================================================
    *                   Constructors
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Create a guest user
    */
@@ -47,9 +47,9 @@ public class BwLocpr extends BwPrincipal {
     return WhoDefs.whoTypeVenue;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Copying methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Copy this to val
    *

@@ -39,10 +39,10 @@ import java.util.TreeSet;
 @Dump(elementName="group", keyFields={"account"})
 @NoDump({"byteSize"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public class BwGroup extends BwPrincipal {
+public class BwGroup<T extends BwGroup<?>> extends BwPrincipal<T> {
   /** members of the group
    */
-  private Collection<BwPrincipal> groupMembers;
+  private Collection<BwPrincipal<?>> groupMembers;
 
   /* Non-db */
 
@@ -68,7 +68,7 @@ public class BwGroup extends BwPrincipal {
    *
    * @param   val     Collection of group members.
    */
-  public void setGroupMembers(final Collection<BwPrincipal> val) {
+  public void setGroupMembers(final Collection<BwPrincipal<?>> val) {
     groupMembers = val;
   }
 
@@ -77,7 +77,7 @@ public class BwGroup extends BwPrincipal {
    * @return Collection        group members
    */
   @Dump(collectionElementName = "member")
-  public Collection<BwPrincipal> getGroupMembers() {
+  public Collection<BwPrincipal<?>> getGroupMembers() {
     return groupMembers;
   }
 
@@ -102,12 +102,12 @@ public class BwGroup extends BwPrincipal {
    */
   public boolean isMember(final String account,
                           final boolean group) {
-    final Collection<BwPrincipal> ms = getGroupMembers();
+    final Collection<BwPrincipal<?>> ms = getGroupMembers();
     if (ms == null) {
       return false;
     }
 
-    for (final BwPrincipal mbr: ms) {
+    for (final var mbr: ms) {
       if (mbr.getAccount().equals(account)) {
         if (group == (mbr instanceof BwGroup)) {
           return true;
@@ -124,8 +124,8 @@ public class BwGroup extends BwPrincipal {
    * @param mbr        BwPrincipal to add
    * @return boolean   true if added
    */
-  public boolean addGroupMember(final BwPrincipal mbr) {
-    Collection<BwPrincipal> ms = getGroupMembers();
+  public boolean addGroupMember(final BwPrincipal<?> mbr) {
+    Collection<BwPrincipal<?>> ms = getGroupMembers();
     if (ms == null) {
       ms = new TreeSet<>();
       setGroupMembers(ms);
@@ -140,8 +140,8 @@ public class BwGroup extends BwPrincipal {
    * @param mbr        BwPrincipal to remove
    * @return boolean   true if removed
    */
-  public boolean removeGroupMember(final BwPrincipal mbr) {
-    final Collection<BwPrincipal> ms = getGroupMembers();
+  public boolean removeGroupMember(final BwPrincipal<?> mbr) {
+    final var ms = getGroupMembers();
     if (ms == null) {
       return false;
     }
@@ -154,9 +154,9 @@ public class BwGroup extends BwPrincipal {
 
     final Collection<String> refs = new ArrayList<>();
 
-    final Collection<BwPrincipal> ms = getGroupMembers();
+    final var ms = getGroupMembers();
     if (ms != null) {
-      for (final BwPrincipal mbr: ms) {
+      for (final var mbr: ms) {
         refs.add(mbr.getPrincipalRef());
       }
     }
@@ -175,10 +175,10 @@ public class BwGroup extends BwPrincipal {
   public void copyTo(final BwGroup val) {
     super.copyTo(val);
 
-    final Collection<BwPrincipal> ms = getGroupMembers();
+    final var ms = getGroupMembers();
     if (ms != null) {
-      for (final BwPrincipal mbr: ms) {
-        val.addGroupMember((BwPrincipal)mbr.clone());
+      for (final var mbr: ms) {
+        val.addGroupMember((BwPrincipal<?>)mbr.clone());
       }
     }
   }
@@ -187,12 +187,12 @@ public class BwGroup extends BwPrincipal {
    *
    * @param val BwGroup target
    */
-  public void shallowCopyTo(final BwGroup val) {
+  public void shallowCopyTo(final BwGroup<?> val) {
     super.copyTo(val);
   }
   
-  public BwGroup shallowClone() {
-    final BwGroup g = new BwGroup();
+  public BwGroup<?> shallowClone() {
+    final BwGroup<?> g = new BwGroup<>();
     shallowCopyTo(g);
 
     return g;
@@ -216,7 +216,7 @@ public class BwGroup extends BwPrincipal {
     /* We do not clone the attached subscriptions if present. These need to
        be cloned explicitly or we might set up a clone loop.
     */
-    final BwGroup g = new BwGroup();
+    final BwGroup<?> g = new BwGroup<>();
     copyTo(g);
 
     return g;

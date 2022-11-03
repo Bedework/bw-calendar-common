@@ -85,7 +85,7 @@ public interface RestoreIntf {
    * @param o principal object
    * @throws Throwable on fatal error
    */
-  void restorePrincipal(BwPrincipal o) throws Throwable;
+  void restorePrincipal(BwPrincipal<?> o) throws Throwable;
 
   /** Restore an admin group - though not the user entries nor
    * the authuser entries.
@@ -100,7 +100,8 @@ public interface RestoreIntf {
    * @param pr principal
    * @throws Throwable on fatal error
    */
-  void addAdminGroupMember(BwAdminGroup o, BwPrincipal pr) throws Throwable;
+  void addAdminGroupMember(BwAdminGroup o,
+                           BwPrincipal<?> pr) throws Throwable;
 
   /** Get an admin group given it's name.
    *
@@ -134,7 +135,7 @@ public interface RestoreIntf {
    * @return BwEvent
    * @throws Throwable on fatal error
    */
-  BwEvent getEvent(BwPrincipal owner,
+  BwEvent getEvent(BwPrincipal<?> owner,
                    String colPath,
                    String recurrenceId,
                    String uid) throws Throwable;

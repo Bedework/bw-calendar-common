@@ -453,10 +453,10 @@ public interface BwIndexer extends Serializable {
    * @return events for owner
    * @throws CalFacadeException on error
    */
-  List<EventInfo> fetchEvents(final String path,
-                              final String lastmod,
-                              final int lastmodSeq,
-                              final int count)
+  List<EventInfo> fetchEvents(String path,
+                              String lastmod,
+                              int lastmodSeq,
+                              int count)
           throws CalFacadeException;
 
   /** Find a category owned by the current user which has a named
@@ -486,8 +486,9 @@ public interface BwIndexer extends Serializable {
    * @throws CalFacadeException on error
    */
   GetEntityResponse<BwCalendar> fetchCol(String val,
-                                         final int desiredAccess,
-                                         PropertyInfoIndex... index) throws CalFacadeException;
+                                         int desiredAccess,
+                                         PropertyInfoIndex... index)
+          throws CalFacadeException;
 
   /** Fetch children of the collection with the given href. Tombstoned
    * collections are excluded
@@ -522,14 +523,14 @@ public interface BwIndexer extends Serializable {
    * @return null or BwPrincipal object
    * @throws CalFacadeException on error
    */
-  BwPrincipal fetchPrincipal(String href) throws CalFacadeException;
+  BwPrincipal<?> fetchPrincipal(String href) throws CalFacadeException;
 
   /** Fetch all groups.
    *
    * @param admin - true for admin groups
    * @return status and List of groups
    */
-  GetEntitiesResponse<BwGroup> fetchGroups(boolean admin);
+  GetEntitiesResponse<BwGroup<?>> fetchGroups(boolean admin);
 
   /** Fetch all groups.
    *
@@ -543,7 +544,7 @@ public interface BwIndexer extends Serializable {
    * @param memberHref - of member
    * @return status and List of groups
    */
-  GetEntitiesResponse<BwGroup> fetchGroups(boolean admin,
+  GetEntitiesResponse<BwGroup<?>> fetchGroups(boolean admin,
                                            String memberHref);
 
   /** Fetch all admin groups of which href is a member.
@@ -576,8 +577,8 @@ public interface BwIndexer extends Serializable {
    * @return filter for owner
    * @throws CalFacadeException on error
    */
-  List<BwFilterDef> fetchFilters(final FilterBase fb,
-                                 final int count)
+  List<BwFilterDef> fetchFilters(FilterBase fb,
+                                 int count)
           throws CalFacadeException;
 
   /** Find a resource with the given href.
@@ -597,10 +598,10 @@ public interface BwIndexer extends Serializable {
    * @return resources for owner
    * @throws CalFacadeException on error
    */
-  List<BwResource> fetchResources(final String path,
-                                  final String lastmod,
-                                  final int lastmodSeq,
-                                  final int count)
+  List<BwResource> fetchResources(String path,
+                                  String lastmod,
+                                  int lastmodSeq,
+                                  int count)
           throws CalFacadeException;
 
   /** Find a resource content with the given href.

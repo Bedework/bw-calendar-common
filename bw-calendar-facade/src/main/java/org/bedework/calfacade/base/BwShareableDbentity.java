@@ -34,7 +34,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @param <T>
  */
-public abstract class BwShareableDbentity<T> extends BwOwnedDbentity<T> {
+public abstract class BwShareableDbentity<T>
+        extends BwOwnedDbentity<T>
+        implements ShareableEntity {
   private String creatorHref;
 
   /** Encoded access rights
@@ -53,10 +55,6 @@ public abstract class BwShareableDbentity<T> extends BwOwnedDbentity<T> {
     super();
   }
 
-  /** Set the creator
-   *
-   * @param val     String creator of the entity
-   */
   @IcalProperty(pindex = PropertyInfoIndex.CREATOR,
                 required = true,
                 eventProperty = true,
@@ -64,22 +62,17 @@ public abstract class BwShareableDbentity<T> extends BwOwnedDbentity<T> {
                 journalProperty = true,
                 freeBusyProperty = true,
                 vavailabilityProperty = true)
+  @Override
   public void setCreatorHref(final String val) {
     creatorHref = val;
   }
 
-  /**
-   *
-   * @return BwUser    creator of the entity
-   */
+  @Override
   public String getCreatorHref() {
     return creatorHref;
   }
 
-  /** Set the access
-   *
-   * @param val    String access
-   */
+  @Override
   @IcalProperty(pindex = PropertyInfoIndex.ACL,
                 jname = "acl",
                 required = true,
@@ -92,10 +85,7 @@ public abstract class BwShareableDbentity<T> extends BwOwnedDbentity<T> {
     access = val;
   }
 
-  /** Get the access
-   *
-   * @return String   access
-   */
+  @Override
   public String getAccess() {
     return access;
   }
@@ -104,19 +94,13 @@ public abstract class BwShareableDbentity<T> extends BwOwnedDbentity<T> {
    *                   Non-db methods
    * ==================================================================== */
 
-  /** Set the creator
-   *
-   * @param val     BwPrincipal creator of the entity
-   */
+  @Override
   @NoDump
   public void setCreatorEnt(final BwPrincipal val) {
     creatorEnt = val;
   }
 
-  /**
-   *
-   * @return BwPrincipal    creator of the entity
-   */
+  @Override
   @JsonIgnore
   public BwPrincipal getCreatorEnt() {
     return creatorEnt;

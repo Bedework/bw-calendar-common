@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
       firstFields = {"account","principalRef"})
 @JsonIgnoreProperties({"aclAccount"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, property="@class")
-public class BwAdminGroup extends BwGroup {
+public class BwAdminGroup extends BwGroup<BwAdminGroup> {
   private String groupOwnerHref;
 
   private String ownerHref;

@@ -20,9 +20,10 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwShareablePrincipal;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
-import org.bedework.calfacade.base.BwShareableDbentity;
+import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.misc.ToString;
 
 /** This object represents a calendar suite in bedework. The calendar suites all
@@ -37,7 +38,7 @@ import org.bedework.util.misc.ToString;
  *  @version 1.0
  */
 @Dump(elementName="cal-suite", keyFields={"name"})
-public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
+public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
   /** A unique name for the calendar suite. This name is mostly for internal
    * use and only presented to administrators. It must be unique for the system.
    */
@@ -51,23 +52,36 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
    */
   private BwAdminGroup group;
 
-  /** The root collection
-   */
-  private String rootCollectionPath;
+  private String groupHref;
 
-  /** The submissions root
+  /** Was the root collection
    */
-  private String submissionsRootPath;
+  private String fields1;
+  private FieldSplitter fields1Split;
+
+  /** Was the submissions root
+   */
+  private String fields2;
+  private FieldSplitter fields2Split;
+
+  /* properties packed into field1 and field2.
+     Field1 was already populated with the  root collection -
+             used but always the same, so eventually we might discard it.
+
+     submissions root was unused.
+   */
+
+  // Fields1
+  private static final int rootCollectionPathIndex = 0;
+
+  // Fields2
+  private static final int descriptionIndex = 0;
 
   /* =================== Non-db fields ===================================== */
 
   /** The root collection
    */
   private BwCalendar rootCollection;
-
-  /** The submissions root
-   */
-  private BwCalendar submissionsRoot;
 
   private String context;
 
@@ -106,6 +120,9 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
    */
   public void setGroup(final BwAdminGroup val) {
     group = val;
+    if (val != null) {
+      setGroupHref(val.getHref());
+    }
   }
 
   /** Get the owning group
@@ -116,41 +133,57 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
     return group;
   }
 
-  /** Set the root collection path
+  /** Set the fields1 value
    *
-   * @param val    String rootCalendar path
+   * @param val    String combined fields 1
    */
-  public void setRootCollectionPath(final String val) {
-    rootCollectionPath = val;
+  public void setFields1(final String val) {
+    fields1 = val;
   }
 
-  /** Get the root collection path
+  /**
    *
-   * @return String   rootCollection path
+   * @return String   combined fields 1
    */
-  public String getRootCollectionPath() {
-    return rootCollectionPath;
+  public String getFields1() {
+    return fields1;
   }
 
   /** Set the submissions root path
    *
-   * @param val    String submissions root path
+   * @param val    String combined fields 2
    */
-  public void setSubmissionsRootPath(final String val) {
-    submissionsRootPath = val;
+  public void setFields2(final String val) {
+    fields2 = val;
   }
 
-  /** Get the submissions root path
+  /** Get the combined fields 2
    *
-   * @return String   submissions root path
+   * @return String   combined fields 2
    */
-  public String getSubmissionsRootPath() {
-    return submissionsRootPath;
+  public String getFields2() {
+    return fields2;
   }
 
   /* ====================================================================
    *                   Non-db methods
    * ==================================================================== */
+
+  /** Set the owning group
+   *
+   * @param val    BwAdminGroup group
+   */
+  public void setGroupHref(final String val) {
+    groupHref = val;
+  }
+
+  /** Get the owning group
+   *
+   * @return BwAdminGroup   group
+   */
+  public String getGroupHref() {
+    return groupHref;
+  }
 
   /** Set the root collection
    *
@@ -168,24 +201,6 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
   @NoDump
   public BwCalendar getRootCollection() {
     return rootCollection;
-  }
-
-  /** Set the submissions root
-  *
-  * @param val    String submissions root
-  */
-  @NoDump
-  public void setSubmissionsRoot(final BwCalendar val) {
-    submissionsRoot = val;
-  }
-
-  /** Get the submissions root
-  *
-  * @return String   submissions root
-  */
-  @NoDump
-  public BwCalendar getSubmissionsRoot() {
-    return submissionsRoot;
   }
 
   /**
@@ -216,6 +231,40 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
     this.defaultContext = defaultContext;
   }
 
+  /* ====================================================================
+   *          Fields in fields1
+   * ==================================================================== */
+
+  /** Set the root collection path
+   *
+   * @param val    String rootCalendar path
+   */
+  public void setRootCollectionPath(final String val) {
+    assignFields1Field(rootCollectionPathIndex, val);
+  }
+
+  /** Get the root collection path
+   *
+   * @return String   rootCollection path
+   */
+  public String getRootCollectionPath() {
+    return fetchFields1Split().getFld(rootCollectionPathIndex);
+  }
+
+  /* ====================================================================
+   *          Fields in fields2
+   * ==================================================================== */
+
+  @Override
+  public void setDescription(final String val) {
+    assignFields2Field(descriptionIndex, val);
+  }
+
+  @Override
+  public String getDescription() {
+    return fetchFields2Split().getFld(descriptionIndex);
+  }
+
   /** Add our stuff to the StringBuilder
    *
    * @param ts    StringBuilder for result
@@ -227,20 +276,47 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
     ts.append("name", getName());
     ts.append("group", getGroup());
     ts.append("rootCollection", getRootCollectionPath());
-    ts.append("submissionsRoot", getSubmissionsRootPath());
-   }
+    ts.append("description", getDescription());
+  }
+
+  private FieldSplitter fetchFields1Split() {
+    if (fields1Split == null) {
+      fields1Split = new FieldSplitter(getFields1());
+    }
+
+    return fields1Split;
+  }
+
+  private void assignFields1Field(final int index, final String val) {
+    fetchFields1Split().setFld(index, val);
+    setFields1(fetchFields1Split().getCombined());
+  }
+
+  private FieldSplitter fetchFields2Split() {
+    if (fields2Split == null) {
+      fields2Split = new FieldSplitter(getFields2());
+    }
+
+    return fields2Split;
+  }
+
+  private void assignFields2Field(final int index, final String val) {
+    fetchFields2Split().setFld(index, val);
+    setFields2(fetchFields1Split().getCombined());
+  }
 
   /* ====================================================================
    *                   Object methods
    * ==================================================================== */
 
   @Override
-  public int compareTo(final BwCalSuite that) {
-    if (that == this) {
-      return 0;
+  public int compare(final BwCalSuite cs1, final BwCalSuite cs2) {
+    final var res = super.compare(cs1, cs2);
+    if (res != 0) {
+      return res;
     }
 
-    return getName().compareTo(that.getName());
+    return cs1.getName().compareTo(cs2.getName());
   }
 
   @Override
@@ -265,7 +341,7 @@ public class BwCalSuite extends BwShareableDbentity<BwCalSuite> {
     cs.setName(getName());
     cs.setGroup((BwAdminGroup)getGroup().clone());
     cs.setRootCollectionPath(getRootCollectionPath());
-    cs.setSubmissionsRootPath(getSubmissionsRootPath());
+    cs.setDescription(getDescription());
 
     return cs;
   }

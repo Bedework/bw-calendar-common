@@ -27,6 +27,7 @@ import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.base.BwOwnedDbentity;
 import org.bedework.calfacade.base.BwShareableDbentity;
 import org.bedework.calfacade.base.BwUnversionedDbentity;
+import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.base.UpdateFromTimeZonesInfo;
 import org.bedework.calfacade.configs.NotificationProperties;
 import org.bedework.calfacade.exc.CalFacadeException;
@@ -385,7 +386,7 @@ public interface CalSvcI
    * @param replaceAll true to replace the entire access list.
    * @throws CalFacadeException on fatal error
    */
-  void changeAccess(BwShareableDbentity<?> ent,
+  void changeAccess(ShareableEntity ent,
                     Collection<Ace> aces,
                     boolean replaceAll) throws CalFacadeException;
 
@@ -395,7 +396,7 @@ public interface CalSvcI
    * @param who      AceWho
    * @throws CalFacadeException on fatal error
    */
-  void defaultAccess(BwShareableDbentity<?> ent,
+  void defaultAccess(ShareableEntity ent,
                      AceWho who) throws CalFacadeException;
 
   /* ====================================================================

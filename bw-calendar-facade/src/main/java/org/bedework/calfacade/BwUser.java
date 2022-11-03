@@ -30,7 +30,7 @@ import org.bedework.calfacade.annotations.NoDump;
  */
 @Dump(elementName="user", keyFields={"account"})
 @NoDump({"byteSize"})
-public class BwUser extends BwPrincipal {
+public class BwUser extends BwPrincipal<BwUser> {
   /* Temp to avoid schema change */
   private boolean instanceOwner;
 
@@ -74,9 +74,9 @@ public class BwUser extends BwPrincipal {
     return instanceOwner;
   }
 
-  /* ====================================================================
+  /* =======================================================
    *                   Copying methods
-   * ==================================================================== */
+   * ======================================================= */
 
   /** Copy this to val
    *
@@ -86,9 +86,9 @@ public class BwUser extends BwPrincipal {
     super.copyTo(val);
   }
 
-  /* ====================================================================
+  /* =====================================================
    *                   Object methods
-   * ==================================================================== */
+   * ===================================================== */
 
   @Override
   public Object clone() {

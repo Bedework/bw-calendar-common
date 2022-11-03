@@ -35,7 +35,7 @@ public interface UsersI extends Serializable {
    * @param val           String user id
    * @return User principal or null if not there
    */
-  public BwPrincipal getUser(String val);
+  public BwPrincipal<?> getUser(String val);
 
   /** Find the user with the given account name. Create if not there.
    *
@@ -43,14 +43,14 @@ public interface UsersI extends Serializable {
    * @return BwUser       representing the user
    * @throws CalFacadeException
    */
-  public BwPrincipal getAlways(String val) throws CalFacadeException;
+  public BwPrincipal<?> getAlways(String val) throws CalFacadeException;
 
   /** Find the principal with the given account path.
    *
    * @param val           String principal hierarchy path
    * @return BwPrincipal  representing the principal or null if not there
    */
-  public BwPrincipal getPrincipal(String val);
+  public BwPrincipal<?> getPrincipal(String val);
 
   /** Add an entry for the user.
    *
@@ -64,33 +64,33 @@ public interface UsersI extends Serializable {
    * @param principal
    * @throws CalFacadeException
    */
-  public void update(BwPrincipal principal) throws CalFacadeException;
+  public void update(BwPrincipal<?> principal) throws CalFacadeException;
 
   /** Remove a principal. This will delete all traces of the principal from the system.
    *
    * @param pr
    * @throws CalFacadeException
    */
-  public void remove(BwPrincipal pr) throws CalFacadeException;
+  public void remove(BwPrincipal<?> pr) throws CalFacadeException;
 
   /** Can be called after init to flag the arrival of a user.
    *
    * @param val       principal logging on
    * @throws CalFacadeException
    */
-  public void logon(BwPrincipal val) throws CalFacadeException;
+  public void logon(BwPrincipal<?> val) throws CalFacadeException;
 
   /** Set up collections and principal home.
    *
    * @param principal to init
    * @throws RuntimeException on fatal error
    */
-  public void initPrincipal(BwPrincipal principal);
+  public void initPrincipal(BwPrincipal<?> principal);
 
   /**
    * @return public entity owner
    */
-  public BwPrincipal getPublicUser();
+  public BwPrincipal<?> getPublicUser();
 
   /** Get a partial list of principal hrefs.
    *

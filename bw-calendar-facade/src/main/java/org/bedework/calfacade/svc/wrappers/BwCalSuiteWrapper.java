@@ -229,13 +229,13 @@ public class BwCalSuiteWrapper extends BwCalSuite
   }
 
   @Override
-  public void setSubmissionsRootPath(final String val) {
-    entity.setSubmissionsRootPath(val);
+  public void setDescription(final String val) {
+    entity.setDescription(val);
   }
 
   @Override
-  public String getSubmissionsRootPath() {
-    return entity.getSubmissionsRootPath();
+  public String getDescription() {
+    return entity.getDescription();
   }
 
   /* ====================================================================
@@ -258,24 +258,6 @@ public class BwCalSuiteWrapper extends BwCalSuite
   @Override
   public BwCalendar getRootCollection() {
     return entity.getRootCollection();
-  }
-
-  /** Set the submissions root
-  *
-  * @param val    String submissions root
-  */
-  @Override
-  public void setSubmissionsRoot(final BwCalendar val) {
-    entity.setSubmissionsRoot(val);
-  }
-
-  /** Get the submissions root
-  *
-  * @return String   submissions root
-  */
-  @Override
-  public BwCalendar getSubmissionsRoot() {
-    return entity.getSubmissionsRoot();
   }
 
   /* ====================================================================

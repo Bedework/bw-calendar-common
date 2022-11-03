@@ -24,7 +24,7 @@ import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
-import org.bedework.calfacade.base.BwShareableDbentity;
+import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.PrincipalInfo;
 
@@ -92,22 +92,22 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * We are changing access so we remove all access for each who in the list and
    * then add the new aces.
    *
-   * @param ent        BwShareableDbentity
+   * @param ent        Shareable entity
    * @param aces       Collection of ace objects
    * @param replaceAll true to replace the entire access list.
    * @throws CalFacadeException for no access or other failure
    */
-  void changeAccess(BwShareableDbentity<?> ent,
+  void changeAccess(ShareableEntity ent,
                            Collection<Ace> aces,
                            boolean replaceAll) throws CalFacadeException;
 
   /** Remove any explicit access for the given who to the given calendar entity.
   *
-  * @param ent      BwShareableDbentity
+  * @param ent      Shareable entity
   * @param who      AceWho
    * @throws CalFacadeException for no access or other failure
   */
- void defaultAccess(BwShareableDbentity<?> ent,
+ void defaultAccess(ShareableEntity ent,
                            AceWho who) throws CalFacadeException;
 
   /** Return a Collection of the objects after checking access
@@ -118,8 +118,8 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @return Collection   of checked objects
    * @throws CalFacadeException for no access or other failure
    */
-  Collection<? extends BwShareableDbentity<?>>
-                 checkAccess(Collection<? extends BwShareableDbentity<?>> ents,
+  Collection<? extends ShareableEntity>
+                 checkAccess(Collection<? extends ShareableEntity> ents,
                                 int desiredAccess,
                                 boolean alwaysReturn)
           throws CalFacadeException;
@@ -145,7 +145,7 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @return  CurrentAccess
    * @throws CalFacadeException for no access or other failure
    */
-  CurrentAccess checkAccess(BwShareableDbentity<?> ent,
+  CurrentAccess checkAccess(ShareableEntity ent,
                             int desiredAccess,
                         boolean alwaysReturnResult) throws CalFacadeException;
 }

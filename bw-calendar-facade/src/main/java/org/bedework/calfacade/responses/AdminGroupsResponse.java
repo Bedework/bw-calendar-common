@@ -29,20 +29,20 @@ import java.util.Collection;
  * @author Mike Douglass douglm - spherical cow
  */
 public class AdminGroupsResponse extends Response {
-  private Collection<BwGroup> groups;
+  private Collection<BwGroup<?>> groups;
 
   /**
    *
    * @param val collection of groups
    */
-  public void setGroups(final Collection<BwGroup> val) {
+  public void setGroups(final Collection<BwGroup<?>> val) {
     groups = val;
   }
 
   /**
    * @return collection of groups
    */
-  public Collection<BwGroup> getGroups() {
+  public Collection<BwGroup<?>> getGroups() {
     return groups;
   }
 

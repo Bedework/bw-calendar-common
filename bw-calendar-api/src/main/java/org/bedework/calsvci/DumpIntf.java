@@ -199,7 +199,7 @@ public interface DumpIntf {
    * @return Iterator over entities
    * @throws CalFacadeException on error
    */
-  Iterator<BwPrincipal> getAllPrincipals() throws CalFacadeException;
+  Iterator<BwPrincipal<?>> getAllPrincipals() throws CalFacadeException;
 
   /** Will return an Iterator returning User resources.
    *

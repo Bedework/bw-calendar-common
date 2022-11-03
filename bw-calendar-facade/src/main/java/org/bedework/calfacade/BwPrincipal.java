@@ -27,7 +27,7 @@ import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.configs.BasicSystemProperties;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwAdminGroup;
-import org.bedework.calfacade.svc.BwCalSuitePrincipal;
+import org.bedework.calfacade.svc.BwCalSuite;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -68,9 +68,9 @@ import java.util.TreeSet;
 @Dump(firstFields = {"account","principalRef"})
 @JsonIgnoreProperties({"aclAccount"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public abstract class BwPrincipal extends BwDbentity<BwPrincipal>
+public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<T>
                                   implements AccessPrincipal,
-                                  Comparator<BwPrincipal> {
+                                  Comparator<T> {
   public final static String principalRoot = "/principals/";
 
   public final static String groupPrincipalRoot = "/principals/groups/";
@@ -268,7 +268,7 @@ public abstract class BwPrincipal extends BwDbentity<BwPrincipal>
   public static BwPrincipal makePrincipal(final String href) {
     try {
       if (href.startsWith(calsuitePrincipalRoot)) {
-        return new BwCalSuitePrincipal();
+        return new BwCalSuite();
       }
 
       final String uri =
@@ -742,17 +742,21 @@ public abstract class BwPrincipal extends BwDbentity<BwPrincipal>
     return fromXmlCb;
   }
   
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
-  public int compareTo(final BwPrincipal o) {
-    return compare(this, o);
+  public int compareTo(final T that) {
+    if (that == this) {
+      return 0;
+    }
+
+    return compare((T)this, that);
   }
 
   @Override
-  public int compare(final BwPrincipal p1, final BwPrincipal p2) {
+  public int compare(final T p1, final T p2) {
     if (p1.getKind() < p2.getKind()) {
       return -1;
     }
@@ -781,15 +785,15 @@ public abstract class BwPrincipal extends BwDbentity<BwPrincipal>
       return false;
     }
 
-    return compareTo((BwPrincipal)o) == 0;
+    return compareTo((T)o) == 0;
   }
 
   @Override
   public String toString() {
     final ToString ts = new ToString(this);
 
-    toStringSegment(ts);
 
+    toStringSegment(ts);
     return ts.toString();
   }
 

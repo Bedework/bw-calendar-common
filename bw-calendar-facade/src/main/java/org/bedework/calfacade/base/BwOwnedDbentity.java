@@ -30,7 +30,8 @@ import org.bedework.util.misc.ToString;
  *
  * @param <T>
  */
-public abstract class BwOwnedDbentity<T> extends BwDbentity<T> {
+public abstract class BwOwnedDbentity<T> extends BwDbentity<T>
+        implements OwnedEntity {
   private String ownerHref;
 
   private Boolean publick;
@@ -42,10 +43,7 @@ public abstract class BwOwnedDbentity<T> extends BwDbentity<T> {
     super();
   }
 
-  /** Set the owner
-   *
-   * @param val     String owner path of the entity e.g. /principals/users/jim
-   */
+  @Override
   @IcalProperty(pindex = PropertyInfoIndex.OWNER,
                 required = true,
                 eventProperty = true,
@@ -57,17 +55,12 @@ public abstract class BwOwnedDbentity<T> extends BwDbentity<T> {
     ownerHref = val;
   }
 
-  /**
-   *
-   * @return String    owner of the entity
-   */
+  @Override
   public String getOwnerHref() {
     return ownerHref;
   }
 
-  /**
-   * @param val public/not public
-   */
+  @Override
   @IcalProperty(pindex = PropertyInfoIndex.PUBLIC,
                 required = true,
                 jname = "public",
@@ -80,9 +73,7 @@ public abstract class BwOwnedDbentity<T> extends BwDbentity<T> {
     publick = val;
   }
 
-  /**
-   * @return Boolean true for public
-   */
+  @Override
   @Dump(elementName="public")
   public Boolean getPublick() {
     return publick;

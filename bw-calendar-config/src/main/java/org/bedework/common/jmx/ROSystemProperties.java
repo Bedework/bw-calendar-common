@@ -336,6 +336,16 @@ public final class ROSystemProperties implements SystemProperties {
   }
 
   @Override
+  public void setSubmissionRoot(final String val) {
+    throw new RuntimeException("Immutable");
+  }
+
+  @Override
+  public String getSubmissionRoot() {
+    return getConfig().getSubmissionRoot();
+  }
+
+  @Override
   public void setUserSubscriptionsOnly(final boolean val) {
     throw new RuntimeException("Immutable");
   }

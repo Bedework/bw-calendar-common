@@ -60,6 +60,11 @@ public interface CalendarsI extends Serializable {
    */
   BwCalendar getPublicCalendars() throws CalFacadeException;
 
+  /**
+   * @return the public calendar flagged as the primary collection
+   */
+  BwCalendar getPrimaryPublicPath();
+
   /** Returns root path of calendars owned by the current user. For
    * unauthenticated this will be the public calendar root.
    *
@@ -159,7 +164,8 @@ public interface CalendarsI extends Serializable {
    * @return Set   of BwCalendar
    * @throws CalFacadeException on fatal error
    */
-  Set<BwCalendar> getAddContentCollections(boolean includeAliases)
+  Set<BwCalendar> getAddContentCollections(boolean includeAliases,
+                                           boolean isApprover)
           throws CalFacadeException;
 
   /** Check to see if a collection is empty. A collection is not empty if it

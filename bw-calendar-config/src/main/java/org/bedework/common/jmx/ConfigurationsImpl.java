@@ -846,6 +846,16 @@ public final class ConfigurationsImpl
   }
 
   @Override
+  public void setSubmissionRoot(final String val) {
+    getConfig().setSubmissionRoot(val);
+  }
+
+  @Override
+  public String getSubmissionRoot() {
+    return getConfig().getSubmissionRoot();
+  }
+
+  @Override
   public void setUserSubscriptionsOnly(final boolean val) {
     getConfig().setUserSubscriptionsOnly(val);
   }

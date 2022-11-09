@@ -273,6 +273,17 @@ public interface SystemProperties extends CalDAVSystemProperties {
   */
  String getWorkflowRoot();
 
+ /** The root of the calendars used for submission of public events by users.
+  *
+  * @param val
+  */
+ void setSubmissionRoot(String val);
+
+ /**
+  * @return String
+  */
+ String getSubmissionRoot();
+
  /**
   *
   * @param val True if default logged in user access limited to subscriptions

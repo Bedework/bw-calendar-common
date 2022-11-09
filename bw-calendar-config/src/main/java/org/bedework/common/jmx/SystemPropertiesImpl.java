@@ -86,7 +86,9 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   private boolean suggestionEnabled;
   private boolean workflowEnabled;
   private String workflowRoot;
-  
+
+  private String submissionRoot;
+
   private boolean userSubscriptionsOnly; 
 
   private Integer vpollMaxItems;
@@ -353,6 +355,16 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   }
 
   @Override
+  public void setSubmissionRoot(final String val) {
+    submissionRoot = val;
+  }
+
+  @Override
+  public String getSubmissionRoot() {
+    return submissionRoot;
+  }
+
+  @Override
   public void setUserSubscriptionsOnly(final boolean val) {
     userSubscriptionsOnly = val;
   }
@@ -430,6 +442,8 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
     ts.append("autoKillMinutes", getAutoKillMinutes());
 
     ts.append("workflowEnabled", getWorkflowEnabled());
+    ts.append("workflowRoot", getWorkflowRoot());
+    ts.append("submissionRoot", getSubmissionRoot());
 
     ts.newLine();
     ts.append("vpollMaxItems", getVpollMaxItems());
@@ -460,6 +474,10 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
     clone.setLocaleList(getLocaleList());
     clone.setEventregAdminToken(getEventregAdminToken());
     clone.setEventregUrl(getEventregUrl());
+
+    clone.setWorkflowEnabled(getWorkflowEnabled());
+    clone.setWorkflowRoot(getWorkflowRoot());
+    clone.setSubmissionRoot(getSubmissionRoot());
 
     clone.setVpollMaxItems(getVpollMaxItems());
     clone.setVpollMaxActive(getVpollMaxActive());

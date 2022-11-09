@@ -37,8 +37,11 @@ public class ValidationError implements Serializable {
   /** Your information is incorrect: please supply exactly one attendee. */
   public static final String expectOneAttendee = prefix + "expectoneattendee";
 
-  /** Error: in submissions calendar. */
-  public static final String inSubmissionsCalendar = prefix + "insubmissionscalendar";
+  /** Error: not in submissions calendar. */
+  public static final String notInSubmissionsCalendar = prefix + "notinsubmissionscalendar";
+
+  /** Error: not in workflow calendar. */
+  public static final String notInWorkflowCalendar = prefix + "notinworkflowcalendar";
 
   /** Error: bad how. */
   public static final String invalidAccessHow = prefix + "invalid.how";

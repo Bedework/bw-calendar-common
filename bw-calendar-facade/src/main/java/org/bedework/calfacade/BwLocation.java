@@ -87,6 +87,7 @@ public class BwLocation extends BwEventProperty<BwLocation>
   private static final int alternateAddressIndex = 4;
   private static final int codeIndex = 5;
   private static final int keysIndex = 6; // Array delimited by newlines
+  private static final int doNotUseIndex = 7; // 1 char Y/N newlines
 
   private String link;
 
@@ -583,6 +584,23 @@ public class BwLocation extends BwEventProperty<BwLocation>
   @IcalProperty(pindex = PropertyInfoIndex.CODEIDX_FLD)
   public String getCode() {
     return fetchSubaddressSplit().getFld(codeIndex);
+  }
+
+  /** Set the do not use flag in the subaddress of the location.
+   *
+   * @param val true for do not use
+   */
+  public void setDoNotUse(final boolean val) {
+    assignSubaddressField(doNotUseIndex, String.valueOf(val));
+  }
+
+  /** get the do not use flag in the sub address of the location.
+   *
+   * @return true for do not use
+   */
+  @IcalProperty(pindex = PropertyInfoIndex.LOC_DONOTUSE_FLD)
+  public boolean getDoNotUse() {
+    return Boolean.parseBoolean(fetchSubaddressSplit().getFld(doNotUseIndex));
   }
 
   /** Set the Location's URL

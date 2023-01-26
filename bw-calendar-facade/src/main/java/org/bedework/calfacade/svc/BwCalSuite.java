@@ -20,11 +20,13 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwShareablePrincipal;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.misc.ToString;
+import org.bedework.util.misc.Util;
 
 /** This object represents a calendar suite in bedework. The calendar suites all
  * share common data but have their own set of preferences associated with a
@@ -96,9 +98,20 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
     super();
   }
 
-  /* ====================================================================
+  /* ==============================================================
+   *                   Override principal method
+   * ============================================================== */
+
+  @Override
+  public String getPrincipalRef() {
+    return Util.buildPath(true,
+                          BwPrincipal.calsuitePrincipalRoot,
+                          "/", getName());
+  }
+
+  /* ==============================================================
    *                   Bean methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Set the name
    *

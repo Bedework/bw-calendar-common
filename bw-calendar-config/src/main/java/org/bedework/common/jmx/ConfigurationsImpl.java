@@ -59,7 +59,7 @@ import javax.management.ObjectName;
  */
 public final class ConfigurationsImpl
         extends ConfBase<SystemPropertiesImpl>
-        implements Configurations, SystemConfMBean,
+        implements SystemConfMBean, Configurations,
         ConfigHolder<SystemPropertiesImpl> {
   private AutoKiller autoKiller;
 
@@ -121,7 +121,7 @@ public final class ConfigurationsImpl
    * @throws CalFacadeException on error
    */
   public ConfigurationsImpl() throws CalFacadeException {
-    super("org.bedework.bwengine:service=Conf",
+    super("org.bedework.bwengine:service=system",
           confDirName,
           Configurations.systemPropsNamePart);
 

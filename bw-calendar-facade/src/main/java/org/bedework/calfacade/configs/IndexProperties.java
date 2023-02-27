@@ -20,7 +20,7 @@ package org.bedework.calfacade.configs;
 
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.jmx.MBeanInfo;
-import org.bedework.util.opensearch.IndexingProperties;
+import org.bedework.util.indexing.IndexingProperties;
 
 import java.util.List;
 

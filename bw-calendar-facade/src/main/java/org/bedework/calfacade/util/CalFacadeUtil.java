@@ -61,6 +61,33 @@ public class CalFacadeUtil implements Serializable {
   }
    */
 
+  public static class HrefRecurrenceId {
+    public String recurrenceId;
+    public String hrefNorid;
+  }
+
+  public static HrefRecurrenceId getHrefRecurrenceId(
+          final String href) {
+    final HrefRecurrenceId res = new HrefRecurrenceId();
+
+    final int pos = href.lastIndexOf("/");
+    if (pos < 0) {
+      throw new RuntimeException("Bad href: " + href);
+    }
+
+    final int fragPos = href.lastIndexOf("#");
+
+    if (fragPos < pos) {
+      res.hrefNorid = href;
+      res.recurrenceId = null;
+    } else {
+      res.hrefNorid = href.substring(0, fragPos);
+      res.recurrenceId = href.substring(fragPos + 1);
+    }
+
+    return res;
+  }
+
   /** Update the to Collection with from elements. This is used to
    * add or remove members from a Collection managed by hibernate for example
    * where a replacement of the Collection is not allowed.

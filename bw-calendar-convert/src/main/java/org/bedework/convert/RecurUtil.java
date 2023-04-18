@@ -19,7 +19,9 @@
 package org.bedework.convert;
 
 import org.bedework.calfacade.BwDateTime;
+import org.bedework.calfacade.BwDuration;
 import org.bedework.calfacade.BwEvent;
+import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.ical.BwEvent2Ical;
 import org.bedework.convert.ical.IcalUtil;
@@ -493,6 +495,9 @@ public class RecurUtil {
    */
   public static class Recurrence {
     /** */
+    public BwEvent master;
+
+    /** */
     public BwDateTime start;
     /** */
     public BwDateTime end;
@@ -500,7 +505,7 @@ public class RecurUtil {
     public String recurrenceId;
 
     /** non-null if this is due to an override */
-    public BwEvent override;
+    public EventInfo override;
 
     /**
      * @param start bw start
@@ -508,15 +513,45 @@ public class RecurUtil {
      * @param recurrenceId recurrence id
      * @param override the override if any
      */
-    public Recurrence(final BwDateTime start,
-                      final BwDateTime end,
-                      final String recurrenceId,
-                      final BwEvent override) {
+    private Recurrence(final BwEvent master,
+                       final BwDateTime start,
+                       final BwDateTime end,
+                       final String recurrenceId,
+                       final EventInfo override) {
+      this.master = master;
       this.start = start;
       this.end = end;
       this.recurrenceId = recurrenceId;
       this.override = override;
     }
+  }
+
+  /** Generate a recurrence instance for the given master event
+   * based on the recurrenceId and the date/time info in the master.
+   *
+   * @param master event
+   * @param recurrenceId for the instance.
+   * @return instance object filled in.
+   * @throws CalFacadeException
+   */
+  public static Recurrence fromRecurrencId(final BwEvent master,
+                                           final String recurrenceId)
+          throws CalFacadeException {
+    final String stzid = master.getDtstart().getTzid();
+    final boolean dateOnly = master.getDtstart().getDateType();
+
+    final BwDateTime rstart = BwDateTime.makeBwDateTime(dateOnly,
+                                                        recurrenceId,
+                                                        stzid);
+    final BwDateTime rend = rstart.addDuration(
+            BwDuration.makeDuration(master.getDuration()));
+
+
+    return new Recurrence(master,
+                          rstart,
+                          rend,
+                          rstart.getDate(),
+                          null);
   }
 
   /**
@@ -532,70 +567,71 @@ public class RecurUtil {
                                                       final int maxInstances,
                                                       final String fromDate,
                                                       final String toDate) {
-      final BwEvent ev = ei.getEvent();
+    final BwEvent ev = ei.getEvent();
 
-      final RecurPeriods rp = getPeriods(ev, maxYears, maxInstances);
+    final RecurPeriods rp = getPeriods(ev, maxYears, maxInstances);
 
-      if (rp.instances.isEmpty()) {
-        // No instances for an alleged recurring event.
-        return null;
+    final Collection<Recurrence> recurrences = new ArrayList<>();
+
+    if (rp.instances.isEmpty()) {
+      // No instances for an alleged recurring event.
+      return recurrences;
+    }
+
+    final String stzid = ev.getDtstart().getTzid();
+
+    // ev.setLatestDate(Timezones.getUtc(rp.rangeEnd.toString(),
+    // stzid));
+    int instanceCt = maxInstances;
+
+    final boolean dateOnly = ev.getDtstart().getDateType();
+
+    final Map<String, EventInfo> overrides = new HashMap<>();
+
+    if (!Util.isEmpty(ei.getOverrides())) {
+      for (final EventInfo ov: ei.getOverrides()) {
+        overrides.put(ov.getRecurrenceId(), ov);
+      }
+    }
+
+    for (final Period p: rp.instances) {
+      String dtval = p.getStart().toString();
+      if (dateOnly) {
+        dtval = dtval.substring(0, 8);
       }
 
-      final Collection<Recurrence> recurrences = new ArrayList<>();
+      BwDateTime rstart = BwDateTime.makeBwDateTime(dateOnly, dtval, stzid);
 
-      final String stzid = ev.getDtstart().getTzid();
+      final String rid = rstart.getDate();
+      final BwDateTime rend;
+      final EventInfo override = overrides.get(rid);
 
-      // ev.setLatestDate(Timezones.getUtc(rp.rangeEnd.toString(),
-      // stzid));
-      int instanceCt = maxInstances;
-
-      final boolean dateOnly = ev.getDtstart().getDateType();
-
-      final Map<String, BwEvent> overrides = new HashMap<>();
-
-      if (!Util.isEmpty(ei.getOverrideProxies())) {
-        for (final BwEvent ov: ei.getOverrideProxies()) {
-          overrides.put(ov.getRecurrenceId(), ov);
-        }
-      }
-
-      for (final Period p: rp.instances) {
-        String dtval = p.getStart().toString();
+      if (override != null) {
+        final BwEvent ove = override.getEvent();
+        rstart = ove.getDtstart();
+        rend = ove.getDtend();
+      } else {
+        dtval = p.getEnd().toString();
         if (dateOnly) {
           dtval = dtval.substring(0, 8);
         }
 
-        BwDateTime rstart = BwDateTime.makeBwDateTime(dateOnly, dtval, stzid);
-
-        final String rid = rstart.getDate();
-        final BwDateTime rend;
-        final BwEvent override = overrides.get(rid);
-
-        if (override != null) {
-          rstart = override.getDtstart();
-          rend = override.getDtend();
-        } else {
-          dtval = p.getEnd().toString();
-          if (dateOnly) {
-            dtval = dtval.substring(0, 8);
-          }
-
-          rend = BwDateTime.makeBwDateTime(dateOnly, dtval, stzid);
-        }
-
-        if (inDateTimeRange(fromDate, toDate,
-                            rstart.getDate(), rend.getDate())) {
-          recurrences.add(new Recurrence(rstart, rend, rid, override));
-
-          instanceCt--;
-          if (instanceCt == 0) {
-            // That's all you're getting from me
-            break;
-          }
-        }
+        rend = BwDateTime.makeBwDateTime(dateOnly, dtval, stzid);
       }
 
-      return recurrences;
+      if (inDateTimeRange(fromDate, toDate,
+                          rstart.getDate(), rend.getDate())) {
+        recurrences.add(new Recurrence(ev, rstart, rend, rid, override));
+
+        instanceCt--;
+        if (instanceCt == 0) {
+          // That's all you're getting from me
+          break;
+        }
+      }
+    }
+
+    return recurrences;
   }
 
 

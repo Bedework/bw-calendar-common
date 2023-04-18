@@ -21,6 +21,7 @@ package org.bedework.calfacade.svc;
 import org.bedework.access.CurrentAccess;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttendee;
+import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwEventAnnotation;
 import org.bedework.calfacade.BwEventProxy;
@@ -268,6 +269,33 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
   public EventInfo getParent() {
     return parent;
+  }
+
+  public static EventInfo makeProxy(final BwEvent master,
+                                    final BwDateTime start,
+                                    final BwDateTime end,
+                                    final String recurrenceId,
+                                    final boolean isOverride) {
+    final BwEventAnnotation ann = new BwEventAnnotation();
+
+    // Fields that must be the same as master
+    ann.setColPath(master.getColPath());
+    ann.setName(master.getName());
+    ann.setUid(master.getUid());
+    ann.setOwnerHref(master.getOwnerHref());
+
+    ann.setDtstart(start);
+    ann.setDtend(end);
+    ann.setRecurrenceId(recurrenceId);
+    ann.setOwnerHref(master.getOwnerHref());
+    ann.setOverride(isOverride);
+    ann.setTombstoned(false);
+    ann.setName(master.getName());
+    ann.setUid(master.getUid());
+    ann.setTarget(master);
+    ann.setMaster(master);
+
+    return new EventInfo(new BwEventProxy(ann));
   }
 
   /** The full event as retrieved. This allows us to (re)index after

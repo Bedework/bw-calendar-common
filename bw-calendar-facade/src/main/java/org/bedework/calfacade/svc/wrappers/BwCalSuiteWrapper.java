@@ -20,6 +20,7 @@ package org.bedework.calfacade.svc.wrappers;
 
 import org.bedework.access.CurrentAccess;
 import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
 import org.bedework.calfacade.wrappers.EntityWrapper;
@@ -316,12 +317,12 @@ public class BwCalSuiteWrapper extends BwCalSuite
   }
 
   @Override
-  public int compareTo(final BwCalSuite that) {
+  public int compareTo(final BwPrincipal that) {
     if (that == this) {
       return 0;
     }
 
-    return getName().compareTo(that.getName());
+    return compare(this, that);
   }
 
   @Override

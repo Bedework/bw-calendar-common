@@ -327,13 +327,23 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
    * ==================================================================== */
 
   @Override
-  public int compare(final BwCalSuite cs1, final BwCalSuite cs2) {
+  public int compare(final BwPrincipal cs1,
+                     final BwPrincipal cs2) {
     final var res = super.compare(cs1, cs2);
     if (res != 0) {
       return res;
     }
 
-    return cs1.getName().compareTo(cs2.getName());
+    if (!(cs1 instanceof BwCalSuite)) {
+      return res;
+    }
+
+    if (!(cs2 instanceof BwCalSuite)) {
+      return res;
+    }
+
+    return ((BwCalSuite)cs1).getName().compareTo(
+            ((BwCalSuite)cs2).getName());
   }
 
   @Override

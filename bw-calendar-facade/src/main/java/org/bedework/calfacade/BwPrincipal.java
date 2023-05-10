@@ -68,9 +68,9 @@ import java.util.TreeSet;
 @Dump(firstFields = {"account","principalRef"})
 @JsonIgnoreProperties({"aclAccount"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<T>
+public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<BwPrincipal>
                                   implements AccessPrincipal,
-                                  Comparator<T> {
+                                  Comparator<BwPrincipal> {
   public final static String principalRoot = "/principals/";
 
   public final static String groupPrincipalRoot = "/principals/groups/";
@@ -747,7 +747,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<T
    * ============================================================== */
 
   @Override
-  public int compareTo(final T that) {
+  public int compareTo(final BwPrincipal that) {
     if (that == this) {
       return 0;
     }
@@ -756,7 +756,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<T
   }
 
   @Override
-  public int compare(final T p1, final T p2) {
+  public int compare(final BwPrincipal p1, final BwPrincipal p2) {
     if (p1.getKind() < p2.getKind()) {
       return -1;
     }
@@ -785,7 +785,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<T
       return false;
     }
 
-    return compareTo((T)o) == 0;
+    return compareTo((BwPrincipal)o) == 0;
   }
 
   @Override

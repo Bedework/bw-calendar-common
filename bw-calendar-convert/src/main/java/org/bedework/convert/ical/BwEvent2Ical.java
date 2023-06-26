@@ -40,7 +40,6 @@ import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
@@ -105,15 +104,12 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
-import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
 
 import java.net.URI;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 
 /** Class to provide utility methods for translating to VEvent ical4j classes
  *
@@ -667,6 +663,7 @@ public class BwEvent2Ical extends IcalUtil {
 
         pl.add(langProp(uidProp(prop, loc.getUid()), loc.getAddress()));
 
+        /* ------- Broken - suppress for th emoment
         final var compContainer = (ComponentContainer<Component>)comp;
         final var vlocRes = toVlocation(loc, Relto.start);
         if (vlocRes.isError()) {
@@ -695,6 +692,8 @@ public class BwEvent2Ical extends IcalUtil {
                          .add(vloc);
           }
         }
+
+        ---------- end broken vlocation code */
 
         addXproperty(pl, BwXproperty.xBedeworkLocationAddr,
                      null, loc.getAddressField());

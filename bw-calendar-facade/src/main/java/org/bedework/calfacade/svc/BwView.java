@@ -19,6 +19,7 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.caldav.util.filter.FilterBase;
+import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
@@ -42,14 +43,18 @@ public class BwView extends BwDbentity<BwView> {
    */
   private List<String> collectionPaths;
 
-  /* ====================================================================
+  /* ============================================================
    *                   Non db fields
-   * ==================================================================== */
+   * ============================================================ */
 
   // Non db for the moment
   private boolean conjunction;
 
   private FilterBase filter;
+
+  /** The collections
+   */
+  private List<BwCalendar> collections;
 
   /** Constructor
    *
@@ -58,9 +63,9 @@ public class BwView extends BwDbentity<BwView> {
     super();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   Bean methods
-   * ==================================================================== */
+   * ============================================================ */
 
   /** Set the name
    *
@@ -117,15 +122,15 @@ public class BwView extends BwDbentity<BwView> {
    * @param val a collection path
    */
   public void removeCollectionPath(final String val) {
-    List<String> c = getCollectionPaths();
+    final List<String> c = getCollectionPaths();
     if (c != null) {
       c.remove(val);
     }
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   Non db methods
-   * ==================================================================== */
+   * ============================================================ */
 
   /**
    *
@@ -160,9 +165,24 @@ public class BwView extends BwDbentity<BwView> {
     return filter;
   }
 
-  /* ====================================================================
+  /**
+   *
+   * @param val the list of collections or null
+   */
+  public void setCollections(final List<BwCalendar> val) {
+    collections = val;
+  }
+
+  /**
+   */
+  @NoDump
+  public List<BwCalendar> getCollections() {
+    return collections;
+  }
+
+  /* ============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================ */
 
   /** Comapre this view and an object
    *
@@ -189,12 +209,12 @@ public class BwView extends BwDbentity<BwView> {
 
   @Override
   public String toString() {
-    ToString ts = new ToString(this);
+    final ToString ts = new ToString(this);
 
     toStringSegment(ts);
 
     ts.append("name", getName());
-    ts.append("collections", getCollectionPaths());
+    ts.append("collectionPaths", getCollectionPaths());
 
     return ts.toString();
   }

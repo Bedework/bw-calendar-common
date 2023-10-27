@@ -33,9 +33,9 @@ import java.util.List;
  */
 @ConfInfo(elementName = "index-properties")
 public interface IndexProperties extends IndexingProperties {
-  /** Set the indexer config location
+  /**
    *
-   * @param val
+   * @param val The indexer config location
    */
   void setIndexerConfig(String val);
 
@@ -46,9 +46,9 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("indexer config location")
   String getIndexerConfig();
 
-  /** Account we run under
+  /**
    *
-   * @param val
+   * @param val Account we run under
    */
   void setAccount(String val);
 
@@ -80,9 +80,9 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("max number threads for principal reindexing")
   int getMaxPrincipalThreads();
 
-  /** True if we do public
+  /**
    *
-   * @param val
+   * @param val True if we do public
    */
   void setIndexPublic(final boolean val);
 
@@ -92,9 +92,9 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("true if we reindex public information")
   boolean getIndexPublic();
 
-  /** True if we do users
+  /**
    *
-   * @param val
+   * @param val True if we do users
    */
   void setIndexUsers(final boolean val);
 
@@ -104,9 +104,9 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("true if we reindex user information")
   boolean getIndexUsers();
 
-  /** True if we just discard messages.
+  /**
    *
-   * @param val
+   * @param val True if we just discard messages.
    */
   void setDiscardMessages(final boolean val);
 
@@ -116,9 +116,9 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("true if we discard indexer messages - false disablesindexing")
   boolean getDiscardMessages();
 
-  /** Paths to skip - ":" separated
+  /**
    *
-   * @param val
+   * @param val Paths to skip - ":" separated
    */
   void setSkipPaths(String val);
 
@@ -128,9 +128,21 @@ public interface IndexProperties extends IndexingProperties {
   @MBeanInfo("Paths to skip - \":\" separated")
   String getSkipPaths();
 
-  /** Paths to skip as a list
+  /**
    *
-   * @param val
+   * @param val Wait time in millis
+   */
+  void setContextInfoDelay(long val);
+
+  /**
+   * @return Wait time in millis
+   */
+  @MBeanInfo("Wait time in millis")
+  long getContextInfoDelay();
+
+  /**
+   *
+   * @param val Paths to skip as a list
    */
   void setSkipPathsList(List<String> val);
 

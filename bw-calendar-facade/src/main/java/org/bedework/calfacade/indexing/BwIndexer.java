@@ -36,6 +36,7 @@ import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwPreferences;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
+import org.bedework.util.indexing.ContextInfo;
 import org.bedework.util.misc.response.GetEntitiesResponse;
 import org.bedework.util.misc.response.GetEntityResponse;
 
@@ -410,6 +411,13 @@ public interface BwIndexer extends Serializable {
    * @throws CalFacadeException on error
    */
   Set<IndexInfo> getIndexInfo() throws CalFacadeException;
+
+  /** return the context info for the cluster.
+   * Somewhat opensearch specific
+   *
+   * @return possibly empty list.
+   */
+  List<ContextInfo> getContextInfo();
 
   /** Purge non-current indexes maintained by server.
    *

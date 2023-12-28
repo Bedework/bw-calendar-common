@@ -17,7 +17,6 @@ import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.convert.CnvUtil;
 import org.bedework.convert.Icalendar;
-import org.bedework.convert.ical.Ical2BwEvent;
 import org.bedework.convert.ical.IcalUtil;
 import org.bedework.jsforj.impl.values.dataTypes.JSLocalDateTimeImpl;
 import org.bedework.jsforj.impl.values.dataTypes.JSUTCDateTimeImpl;
@@ -74,7 +73,7 @@ import static org.bedework.util.misc.response.Response.Status.failed;
  */
 public class JsCal2BwEvent {
   private final static BwLogger logger =
-          new BwLogger().setLoggedClass(Ical2BwEvent.class);
+          new BwLogger().setLoggedClass(JsCal2BwEvent.class);
 
   /**
    *

@@ -1423,19 +1423,30 @@ public class BwEvent2JsCal {
       return false;
     }
 
+    final var jhrefVal = link.getHref(false);
+    final String jhref;
+    if (jhrefVal == null) {
+      jhref = null;
+    } else {
+      jhref = jhrefVal.getStringValue();
+    }
+
     if (att.getEncoding() == null) {
-      return Util.cmpObjval(att.getUri(),
-                            link.getHref()) == 0;
+      return Util.cmpObjval(att.getUri(), jhref) == 0;
     }
 
     if (att.getValue() == null) {
+      return jhref == null;
+    }
+
+    if (jhref == null) {
       return false;
     }
 
     return att.getValue().regionMatches(
-            0, link.getHref(),
+            0, jhref,
             dataUriPrefixLen,
-            link.getHref().length());
+            jhref.length());
   }
 
   /* ------------------- Attendees -------------------- */
@@ -1443,7 +1454,7 @@ public class BwEvent2JsCal {
   private static void doAttendees(final BwEvent event,
                                   final EventInfo master,
                                   final JSCalendarObject jsval,
-                                  final JSCalendarObject jsCalMaster) {
+                                  final JSCalendarObject jsCalMaster) throws Throwable {
     final Set<BwAttendee> attendees = event.getAttendees();
     final DifferResult<BwAttendee, Set<BwAttendee>> partDiff =
             differs(BwAttendee.class,
@@ -1704,7 +1715,7 @@ public class BwEvent2JsCal {
           final JSOverride jsval,
           final JSCalendarObject master,
           final BwAttendee attendee,
-          final BwAttendee masterAttendee) {
+          final BwAttendee masterAttendee) throws Throwable {
     /* Called because the attendee is present in the master but has
        changed in some way
      */
@@ -1773,7 +1784,7 @@ public class BwEvent2JsCal {
       if (mdir != null) {
         final var links = jsMatt.getLinks(false);
         if (links != null) {
-          final var linkp = links.findLink(mdir);
+          final var linkp = links.findLink(new URI(mdir));
           if (linkp != null) {
             jsval.setNull(JSPropertyNames.participants,
                           partId,

@@ -619,7 +619,7 @@ public class JsCal2BwEvent {
     }
 
     if (link != null) {
-      contact.setLink(link.getHref());
+      contact.setLink(link.getHref(false).getStringValue());
     }
 
     chg.addValue(PropertyInfoIndex.CONTACT, contact);
@@ -673,7 +673,7 @@ public class JsCal2BwEvent {
     }
 
     if (link != null) {
-      attendee.setDir(link.getHref());
+      attendee.setDir(link.getHref(false).getStringValue());
     }
 
     final var lang = value.getLanguage();

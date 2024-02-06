@@ -24,21 +24,21 @@ import javax.xml.namespace.QName;
  *
  * @author Mike Douglass
  */
-public class CalFacadeForbidden extends CalFacadeException {
+public class CalFacadeClosed extends CalFacadeException {
   QName qname;
 
   /** Constructor
    *
    */
-  public CalFacadeForbidden() {
-    super(forbidden);
+  public CalFacadeClosed() {
+    super("Call when closed");
   }
 
   /** Constructor
   *
    * @param t Throwable
    */
-  public CalFacadeForbidden(final Throwable t) {
+  public CalFacadeClosed(final Throwable t) {
     super(t);
   }
 
@@ -46,7 +46,7 @@ public class CalFacadeForbidden extends CalFacadeException {
   *
    * @param s String
    */
-  public CalFacadeForbidden(final String s) {
+  public CalFacadeClosed(final String s) {
     super(forbidden, s);
   }
 
@@ -55,7 +55,7 @@ public class CalFacadeForbidden extends CalFacadeException {
    * @param qname to identify error
    * @param s String
    */
-  public CalFacadeForbidden(final QName qname, final String s) {
+  public CalFacadeClosed(final QName qname, final String s) {
     super(forbidden, s);
     this.qname = qname;
   }

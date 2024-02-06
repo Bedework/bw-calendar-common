@@ -22,7 +22,7 @@ package org.bedework.calfacade.exc;
  *
  * @author Mike Douglass douglm   rpi.edu
  */
-public class CalFacadeException extends Exception {
+public class CalFacadeException extends RuntimeException {
   /* Property names used as message value. These should be used to
    * retrieve a localized message and can also be used to identify the
    * cause of the exception.

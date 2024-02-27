@@ -134,20 +134,6 @@ public class BwGroup<T extends BwGroup<?>> extends BwPrincipal<T> {
     return ms.add(mbr);
   }
 
-  /** Remove a group member. Return true if is was removed, false if it was
-   * not in the list
-   *
-   * @param mbr        BwPrincipal to remove
-   * @return boolean   true if removed
-   */
-  public boolean removeGroupMember(final BwPrincipal<?> mbr) {
-    final var ms = getGroupMembers();
-    if (ms == null) {
-      return false;
-    }
-    return getGroupMembers().remove(mbr);
-  }
-
   @Override
   protected void toStringSegment(final ToString ts) {
     super.toStringSegment(ts);
@@ -164,15 +150,29 @@ public class BwGroup<T extends BwGroup<?>> extends BwPrincipal<T> {
     ts.newLine().append("groupMembers", refs);
   }
 
-  /* ====================================================================
+
+  /* ==============================================================
    *                   Copying methods
-   * ==================================================================== */
+   * ============================================================== */
+  /** Remove a group member. Return true if is was removed, false if it was
+   * not in the list
+   *
+   * @param mbr        BwPrincipal to remove
+   * @return boolean   true if removed
+   */
+  public boolean removeGroupMember(final BwPrincipal<?> mbr) {
+    final var ms = getGroupMembers();
+    if (ms == null) {
+      return false;
+    }
+    return getGroupMembers().remove(mbr);
+  }
 
   /** Copy this to val
   *
   * @param val BwGroup target
   */
-  public void copyTo(final BwGroup val) {
+  public void copyTo(final BwGroup<?> val) {
     super.copyTo(val);
 
     final var ms = getGroupMembers();

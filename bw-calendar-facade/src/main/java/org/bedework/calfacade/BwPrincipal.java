@@ -68,9 +68,9 @@ import java.util.TreeSet;
 @Dump(firstFields = {"account","principalRef"})
 @JsonIgnoreProperties({"aclAccount"})
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
-public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<BwPrincipal>
-                                  implements AccessPrincipal,
-                                  Comparator<BwPrincipal> {
+public abstract class BwPrincipal<T extends BwPrincipal<?>>
+        extends BwDbentity<BwPrincipal<?>>
+        implements AccessPrincipal, Comparator<BwPrincipal<?>> {
   public final static String principalRoot = "/principals/";
 
   public final static String groupPrincipalRoot = "/principals/groups/";
@@ -152,7 +152,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
   protected BwPrincipalInfo principalInfo;
 
   /* groups of which this user is a member */
-  protected Collection<BwGroup> groups;
+  protected Collection<BwGroup<?>> groups;
 
   // Derived from the groups.
   protected Collection<String> groupNames;
@@ -174,7 +174,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
    * @param whoType - type of principal
    * @return a principal based on type - null if unknown.
    */
-  public static BwPrincipal makePrincipal(final int whoType) {
+  public static BwPrincipal<?> makePrincipal(final int whoType) {
     if (whoType == WhoDefs.whoTypeUser) {
       return makeUserPrincipal();
     }
@@ -193,21 +193,21 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
   /**
    * @return a user principal
    */
-  public static BwPrincipal makeUserPrincipal() {
+  public static BwPrincipal<?> makeUserPrincipal() {
     return new BwUser();
   }
 
   /**
    * @return a group principal
    */
-  public static BwPrincipal makeGroupPrincipal() {
+  public static BwPrincipal<?> makeGroupPrincipal() {
     return new BwGroup();
   }
 
   /**
    * @return a location/venue principal
    */
-  public static BwPrincipal makeLocationPrincipal() {
+  public static BwPrincipal<?> makeLocationPrincipal() {
     return new BwLocpr();
   }
 
@@ -265,7 +265,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
 
     return false;
   }
-  public static BwPrincipal makePrincipal(final String href) {
+  public static BwPrincipal<?> makePrincipal(final String href) {
     try {
       if (href.startsWith(calsuitePrincipalRoot)) {
         return new BwCalSuite();
@@ -309,7 +309,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
           who = uri;
         }
 
-        final BwPrincipal p;
+        final BwPrincipal<?> p;
 
         if ((whoType == WhoDefs.whoTypeGroup) &&
                 uri.startsWith(bwadmingroupPrincipalRoot)) {
@@ -355,7 +355,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
   public abstract int getKind();
 
   // Keep jackson happy
-  public void setKind(final int val) {}
+  public void setKind(final int ignoredVal) {}
   
   @Override
   public void setUnauthenticated(final boolean val) {
@@ -567,7 +567,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
    *
    * @param val        Collection of BwPrincipal
    */
-  public void setGroups(final Collection<BwGroup> val) {
+  public void setGroups(final Collection<BwGroup<?>> val) {
     groupNames = null;
     groups = val;
   }
@@ -578,7 +578,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
    */
   @NoDump
   @JsonIgnore
-  public Collection<BwGroup> getGroups() {
+  public Collection<BwGroup<?>> getGroups() {
     if (groups == null) {
       groups = new TreeSet<>();
     }
@@ -623,7 +623,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
   /**
    * @param val BwPrincipal
    */
-  public void addGroup(final BwGroup val) {
+  public void addGroup(final BwGroup<?> val) {
     getGroups().add(val);
   }
 
@@ -638,7 +638,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
   public Collection<String> getGroupNames() {
     if (groupNames == null) {
       groupNames = new TreeSet<>();
-      for (final BwGroup group: getGroups()) {
+      for (final BwGroup<?> group: getGroups()) {
         groupNames.add(group.getPrincipalRef());
       }
     }
@@ -667,7 +667,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
    */
   public static void toStringSegment(final ToString ts,
                                      final String name,
-                                     final BwPrincipal val) {
+                                     final BwPrincipal<?> val) {
     if (val == null) {
       ts.append(name, "**NULL**");
     } else {
@@ -689,7 +689,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
    *
    * @param val BwPrincipal target
    */
-  public void copyTo(final BwPrincipal val) {
+  public void copyTo(final BwPrincipal<?> val) {
     val.setAccount(getAccount());
     val.setPrincipalRef(getPrincipalRef());
     val.setId(getId());
@@ -785,7 +785,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>> extends BwDbentity<B
       return false;
     }
 
-    return compareTo((BwPrincipal)o) == 0;
+    return compareTo((BwPrincipal<?>)o) == 0;
   }
 
   @Override

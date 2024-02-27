@@ -29,7 +29,7 @@ public class BwShareablePrincipal<T extends BwPrincipal<?>>
   /* Non-db field */
 
   /** The user who created the entity */
-  private BwPrincipal creatorEnt;
+  private BwPrincipal<?> creatorEnt;
 
   @Override
   public int getKind() {
@@ -86,13 +86,13 @@ public class BwShareablePrincipal<T extends BwPrincipal<?>>
 
   @Override
   @NoDump
-  public void setCreatorEnt(final BwPrincipal val) {
+  public void setCreatorEnt(final BwPrincipal<?> val) {
     creatorEnt = val;
   }
 
   @Override
   @JsonIgnore
-  public BwPrincipal getCreatorEnt() {
+  public BwPrincipal<?> getCreatorEnt() {
     return creatorEnt;
   }
 
@@ -114,9 +114,9 @@ public class BwShareablePrincipal<T extends BwPrincipal<?>>
 
   /** Copy this objects fields into the parameter
    *
-   * @param val
+   * @param val Object to copy into
    */
-  public void copyTo(final BwShareablePrincipal val) {
+  public void copyTo(final BwShareablePrincipal<?> val) {
     super.copyTo(val);
     val.setCreatorHref(getCreatorHref());
     // CLONE val.setCreator((BwUser)getCreator().clone());
@@ -127,7 +127,7 @@ public class BwShareablePrincipal<T extends BwPrincipal<?>>
 
   @Override
   public Object clone() {
-    final BwShareablePrincipal sp = new BwShareablePrincipal();
+    final BwShareablePrincipal<?> sp = new BwShareablePrincipal<>();
 
     copyTo(sp);
 

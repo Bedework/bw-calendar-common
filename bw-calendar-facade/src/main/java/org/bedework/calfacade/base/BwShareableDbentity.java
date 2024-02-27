@@ -46,7 +46,7 @@ public abstract class BwShareableDbentity<T>
   /* Non-db field */
 
   /** The user who created the entity */
-  private BwPrincipal creatorEnt;
+  private BwPrincipal<?> creatorEnt;
 
   /** No-arg constructor
    *
@@ -96,13 +96,13 @@ public abstract class BwShareableDbentity<T>
 
   @Override
   @NoDump
-  public void setCreatorEnt(final BwPrincipal val) {
+  public void setCreatorEnt(final BwPrincipal<?> val) {
     creatorEnt = val;
   }
 
   @Override
   @JsonIgnore
-  public BwPrincipal getCreatorEnt() {
+  public BwPrincipal<?> getCreatorEnt() {
     return creatorEnt;
   }
 
@@ -125,7 +125,7 @@ public abstract class BwShareableDbentity<T>
   /** Copy this objects fields into the parameter. Don't clone many of the
    * referenced objects
    *
-   * @param val
+   * @param val Object to copy into
    */
   public void shallowCopyTo(final BwShareableDbentity<?> val) {
     super.shallowCopyTo(val);
@@ -137,7 +137,7 @@ public abstract class BwShareableDbentity<T>
 
   /** Copy this objects fields into the parameter
    *
-   * @param val
+   * @param val Object to copy into
    */
   public void copyTo(final BwShareableDbentity<?> val) {
     super.copyTo(val);

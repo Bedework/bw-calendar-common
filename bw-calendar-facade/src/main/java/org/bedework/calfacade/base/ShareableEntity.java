@@ -39,11 +39,11 @@ public interface ShareableEntity extends OwnedEntity {
    *
    * @param val     BwPrincipal creator of the entity
    */
-  void setCreatorEnt(BwPrincipal val);
+  void setCreatorEnt(BwPrincipal<?> val);
 
   /**
    *
    * @return BwPrincipal    creator of the entity
    */
-  BwPrincipal getCreatorEnt();
+  BwPrincipal<?> getCreatorEnt();
 }

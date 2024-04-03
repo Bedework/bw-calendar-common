@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.bedework</groupId>
     <artifactId>bedework-parent</artifactId>
-    <version>49</version>
+    <version>55</version>
   </parent>
 
   <artifactId>bw-calendar-common</artifactId>
@@ -23,13 +23,81 @@
 
   <modules>
     <module>bw-calendar-annotations</module>
-    <module>bw-calendar-convert</module>
-    <module>bw-calendar-facade</module>
     <module>bw-calendar-api</module>
     <module>bw-calendar-api-ro</module>
-    <module>bw-calendar-mail</module>
-    <module>bw-calendar-sysevents-msgs</module>
-    <module>bw-calendar-sysevents-common</module>
     <module>bw-calendar-config</module>
+    <module>bw-calendar-convert</module>
+    <module>bw-calendar-facade</module>
+    <module>bw-calendar-mail</module>
+    <module>bw-calendar-sysevents-common</module>
+    <module>bw-calendar-sysevents-msgs</module>
   </modules>
+
+  <dependencyManagement>
+    <!-- These dependencies ensure all transitive dependencies
+       during builds of this project resolve to project.version
+       and NOT the version set in bedework-parent
+    -->
+    <dependencies>
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-annotations</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-api-ro</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-config</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-convert</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-facade</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-mail</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-sysevents-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.bedework</groupId>
+        <artifactId>bw-calendar-sysevents-msgs</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

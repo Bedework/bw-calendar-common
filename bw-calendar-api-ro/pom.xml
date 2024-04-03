@@ -7,7 +7,7 @@
   <parent>
     <artifactId>bw-calendar-common</artifactId>
     <groupId>org.bedework</groupId>
-    <version>4.1.2</version>
+    <version>4.1.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>bw-calendar-api-ro</artifactId>

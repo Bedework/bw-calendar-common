@@ -1140,7 +1140,9 @@ public class Ical2BwEvent extends IcalUtil {
             continue;
           }
 
-          if (vpoll && (event || task)) {
+          if (vpoll &&
+                  (subComp instanceof VEvent ||
+                           subComp instanceof VToDo)) {
             final var vresp = processCandidate((VPoll)val,
                                                subComp,
                                                evinfo,

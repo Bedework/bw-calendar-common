@@ -697,6 +697,7 @@ public class ToXEvent extends Xutil {
             }
             */
             XcalUtil.initUntilRecur(u, until.toString());
+            rt.setUntil(u);
           }
 
           if (r.getInterval() > 0) {

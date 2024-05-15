@@ -828,9 +828,9 @@ public class Ical2BwEvent extends IcalUtil {
           case PERCENT_COMPLETE:
             /* ------------------- PercentComplete -------------------- */
 
-            Integer ival = ((PercentComplete)prop).getPercentage();
-            if (chg.changed(pi, ev.getPercentComplete(), ival)) {
-              ev.setPercentComplete(ival);
+            final Integer percentage = ((PercentComplete)prop).getPercentage();
+            if (chg.changed(pi, ev.getPercentComplete(), percentage)) {
+              ev.setPercentComplete(percentage);
             }
 
             break;
@@ -858,7 +858,7 @@ public class Ical2BwEvent extends IcalUtil {
           case POLL_WINNER:
             /* ------------------- Poll winner -------------------- */
 
-            ival = ((PollWinner)prop).getPollwinner();
+            Integer ival = ((PollWinner)prop).getPollwinner();
             if (chg.changed(pi, ev.getPollWinner(), ival)) {
               ev.setPollWinner(ival);
             }
@@ -1051,12 +1051,9 @@ public class Ical2BwEvent extends IcalUtil {
             break;
 
           default:
-            if (logger.debug()) {
-              logger.debug("Unsupported property with index " + pi +
-                                    "; class " + prop.getClass() +
-                                    " and value " + pval);
-            }
-
+            logger.debug("Unsupported property with index %s; " +
+                                 "class %s and value %s",
+                         pi, prop.getClass(), pval);
         }
       }
 

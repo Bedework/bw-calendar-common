@@ -130,6 +130,8 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 
+import static net.fortuna.ical4j.model.property.ParticipantType.VALUE_VOTER;
+
 /** Class to provide utility methods for ical4j classes
  *
  * @author Mike Douglass   douglm    rpi.edu
@@ -397,7 +399,7 @@ public class IcalUtil {
     }
   }
 
-  /** Make an organizer
+  /** Make an organizer from an ical4j Organizer.
    *
    * @param cb          IcalCallback object
    * @param orgProp ical4j Organizer
@@ -416,6 +418,29 @@ public class IcalUtil {
     org.setLanguage(getOptStr(pars, "LANGUAGE"));
     org.setScheduleStatus(getOptStr(pars, "SCHEDULE-STATUS"));
     org.setSentBy(getOptStr(pars, "SENT-BY"));
+
+    return org;
+  }
+
+  /** Make an organizer from an ical4j Participant.
+   *
+   * @param cb          IcalCallback object
+   * @param part ical4j Participant
+   * @return BwOrganizer
+   */
+  public static BwOrganizer getOrganizer(final IcalCallback cb,
+                                         final Participant part) {
+    final BwOrganizer org = new BwOrganizer();
+
+    org.setOrganizerUri(cb.getCaladdr(
+            part.getCalendarAddress().getValue()));
+/*
+    org.setCn(IcalUtil.getOptStr(pars, "CN"));
+    org.setDir(getOptStr(pars, "DIR"));
+    org.setLanguage(getOptStr(pars, "LANGUAGE"));
+    org.setScheduleStatus(getOptStr(pars, "SCHEDULE-STATUS"));
+    org.setSentBy(getOptStr(pars, "SENT-BY"));
+ */
 
     return org;
   }
@@ -678,14 +703,20 @@ public class IcalUtil {
     /* Should be one vpoll object */
 
     final VPoll vpoll = ical.getComponent(Component.VPOLL);
-    for (final Participant voter: vpoll.getVoters()) {
+    for (final Participant part: vpoll.getParticipants()) {
       final CalendarAddress ca =
-              voter.getProperty(Property.CALENDAR_ADDRESS);
+              part.getCalendarAddress();
       if (ca == null) {
         continue;
       }
 
-      voters.put(ca.getValue(), voter);
+      final var partType = part.getParticipantType();
+      if ((partType == null) ||
+              !partType.getTypes().containsIgnoreCase(VALUE_VOTER)) {
+        continue;
+      }
+
+      voters.put(ca.getValue(), part);
     }
 
     return voters;

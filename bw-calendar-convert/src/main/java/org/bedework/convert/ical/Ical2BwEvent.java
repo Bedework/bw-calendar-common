@@ -94,6 +94,7 @@ import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Geo;
 import net.fortuna.ical4j.model.property.Organizer;
+import net.fortuna.ical4j.model.property.ParticipantType;
 import net.fortuna.ical4j.model.property.PercentComplete;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.PollWinner;
@@ -116,8 +117,11 @@ import javax.xml.ws.Holder;
 
 import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
+import static net.fortuna.ical4j.model.property.ParticipantType.VALUE_OWNER;
+import static net.fortuna.ical4j.model.property.ParticipantType.VALUE_VOTER;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
+import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ORGANIZER;
 import static org.bedework.util.misc.response.Response.Status.failed;
 import static org.bedework.util.misc.response.Response.Status.ok;
 
@@ -1098,12 +1102,12 @@ public class Ical2BwEvent extends IcalUtil {
 
           if (subComp instanceof Participant) {
             if (vpoll) {
-              final var vresp = processVoter(cb,
-                                             (VPoll)val,
-                                             (Participant)subComp,
-                                             evinfo,
-                                             chg,
-                                             mergeAttendees);
+              final var vresp =
+                      processParticipant(cb,
+                                         (Participant)subComp,
+                                         evinfo,
+                                         chg,
+                                         mergeAttendees);
               if (!vresp.isOk()) {
                 return Response.fromResponse(resp, vresp);
               }
@@ -1615,49 +1619,72 @@ public class Ical2BwEvent extends IcalUtil {
     return resp;
   }
 
-  private static Response processVoter(final IcalCallback cb,
-                                       final VPoll val,
-                                       final Participant part,
-                                       final EventInfo vpoll,
-                                       final ChangeTable changes,
-                                       final boolean mergeAttendees) {
-    final ComponentList<Participant> voters = val.getVoters();
+  private static Response processParticipant(final IcalCallback cb,
+                                             final Participant part,
+                                             final EventInfo vpoll,
+                                             final ChangeTable changes,
+                                             final boolean mergeAttendees) {
+    final ParticipantType partType = part.getParticipantType();
 
-    if (Util.isEmpty(voters)) {
+    if (partType == null) {
       return Response.ok();
     }
 
-    //final Set<String> vcuas = new TreeSet<>();
+    final boolean isOwner =
+            partType.getTypes()
+                    .containsIgnoreCase(VALUE_OWNER);
+
+    final boolean isVoter =
+            partType.getTypes()
+                    .containsIgnoreCase(VALUE_VOTER);
+
+    if (!isOwner && !isVoter) {
+      return Response.ok();
+    }
+
+    final CalendarAddress calAddr =
+            part.getProperty(CALENDAR_ADDRESS);
+
+    if (calAddr == null) {
+      return Response.error(new Response(),
+                            "No calendar address");
+    }
+
     final BwEvent event = vpoll.getEvent();
 
-    if (!Util.isEmpty(event.getVoters())) {
-      event.clearVoters();
-    }
-
-    final String voter = part.toString();
-    event.addVoter(voter);
-
-    changes.addValue(PropertyInfoIndex.VOTER, voter);
-
-    final Property p = part.getProperty(CALENDAR_ADDRESS);
-
-    if (p == null) {
-      return Response.error(new Response(),
-                            "Voter - no calendar address");
-    }
-
-    /* Was checking for duplicates
-      final String vcua = p.getValue();
-
-      if (vcuas.contains(vcua)) {
-        return Response.error(new Response(),
-                              "Voter - duplicate VOTER for " + vcua);
+    if (isVoter) {
+      if (!Util.isEmpty(event.getVoters())) {
+        event.clearVoters();
       }
-      vcuas.add(vcua);
-      */
 
-    processVoter((CalendarAddress)p, vpoll, cb, changes, mergeAttendees);
+      final String voter = part.toString();
+      event.addVoter(voter);
+
+      changes.addValue(PropertyInfoIndex.VOTER, voter);
+
+      processVoter(calAddr, vpoll, cb, changes,
+                   mergeAttendees);
+    }
+
+    if (isOwner) {
+      if (event.getOrganizer() != null) {
+        return Response.error(new Response(),
+                              "Multiple owners");
+      }
+
+      processOwner(part, vpoll, cb, changes);
+    }
+
     return Response.ok();
+  }
+
+  private static void processOwner(final Participant part,
+                                   final EventInfo vpoll,
+                                   final IcalCallback cb,
+                                   final ChangeTable chg) {
+    final BwEvent ev = vpoll.getEvent();
+
+    chg.addValue(ORGANIZER, IcalUtil.getOrganizer(cb, part));
   }
 
   private static void processVoter(final CalendarAddress ca,

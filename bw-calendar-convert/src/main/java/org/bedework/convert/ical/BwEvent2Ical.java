@@ -184,7 +184,7 @@ public class BwEvent2Ical extends IcalUtil {
        */
 
       String strval = val.getRecurrenceId();
-      if ((strval != null) && (strval.length() > 0)) {
+      if ((strval != null) && (!strval.isEmpty())) {
         isInstance = true;
 
         final BwEvent anEv;
@@ -401,11 +401,13 @@ public class BwEvent2Ical extends IcalUtil {
 
       /* ------------------- Organizer -------------------- */
 
-      final BwOrganizer org = val.getOrganizer();
-      if (org != null) {
-        prop = setOrganizer(org);
-        mergeXparams(prop, xcomp);
-        pl.add(prop);
+      if (!vpoll) {
+        final BwOrganizer org = val.getOrganizer();
+        if (org != null) {
+          prop = setOrganizer(org);
+          mergeXparams(prop, xcomp);
+          pl.add(prop);
+        }
       }
 
       /* ------------------- PercentComplete -------------------- */
@@ -458,12 +460,12 @@ public class BwEvent2Ical extends IcalUtil {
           final String relval = info[i + 2];
 
           ParameterList rtpl = null;
-          if ((reltype != null) && (reltype.length() > 0)) {
+          if ((reltype != null) && (!reltype.isEmpty())) {
             rtpl = new ParameterList();
             rtpl.add(new RelType(reltype));
           }
 
-          if (valtype.length() > 0) {
+          if (!valtype.isEmpty()) {
             if (rtpl == null) {
               rtpl = new ParameterList();
             }
@@ -524,7 +526,7 @@ public class BwEvent2Ical extends IcalUtil {
       if (!todo && !vpoll) {
         strval = val.getPeruserTransparency(currentPrincipal);
 
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           pl.add(new Transp(strval));
         }
       }
@@ -542,7 +544,7 @@ public class BwEvent2Ical extends IcalUtil {
         strval = strval.trim();
       }
 
-      if ((strval != null) && (strval.length() > 0)) {
+      if ((strval != null) && (!strval.isEmpty())) {
         final URI uri = Util.validURI(strval);
         if (uri != null) {
           pl.add(new Url(uri));
@@ -615,19 +617,19 @@ public class BwEvent2Ical extends IcalUtil {
 
         strval = val.getPollAcceptResponse();
 
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           pl.add(new AcceptResponse(strval));
         }
 
         strval = val.getPollMode();
 
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           pl.add(new PollMode(strval));
         }
 
         strval = val.getPollProperties();
 
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           pl.add(new PollProperties(strval));
         }
 
@@ -789,8 +791,8 @@ public class BwEvent2Ical extends IcalUtil {
       from = pl.get(0);
     } else {
       // Look for value?
-      for (final Object aPl : pl) {
-        from = (Property)aPl;
+      for (final Property aPl: pl) {
+        from = aPl;
         if (from.getValue().equals(pval)) {
           break;
         }
@@ -804,17 +806,13 @@ public class BwEvent2Ical extends IcalUtil {
     final ParameterList params = from.getParameters();
 
     for (final Parameter param: params) {
-      if (!(param instanceof XParameter)) {
-        continue;
+      if (param instanceof final XParameter xpar) {
+        if (xpar.getName().equalsIgnoreCase(BwXproperty.xparUid)) {
+          continue;
+        }
+
+        p.getParameters().add(xpar);
       }
-
-      final XParameter xpar = (XParameter)param;
-
-      if (xpar.getName().equalsIgnoreCase(BwXproperty.xparUid)) {
-        continue;
-      }
-
-      p.getParameters().add(xpar);
     }
   }
 

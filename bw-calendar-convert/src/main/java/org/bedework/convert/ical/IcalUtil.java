@@ -112,9 +112,9 @@ import net.fortuna.ical4j.model.property.StructuredData;
 import net.fortuna.ical4j.model.property.Trigger;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
-import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
 import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -197,7 +197,7 @@ public class IcalUtil {
 
     try {
       sb.append("BEGIN:VCALENDAR\n");
-      sb.append(Version.VERSION_2_0);
+      sb.append(ImmutableVersion.VERSION_2_0);
       sb.append("\n");
       sb.append(xcompPropVal);
       if (!xcompPropVal.endsWith("\n")) {

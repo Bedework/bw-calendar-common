@@ -39,7 +39,7 @@ import net.fortuna.ical4j.model.ComponentList;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.property.Method;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 import java.io.Serializable;
 import java.io.StringWriter;
@@ -220,7 +220,7 @@ public class JcalHandler implements Serializable {
       jgen.writeStartArray();
 
       JsonProperty.addFields(jgen, new ProdId(BwVersion.prodId));
-      JsonProperty.addFields(jgen, Version.VERSION_2_0);
+      JsonProperty.addFields(jgen, ImmutableVersion.VERSION_2_0);
 
       if ((methodType > ScheduleMethods.methodTypeNone) &&
               (methodType < ScheduleMethods.methodTypeUnknown)) {

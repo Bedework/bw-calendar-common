@@ -37,7 +37,7 @@ import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RRule;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 import java.util.Collection;
 
@@ -154,7 +154,7 @@ public class XmlTranslator extends IcalTranslator {
 
     xmlProp(xml, Property.PRODID, XcalTags.textVal, prodId);
     xmlProp(xml, Property.VERSION, XcalTags.textVal,
-            Version.VERSION_2_0.getValue());
+            ImmutableVersion.VERSION_2_0.getValue());
 
     xml.closeTag(XcalTags.properties);
 

@@ -73,36 +73,37 @@ public class Xutil {
 
   protected static ObjectFactory of = new ObjectFactory();
 
-  protected static void listFromNumberList(final List<String> l,
-                                           final NumberList nl) {
+  protected static void listFromNumberList(
+          final List<String> l,
+          final NumberList nl) {
     if (nl == null) {
       return;
     }
 
-    for (final Object o: nl) {
-      l.add((String)o);
+    for (final var o: nl) {
+      l.add(o.toString());
     }
   }
 
-  protected static void intlistFromNumberList(final List<Integer> l,
-                                              final NumberList nl) {
+  protected static void intlistFromNumberList(
+          final List<Integer> l,
+          final NumberList nl) {
     if (nl == null) {
       return;
     }
 
-    for (final Object o: nl) {
-      l.add(Integer.valueOf((String)o));
-    }
+    l.addAll(nl);
   }
 
-  protected static void bigintlistFromNumberList(final List<BigInteger> l,
-                                                 final NumberList nl) {
+  protected static void bigintlistFromNumberList(
+          final List<BigInteger> l,
+          final NumberList nl) {
     if (nl == null) {
       return;
     }
 
-    for (final Object o: nl) {
-      l.add(BigInteger.valueOf(Integer.parseInt((String)o)));
+    for (final Integer o: nl) {
+      l.add(BigInteger.valueOf(o.longValue()));
     }
   }
 

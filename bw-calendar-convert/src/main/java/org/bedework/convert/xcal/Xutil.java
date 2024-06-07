@@ -190,22 +190,6 @@ public class Xutil {
           final DateDatetimePropertyType p,
           final BwDateTime dt,
           final boolean forceUTC) {
-    /*
-    if (forceUTC) {
-      p.setDateTime(dt.getDate());
-      return p;
-    }
-
-    if (dt.getDateType()) {
-      p.setDate(dt.getDtval());
-      return p;
-    }
-
-    p.setDateTime(dt.getDtval());
-
-    tzidProp(p, dt.getTzid());
-    */
-
     final String dtval;
     if (forceUTC) {
       dtval = dt.getDate();
@@ -259,11 +243,12 @@ public class Xutil {
    *                   us to push them through soap
    */
   @SuppressWarnings("deprecation")
-  public static void xpropertiesToXcal(final List<JAXBElement<? extends BasePropertyType>> pl,
-                                       final List<BwXproperty> xprops,
-                                       final BaseComponentType pattern,
-                                       final Class<?> masterClass,
-                                       final boolean wrapXprops) {
+  public static void xpropertiesToXcal(
+          final List<JAXBElement<? extends BasePropertyType>> pl,
+          final List<BwXproperty> xprops,
+          final BaseComponentType pattern,
+          final Class<?> masterClass,
+          final boolean wrapXprops) {
     for (final BwXproperty x: xprops) {
       // Skip any timezone we saved in the event.
       final String xname = x.getName();
@@ -273,169 +258,172 @@ public class Xutil {
         continue;
       }
 
-      if (xname.equals(BwXproperty.bedeworkExsynchEndtzid)) {
-        if (!emit(pattern, masterClass, XBedeworkExsynchEndtzidPropType.class)) {
-          continue;
-        }
-
-        final XBedeworkExsynchEndtzidPropType p =
-                new XBedeworkExsynchEndtzidPropType();
-        p.setText(val);
-
-        pl.add(of.createXBedeworkExsynchEndtzid(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkExsynchLastmod)) {
-        if (!emit(pattern, masterClass, XBedeworkExsynchLastmodPropType.class)) {
-          continue;
-        }
-
-        final XBedeworkExsynchLastmodPropType p =
-                new XBedeworkExsynchLastmodPropType();
-        p.setText(val);
-
-        pl.add(of.createXBedeworkExsynchLastmod(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkExsynchOrganizer)) {
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkExsynchStarttzid)) {
-        if (!emit(pattern, masterClass, XBedeworkExsynchStarttzidPropType.class)) {
-          continue;
-        }
-
-        final XBedeworkExsynchStarttzidPropType p =
-                new XBedeworkExsynchStarttzidPropType();
-        p.setText(val);
-
-        pl.add(of.createXBedeworkExsynchStarttzid(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkEventRegStart)) {
-        if (!emit(pattern, masterClass, XBedeworkRegistrationStartPropType.class)) {
-          continue;
-        }
-
-        final XBedeworkRegistrationStartPropType p =
-                new XBedeworkRegistrationStartPropType();
-        String tzid = null;
-        for (final Xpar xp: x.getParameters()) {
-          if (xp.getName().equalsIgnoreCase("TZID")) {
-            tzid = xp.getValue();
-            break;
+      switch (xname) {
+        case BwXproperty.bedeworkExsynchEndtzid -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkExsynchEndtzidPropType.class)) {
+            continue;
           }
-        }
 
-        XcalUtil.initDt(p, val, tzid);
+          final XBedeworkExsynchEndtzidPropType p =
+                  new XBedeworkExsynchEndtzidPropType();
+          p.setText(val);
 
-        pl.add(of.createXBedeworkRegistrationStart(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkEventRegEnd)) {
-        if (!emit(pattern, masterClass, XBedeworkRegistrationEndPropType.class)) {
+          pl.add(of.createXBedeworkExsynchEndtzid(p));
           continue;
         }
-
-        final XBedeworkRegistrationEndPropType p =
-                new XBedeworkRegistrationEndPropType();
-        String tzid = null;
-        for (final Xpar xp: x.getParameters()) {
-          if (xp.getName().equalsIgnoreCase("TZID")) {
-            tzid = xp.getValue();
-            break;
+        case BwXproperty.bedeworkExsynchLastmod -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkExsynchLastmodPropType.class)) {
+            continue;
           }
-        }
 
-        XcalUtil.initDt(p, val, tzid);
+          final XBedeworkExsynchLastmodPropType p =
+                  new XBedeworkExsynchLastmodPropType();
+          p.setText(val);
 
-        pl.add(of.createXBedeworkRegistrationEnd(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkEventRegMaxTickets)) {
-        if (!emit(pattern, masterClass, XBedeworkMaxTicketsPropType.class)) {
+          pl.add(of.createXBedeworkExsynchLastmod(p));
           continue;
         }
-
-        final XBedeworkMaxTicketsPropType p =
-                new XBedeworkMaxTicketsPropType();
-
-        p.setInteger(BigInteger.valueOf(Long.parseLong(val.trim())));
-
-        pl.add(of.createXBedeworkMaxTickets(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkEventRegMaxTicketsPerUser)) {
-        if (!emit(pattern, masterClass, XBedeworkMaxTicketsPerUserPropType.class)) {
+        case BwXproperty.bedeworkExsynchOrganizer -> {
           continue;
         }
+        case BwXproperty.bedeworkExsynchStarttzid -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkExsynchStarttzidPropType.class)) {
+            continue;
+          }
 
-        final XBedeworkMaxTicketsPerUserPropType p =
-                new XBedeworkMaxTicketsPerUserPropType();
+          final XBedeworkExsynchStarttzidPropType p =
+                  new XBedeworkExsynchStarttzidPropType();
+          p.setText(val);
 
-        p.setInteger(BigInteger.valueOf(Long.parseLong(val.trim())));
-
-        pl.add(of.createXBedeworkMaxTicketsPerUser(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.bedeworkEventRegWaitListLimit)) {
-        if (!emit(pattern, masterClass, XBedeworkWaitListLimitPropType.class)) {
+          pl.add(of.createXBedeworkExsynchStarttzid(p));
           continue;
         }
+        case BwXproperty.bedeworkEventRegStart -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkRegistrationStartPropType.class)) {
+            continue;
+          }
 
-        final XBedeworkWaitListLimitPropType p =
-                new XBedeworkWaitListLimitPropType();
-        p.setText(val);
+          final XBedeworkRegistrationStartPropType p =
+                  new XBedeworkRegistrationStartPropType();
+          String tzid = null;
+          for (final Xpar xp: x.getParameters()) {
+            if (xp.getName().equalsIgnoreCase("TZID")) {
+              tzid = xp.getValue();
+              break;
+            }
+          }
 
-        pl.add(of.createXBedeworkWaitListLimit(p));
-        continue;
-      }
+          XcalUtil.initDt(p, val, tzid);
 
-      if (xname.equals(BwXproperty.xBedeworkCategories)) {
-        if (!emit(pattern, masterClass, XBwCategoriesPropType.class)) {
+          pl.add(of.createXBedeworkRegistrationStart(p));
           continue;
         }
+        case BwXproperty.bedeworkEventRegEnd -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkRegistrationEndPropType.class)) {
+            continue;
+          }
 
-        final XBwCategoriesPropType p = new XBwCategoriesPropType();
+          final XBedeworkRegistrationEndPropType p =
+                  new XBedeworkRegistrationEndPropType();
+          String tzid = null;
+          for (final Xpar xp: x.getParameters()) {
+            if (xp.getName().equalsIgnoreCase("TZID")) {
+              tzid = xp.getValue();
+              break;
+            }
+          }
 
-        p.getText().add(val);
+          XcalUtil.initDt(p, val, tzid);
 
-        pl.add(of.createXBedeworkCategories(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.xBedeworkContact)) {
-        if (!emit(pattern, masterClass, XBwContactPropType.class)) {
+          pl.add(of.createXBedeworkRegistrationEnd(p));
           continue;
         }
+        case BwXproperty.bedeworkEventRegMaxTickets -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkMaxTicketsPropType.class)) {
+            continue;
+          }
 
-        final XBwContactPropType p = new XBwContactPropType();
+          final XBedeworkMaxTicketsPropType p =
+                  new XBedeworkMaxTicketsPropType();
 
-        p.setText(val);
+          p.setInteger(
+                  BigInteger.valueOf(Long.parseLong(val.trim())));
 
-        pl.add(of.createXBedeworkContact(p));
-        continue;
-      }
-
-      if (xname.equals(BwXproperty.xBedeworkLocation)) {
-        if (!emit(pattern, masterClass, XBwLocationPropType.class)) {
+          pl.add(of.createXBedeworkMaxTickets(p));
           continue;
         }
+        case BwXproperty.bedeworkEventRegMaxTicketsPerUser -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkMaxTicketsPerUserPropType.class)) {
+            continue;
+          }
 
-        final XBwLocationPropType p = new XBwLocationPropType();
+          final XBedeworkMaxTicketsPerUserPropType p =
+                  new XBedeworkMaxTicketsPerUserPropType();
 
-        p.setText(val);
+          p.setInteger(
+                  BigInteger.valueOf(Long.parseLong(val.trim())));
 
-        pl.add(of.createXBedeworkLocation(p));
-        continue;
+          pl.add(of.createXBedeworkMaxTicketsPerUser(p));
+          continue;
+        }
+        case BwXproperty.bedeworkEventRegWaitListLimit -> {
+          if (!emit(pattern, masterClass,
+                    XBedeworkWaitListLimitPropType.class)) {
+            continue;
+          }
+
+          final XBedeworkWaitListLimitPropType p =
+                  new XBedeworkWaitListLimitPropType();
+          p.setText(val);
+
+          pl.add(of.createXBedeworkWaitListLimit(p));
+          continue;
+        }
+        case BwXproperty.xBedeworkCategories -> {
+          if (!emit(pattern, masterClass,
+                    XBwCategoriesPropType.class)) {
+            continue;
+          }
+
+          final XBwCategoriesPropType p = new XBwCategoriesPropType();
+
+          p.getText().add(val);
+
+          pl.add(of.createXBedeworkCategories(p));
+          continue;
+        }
+        case BwXproperty.xBedeworkContact -> {
+          if (!emit(pattern, masterClass, XBwContactPropType.class)) {
+            continue;
+          }
+
+          final XBwContactPropType p = new XBwContactPropType();
+
+          p.setText(val);
+
+          pl.add(of.createXBedeworkContact(p));
+          continue;
+        }
+        case BwXproperty.xBedeworkLocation -> {
+          if (!emit(pattern, masterClass,
+                    XBwLocationPropType.class)) {
+            continue;
+          }
+
+          final XBwLocationPropType p = new XBwLocationPropType();
+
+          p.setText(val);
+
+          pl.add(of.createXBedeworkLocation(p));
+          continue;
+        }
       }
 
       if (!wrapXprops) {
@@ -474,12 +462,7 @@ public class Xutil {
    */
   protected static void xparam(final BasePropertyType prop,
                                final Xpar xp) {
-    ArrayOfParameters aop = prop.getParameters();
-
-    if (aop == null) {
-      aop = new ArrayOfParameters();
-      prop.setParameters(aop);
-    }
+    final ArrayOfParameters aop = getAop(prop);
 
     if (xp.getName().equalsIgnoreCase("tzid")) {
       final TzidParamType tz = new TzidParamType();
@@ -540,9 +523,9 @@ public class Xutil {
 
     // Check for component
 
-    for (final JAXBElement<? extends BaseComponentType> jp: patternComps) {
+    for (final var jp: patternComps) {
       if (jp.getValue().getClass().getName().equals(className)) {
-        return emit(pattern, cl[0], Arrays.copyOfRange(cl, 1, cl.length - 1));
+        return emit(pattern, cl[0], Arrays.copyOfRange(cl, 1, cl.length));
       }
     }
 

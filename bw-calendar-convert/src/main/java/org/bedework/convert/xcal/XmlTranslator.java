@@ -182,7 +182,7 @@ public class XmlTranslator extends IcalTranslator {
     }
 
     String currentPrincipal = null;
-    final BwPrincipal principal = cb.getPrincipal();
+    final BwPrincipal<?> principal = cb.getPrincipal();
 
     if (principal != null) {
       currentPrincipal = principal.getPrincipalRef();
@@ -343,12 +343,19 @@ public class XmlTranslator extends IcalTranslator {
         }
 
         xml.property(XcalTags.freq, r.getFrequency().name());
-        xmlProp(xml, XcalTags.wkst, r.getWeekStartDay().name());
+        if (r.getWeekStartDay() != null) {
+          xmlProp(xml, XcalTags.wkst, r.getWeekStartDay().name());
+        }
         if (r.getUntil() != null) {
           xmlProp(xml, XcalTags.until, r.getUntil().toString());
         }
-        xmlProp(xml, XcalTags.count, String.valueOf(r.getCount()));
-        xmlProp(xml, XcalTags.interval, String.valueOf(r.getInterval()));
+        if (r.getCount() >= 0) {
+          xmlProp(xml, XcalTags.count, String.valueOf(r.getCount()));
+        }
+        if (r.getInterval() >= 0) {
+          xmlProp(xml, XcalTags.interval,
+                  String.valueOf(r.getInterval()));
+        }
         xmlProp(xml, XcalTags.bymonth, r.getMonthList());
         xmlProp(xml, XcalTags.byweekno, r.getWeekNoList());
         xmlProp(xml, XcalTags.byyearday, r.getYearDayList());

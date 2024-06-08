@@ -38,7 +38,7 @@ import java.io.Serializable;
 public interface IcalCallback extends Serializable {
   /** Set the conformance
    *
-   * @param val
+   * @param val see conformance levels below
    */
   void setStrictness(int val);
 
@@ -68,13 +68,13 @@ public interface IcalCallback extends Serializable {
    *
    * @return BwPrincipal object
    */
-  BwPrincipal getPrincipal();
+  BwPrincipal<?> getPrincipal();
 
   /** Get the current principal to set as owner
    *
    * @return BwPrincipal object
    */
-  BwPrincipal getOwner();
+  BwPrincipal<?> getOwner();
 
   /** Return a calendar user address corresponding to the supplied value. We may
    * have been supplied with a user principal.
@@ -95,13 +95,13 @@ public interface IcalCallback extends Serializable {
 
   /** Add the given category.
    *
-   * @param val
+   * @param val category to add
    */
   void addCategory(BwCategory val);
 
   /** Get the contact with the given uid.
    *
-   * @param uid
+   * @param uid of contact
    * @return contact object
    */
   GetEntityResponse<BwContact> getContact(String uid);
@@ -114,13 +114,13 @@ public interface IcalCallback extends Serializable {
   GetEntityResponse<BwContact> findContact(BwString val);
 
   /** Add the contact
-   * @param val
+   * @param val contact to add
    */
   void addContact(BwContact val);
 
   /** Get the location with the given uid.
    *
-   * @param uid
+   * @param uid of location
    * @return status and Location object
    */
   GetEntityResponse<BwLocation> getLocation(String uid);
@@ -145,7 +145,7 @@ public interface IcalCallback extends Serializable {
    * <p>Public events will not be able to match on the address field.
    * Use the combined value as a key and use the findLocationByCombined
    *
-   * @param address
+   * @param address to search for
    * @return Response with status and Location object
    */
   GetEntityResponse<BwLocation> findLocation(BwString address);
@@ -160,7 +160,7 @@ public interface IcalCallback extends Serializable {
                                                         boolean persisted);
 
   /** Add the location
-   * @param val
+   * @param val location to add
    */
   void addLocation(BwLocation val);
 

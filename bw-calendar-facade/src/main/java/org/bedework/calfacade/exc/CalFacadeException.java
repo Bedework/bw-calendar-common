@@ -19,6 +19,22 @@
 package org.bedework.calfacade.exc;
 
 /** Exception somewhere in the calendar facade
+ * <p>You may be asking why an unchecked exception?
+ *
+ * <p>I became convinced after years of working with large
+ * applications that checked exceptions are a nuisance to evil.
+ *
+ * <p>Eventually, every method has a "throws MyException" on it
+ * because we wrap lower checked or unchecked exceptions in our
+ * custom exception. Given that we allow that exception for every
+ * method, why list it?
+ *
+ * <p>Here are some links - mnostly to old posts but still valid:
+ * <ul>
+ *   <li><a href="http://userstories.blogspot.com/2008/12/checked-exception-why-debat-is-not-over.html">http://userstories.blogspot.com/2008/12/checked-exception-why-debat-is-not-over.html</a></li>
+ *   <li><a href="http://wiki.c2.com/?CheckedExceptionsAreOfDubiousValue">http://wiki.c2.com/?CheckedExceptionsAreOfDubiousValue</a></li>
+ *   <li><a href="https://radio-weblogs.com/0122027/stories/2003/04/01/JavasCheckedExceptionsWereAMistake.html">https://radio-weblogs.com/0122027/stories/2003/04/01/JavasCheckedExceptionsWereAMistake.html</a></li>
+ * </ul>
  *
  * @author Mike Douglass douglm   rpi.edu
  */

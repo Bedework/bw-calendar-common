@@ -19,7 +19,6 @@
 package org.bedework.calsvci;
 
 import org.bedework.calfacade.BwCalendar;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.synch.BwSynchInfo;
 import org.bedework.calsvci.CalendarsI.CheckSubscriptionResult;
 import org.bedework.calsvci.CalendarsI.SynchStatusResponse;
@@ -45,32 +44,28 @@ public interface SynchI extends Serializable {
   /** Is synchronization active?
    *
    * @return true if synchronization active.
-   * @throws CalFacadeException
    */
-  boolean getActive() throws CalFacadeException;
+  boolean getActive();
 
   /** Get a connection to the synch server.
    *
    * @return null if synch not active otherwise a connection.
-   * @throws CalFacadeException
    */
-  Connection getSynchConnection() throws CalFacadeException;
+  Connection getSynchConnection();
 
   /** Make a default file subscription for the given collection.
    *
    * @param val the collection representing the subscription
    * @return true if subscribed OK.
-   * @throws CalFacadeException
    */
-  boolean subscribe(BwCalendar val) throws CalFacadeException;
+  boolean subscribe(BwCalendar val);
 
   /**
    *
    * @param val Collection
    * @return status - never null.
-   * @throws CalFacadeException
    */
-  SynchStatusResponse getSynchStatus(BwCalendar val) throws CalFacadeException;
+  SynchStatusResponse getSynchStatus(BwCalendar val);
 
   /** Check the subscription if this is an external subscription. Will contact
    * the synch server and check the validity. If there is no subscription
@@ -78,24 +73,21 @@ public interface SynchI extends Serializable {
    *
    * @param val the collection representing the subscription
    * @return result of call
-   * @throws CalFacadeException
    */
-  CheckSubscriptionResult checkSubscription(BwCalendar val) throws CalFacadeException;
+  CheckSubscriptionResult checkSubscription(BwCalendar val);
 
   /** Remove a subscription for the given collection.
    *
    * @param val the collection representing the subscription
    * @param forDelete - we're deleting the collection - use Oracle workround
    * @return true if unsubscribed OK.
-   * @throws CalFacadeException
    */
   boolean unsubscribe(BwCalendar val,
-                      boolean forDelete) throws CalFacadeException;
+                      boolean forDelete);
 
   /** Returns the synch service information.
    *
    * @return full synch info
-   * @throws CalFacadeException
    */
-  BwSynchInfo getSynchInfo() throws CalFacadeException;
+  BwSynchInfo getSynchInfo();
 }

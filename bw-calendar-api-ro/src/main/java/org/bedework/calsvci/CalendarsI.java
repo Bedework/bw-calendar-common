@@ -26,6 +26,7 @@ import org.bedework.calfacade.CollectionAliases;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.synch.wsmessages.SubscriptionStatusResponseType;
 import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.util.misc.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -404,6 +405,14 @@ public interface CalendarsI extends Serializable {
    * @throws CalFacadeException on fatal error
    */
   CheckSubscriptionResult checkSubscription(String path) throws CalFacadeException;
+
+  /** Refresh the subscription if this is an external subscription. Will contact
+   * the synch server.
+   *
+   * @param val the collection
+   * @return result of call
+   */
+  Response refreshSubscription(BwCalendar val);
 
   /** Return the value to be used as the sync-token property for the given path.
    * This is effectively the max sync-token of the collection and any child

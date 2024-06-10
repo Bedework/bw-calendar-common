@@ -22,6 +22,7 @@ import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.synch.BwSynchInfo;
 import org.bedework.calsvci.CalendarsI.CheckSubscriptionResult;
 import org.bedework.calsvci.CalendarsI.SynchStatusResponse;
+import org.bedework.util.misc.response.Response;
 
 import java.io.Serializable;
 
@@ -84,6 +85,13 @@ public interface SynchI extends Serializable {
    */
   boolean unsubscribe(BwCalendar val,
                       boolean forDelete);
+
+  /** Refresh the subscription for the given collection.
+   *
+   * @param val the collection representing the subscription
+   * @return Response showing status.
+   */
+  Response refresh(BwCalendar val);
 
   /** Returns the synch service information.
    *

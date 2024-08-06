@@ -2064,9 +2064,9 @@ public class BwEvent2JsCal {
     final var card = loc.getCard();
     final String cardStr = card.outputJson(false, "3");
 
-    link.setContentType("application/calendar+json");
+    link.setContentType("text/vcard+json");
     link.setHref(Util.makeDataUri(cardStr,
-                                  "application/calendar+json"));
+                                  "text/vcard+json"));
   }
 
   /* ------------------- Organizer -------------------- */

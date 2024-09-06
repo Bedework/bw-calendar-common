@@ -132,8 +132,12 @@ public class FilterBuilder implements Logged {
     if (col == null) {
       try {
         col = parser.getCollection(path);
-      } catch (CalFacadeException cfe) {
+      } catch (final CalFacadeException cfe) {
         error(cfe);
+        return BooleanFilter.falseFilter;
+      }
+
+      if (col == null) {
         return BooleanFilter.falseFilter;
       }
 

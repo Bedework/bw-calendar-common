@@ -239,7 +239,12 @@ public class IcalUtil {
         // Some get squirreled away in here -mostly for alarms
         List<Xpar> params = x.getParameters();
 
-        final String pname = params.get(0).getValue();
+        final String pname; // Name of ical property - ionvalid if absent
+        if ((params != null) && !params.isEmpty()) {
+          pname = params.get(0).getValue();
+        } else {
+          continue; // Skip this one
+        }
 
         if (params.size() == 1) {
           params = null;
@@ -1012,7 +1017,7 @@ public class IcalUtil {
     return tr;
   }
 
-  static class DurationRepeat {
+  public final static class DurationRepeat {
     String duration;
     int repeat;
   }
@@ -1126,13 +1131,7 @@ public class IcalUtil {
       return null;
     }
 
-    final Parameter par = parl.getParameter(name);
-
-    if (par == null) {
-      return null;
-    }
-
-    return par.getValue();
+    return getOptStr(parl, name);
   }
 
   /**
@@ -1158,7 +1157,7 @@ public class IcalUtil {
     PropertyList<Property> props =  comp.getProperties();
 
     props = props.getProperties(name);
-    if (props.size() == 0) {
+    if (props.isEmpty()) {
       return null;
     }
 

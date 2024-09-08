@@ -182,7 +182,7 @@ public class Ical2BwEvent extends IcalUtil {
     }
 
     String currentPrincipal = null;
-    final BwPrincipal principal = cb.getPrincipal();
+    final BwPrincipal<?> principal = cb.getPrincipal();
 
     if (principal != null) {
       currentPrincipal = principal.getPrincipalRef();
@@ -489,7 +489,7 @@ public class Ical2BwEvent extends IcalUtil {
 
         //debug("ical prop " + prop.getClass().getName());
         String pval = prop.getValue();
-        if ((pval != null) && (pval.length() == 0)) {
+        if ((pval != null) && (pval.isEmpty())) {
           pval = null;
         }
 

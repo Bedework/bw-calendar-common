@@ -40,6 +40,7 @@ import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
@@ -54,7 +55,6 @@ import net.fortuna.ical4j.model.TextList;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.component.Available;
-import net.fortuna.ical4j.model.component.Participant;
 import net.fortuna.ical4j.model.component.VAvailability;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VFreeBusy;
@@ -608,6 +608,11 @@ public class BwEvent2Ical extends IcalUtil {
         comp.getProperties().add(loc);
       }
 
+      for (final var p: val.getParticipants().getParticipants()) {
+        ((ComponentContainer<Component>)comp).getComponents()
+                                             .add(p.getParticipant());
+      }
+
       if (vpoll) {
         final Integer ival = val.getPollWinner();
 
@@ -631,12 +636,6 @@ public class BwEvent2Ical extends IcalUtil {
 
         if ((strval != null) && (!strval.isEmpty())) {
           pl.add(new PollProperties(strval));
-        }
-
-        final Map<String, Participant> voters = parseVpollVoters(val);
-
-        for (final Participant v: voters.values()) {
-          ((VPoll)comp).getComponents().add(v);
         }
 
         final Map<Integer, Component> comps = parseVpollCandidates(val);

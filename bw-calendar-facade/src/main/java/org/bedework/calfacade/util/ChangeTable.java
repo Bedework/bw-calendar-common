@@ -746,22 +746,10 @@ public class ChangeTable implements Logged, Serializable {
         }
         break;
 
-      case VOTER:
-        if (ev.getEntityType() != IcalDefs.entityTypeVpoll) {
-          // Skip so as not to disturb the attendees property
-          break;
-        }
-        originalVals = ev.getVoters();
-
-        if (checkMulti(ent, originalVals, update)) {
-          ev.clearVoters();
-          for (final var v: (Set<String>)ent.getAddedValues()) {
-            ev.addVoter(v);
-          }
-        }
-        break;
-
         /*
+
+      case VOTER:
+        break;
       case ACCEPT_RESPONSE:
         break;
       case ACTION:

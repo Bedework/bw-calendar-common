@@ -37,10 +37,10 @@ import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.ChangeTable;
-import org.bedework.convert.CnvUtil;
-import org.bedework.convert.EventTimeZonesRegistry;
 import org.bedework.convert.Icalendar;
 import org.bedework.convert.Icalendar.TimeZoneInfo;
+import org.bedework.convert.CnvUtil;
+import org.bedework.convert.EventTimeZonesRegistry;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -529,6 +529,11 @@ public class Ical2BwEvent extends IcalUtil {
           case ATTENDEE:
             /* ------------------- Attendee -------------------- */
 
+            if (vpoll) {
+              // Flag this as an error?
+              break;
+            }
+
             final Response attResp = doAttendee(cb, chg,
                                                 evinfo, (Attendee)prop,
                                                 attUri, methodType,
@@ -809,6 +814,11 @@ public class Ical2BwEvent extends IcalUtil {
           case ORGANIZER:
             /* ------------------- Organizer -------------------- */
 
+            if (vpoll) {
+              // Flag this as an error?
+              break;
+            }
+
             final BwOrganizer org = IcalUtil.getOrganizer(cb, (Organizer)prop);
             final BwOrganizer evorg = ev.getOrganizer();
             final BwOrganizer evorgCopy;
@@ -1071,6 +1081,8 @@ public class Ical2BwEvent extends IcalUtil {
         subComps = null;
       }
 
+      // TODO - this looks wrong - if this is a voter response
+      // we probably shouldn't be doing this ?????
       final Set<Integer> pids;
       if (vpoll) {
         pids = new TreeSet<>();
@@ -1624,23 +1636,10 @@ public class Ical2BwEvent extends IcalUtil {
                                              final EventInfo vpoll,
                                              final ChangeTable changes,
                                              final boolean mergeAttendees) {
+    final BwEvent ev = vpoll.getEvent();
+    final var bwpart = ev.getParticipants().newParticipant(part);
+
     final ParticipantType partType = part.getParticipantType();
-
-    if (partType == null) {
-      return Response.ok();
-    }
-
-    final boolean isOwner =
-            partType.getTypes()
-                    .containsIgnoreCase(VALUE_OWNER);
-
-    final boolean isVoter =
-            partType.getTypes()
-                    .containsIgnoreCase(VALUE_VOTER);
-
-    if (!isOwner && !isVoter) {
-      return Response.ok();
-    }
 
     final CalendarAddress calAddr =
             part.getProperty(CALENDAR_ADDRESS);
@@ -1650,41 +1649,26 @@ public class Ical2BwEvent extends IcalUtil {
                             "No calendar address");
     }
 
-    final BwEvent event = vpoll.getEvent();
+    changes.addValue(PropertyInfoIndex.PARTICIPANT, bwpart);
 
-    if (isVoter) {
-      if (!Util.isEmpty(event.getVoters())) {
-        event.clearVoters();
-      }
-
-      final String voter = part.toString();
-      event.addVoter(voter);
-
-      changes.addValue(PropertyInfoIndex.VOTER, voter);
-
+    if (bwpart.includesParticipantType(VALUE_VOTER)) {
       processVoter(calAddr, vpoll, cb, changes,
                    mergeAttendees);
     }
 
-    if (isOwner) {
-      if (event.getOrganizer() != null) {
+    if (bwpart.includesParticipantType(VALUE_OWNER)) {
+      if (ev.getOrganizer() != null) {
         return Response.error(new Response(),
                               "Multiple owners");
       }
 
-      processOwner(part, vpoll, cb, changes);
+      final var newOrg = IcalUtil.getOrganizer(cb, part);
+      if (changes.changed(ORGANIZER, ev.getOrganizer(), newOrg)) {
+        ev.setOrganizer(newOrg);
+      }
     }
 
     return Response.ok();
-  }
-
-  private static void processOwner(final Participant part,
-                                   final EventInfo vpoll,
-                                   final IcalCallback cb,
-                                   final ChangeTable chg) {
-    final BwEvent ev = vpoll.getEvent();
-
-    chg.addValue(ORGANIZER, IcalUtil.getOrganizer(cb, part));
   }
 
   private static void processVoter(final CalendarAddress ca,

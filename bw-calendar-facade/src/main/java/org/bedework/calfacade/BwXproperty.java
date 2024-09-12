@@ -244,11 +244,11 @@ public class BwXproperty extends BwDbentity<BwXproperty>
 
   public final static String pollMode = "X-BW-POLL-MODE";
 
+  public final static String pollCompletion = "X-BW-POLL-COMPLETION";
+
   public final static String pollProperties = "X-BW-POLL-PROPERTIES";
 
   public final static String pollItem = "X-BW-POLL-ITEM";
-
-  public final static String pollVoter = "X-BW-POLL-VOTER";
 
   public final static String pollCandidate = "X-BW-POLL-CANDIDATE";
 
@@ -361,6 +361,8 @@ public class BwXproperty extends BwDbentity<BwXproperty>
 
     xskipJsp.add(bedeworkDavProp);
 
+    xskipJsp.add(bedeworkParticipant);
+
     xskipJsp.add(xBedeworkVLocation);
 
     xskipJsp.add(pollItemId);
@@ -374,8 +376,6 @@ public class BwXproperty extends BwDbentity<BwXproperty>
     xskipJsp.add(pollProperties);
 
     xskipJsp.add(pollItem);
-
-    xskipJsp.add(pollVoter);
 
     xskipJsp.add(pollCandidate);
 

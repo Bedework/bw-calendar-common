@@ -430,7 +430,9 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     /** */
     pfiPollCandidate,
     /** 58 */
-    pfiPollWinner
+    pfiPollWinner,
+    /** 59 */
+    pfiPollCompletion
   }
 
   private int entityType = IcalDefs.entityTypeEvent;
@@ -689,6 +691,9 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    *                      Non-db fields
    * ==================================================================== */
 
+  /* Manages partiicpants for this component */
+  private BwParticipants participants;
+
   /** If the event is a master recurring event and we asked for the master +
    * overides or for fully expanded, this will hold all the overrides for that
    * event.
@@ -721,6 +726,13 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    */
   protected BwEvent() {
     super();
+  }
+
+  @NoProxy
+  public void onSave() {
+    if (participants != null) {
+      participants.onSave();
+    }
   }
 
   /* ====================================================================
@@ -1383,13 +1395,6 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
           freeBusyProperty = true,
           timezoneProperty = true)
   @IcalProperties({
-    @IcalProperty(pindex = PropertyInfoIndex.CALSCALE,
-                  jname = "calscale",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.AFFECTS_FREE_BUSY,
             jname = "affectsFreeBusy",
             eventProperty = true,
@@ -1399,6 +1404,13 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.ALIAS_URI,
             jname = "aliasURI",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.CALSCALE,
+            jname = "calscale",
             eventProperty = true,
             todoProperty = true,
             journalProperty = true,
@@ -1439,6 +1451,48 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             journalProperty = true,
             freeBusyProperty = true,
             timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_END,
+            jname = "eventregEnd",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_MAX_TICKETS,
+            jname = "eventregMaxTickets",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_MAX_TICKETS_PER_USER,
+            jname = "eventregMaxTicketsPerUser",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_START,
+            jname = "eventregStart",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_WAIT_LIST_LIMIT,
+            jname = "eventregWaitListLimit",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.EXPECT_REPLY,
+            jname = "expectReply",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.FILTER_EXPR,
             jname = "filterExpr",
             eventProperty = true,
@@ -1453,6 +1507,27 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             journalProperty = true,
             freeBusyProperty = true,
             timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.IMAGE,
+            jname = "image",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.INSTANCE,
+            jname = "instance",
+            annotationRequired = true,
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.KIND,
+            jname = "kind",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.LAST_REFRESH,
             jname = "lastRefresh",
             eventProperty = true,
@@ -1462,6 +1537,48 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.LAST_REFRESH_STATUS,
             jname = "lastRefreshStatus",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.MEMBER_OF,
+            jname = "memberOf",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.METHOD,
+            jname = "method",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.PARAMETERS,
+            jname = "pars",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.PARTICIPANT_TYPE,
+            jname = "roles",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.PARTICIPATION_STATUS,
+            jname = "participationStatus",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.PRODID,
+            jname = "prodid",
             eventProperty = true,
             todoProperty = true,
             journalProperty = true,
@@ -1488,6 +1605,61 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             journalProperty = true,
             freeBusyProperty = true,
             timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.SCHEDULING_FORCE_SEND,
+            jname = "scheduleForceSend",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.SCHEDULING_SEQUENCE,
+            jname = "scheduleSequence",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.SCHEDULING_STATUS,
+            jname = "scheduleStatus",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.SUGGESTED_TO,
+            jname = "suggestedTo",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.THUMBIMAGE,
+            jname = "thumbimage",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.TAG,
+            jname = "tag",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.TOPICAL_AREA,
+            jname = "topicalArea",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.UNKNOWN_PROPERTY,
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.UNREMOVEABLE,
             jname = "unremoveable",
             eventProperty = true,
@@ -1495,7 +1667,35 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             journalProperty = true,
             freeBusyProperty = true,
             timezoneProperty = true),
-    
+    @IcalProperty(pindex = PropertyInfoIndex.URI,
+            jname = "uri",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.VERSION,
+            jname = "version",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.VIEW,
+            jname = "view",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+    @IcalProperty(pindex = PropertyInfoIndex.VPATH,
+            jname = "vpath",
+            eventProperty = true,
+            todoProperty = true,
+            journalProperty = true,
+            freeBusyProperty = true,
+            timezoneProperty = true),
+
     @IcalProperty(pindex = PropertyInfoIndex.X_BEDEWORK_CONTACT,
                   jname = "xbwcontact",
                   adderName = "xproperty",
@@ -1515,138 +1715,6 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     @IcalProperty(pindex = PropertyInfoIndex.X_BEDEWORK_CATEGORIES,
                   jname = "xbwcategories",
                   adderName = "xproperty",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_END,
-                  jname = "eventregEnd",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_MAX_TICKETS,
-                  jname = "eventregMaxTickets",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_MAX_TICKETS_PER_USER,
-                  jname = "eventregMaxTicketsPerUser",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_START,
-                  jname = "eventregStart",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.EVENTREG_WAIT_LIST_LIMIT,
-                  jname = "eventregWaitListLimit",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.IMAGE,
-                  jname = "image",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.INSTANCE,
-                  jname = "instance",
-                  annotationRequired = true,
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.METHOD,
-                  jname = "method",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.PARAMETERS,
-                  jname = "pars",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.PRODID,
-                  jname = "prodid",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.SUGGESTED_TO,
-                  jname = "suggestedTo",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.THUMBIMAGE,
-                  jname = "thumbimage",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.TAG,
-                  jname = "tag",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.TOPICAL_AREA,
-                  jname = "topicalArea",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.UNKNOWN_PROPERTY,
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.URI,
-                  jname = "uri",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.VERSION,
-                  jname = "version",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.VIEW,
-                  jname = "view",
-                  eventProperty = true,
-                  todoProperty = true,
-                  journalProperty = true,
-                  freeBusyProperty = true,
-                  timezoneProperty = true),
-    @IcalProperty(pindex = PropertyInfoIndex.VPATH,
-                  jname = "vpath",
                   eventProperty = true,
                   todoProperty = true,
                   journalProperty = true,
@@ -3484,6 +3552,25 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return getXproperty(BwXproperty.pollMode);
   }
 
+  /** Set the poll completion
+   *
+   * @param val the completion mode
+   */
+  @IcalProperty(pindex = PropertyInfoIndex.POLL_COMPLETION,
+                vpollProperty = true
+  )
+  public void setPollCompletion(final String val) {
+    replaceXproperty(BwXproperty.pollCompletion, val);
+  }
+
+  /** Get the poll Completion
+   *
+   *  @return String   poll Completion
+   */
+  public String getPollCompletion() {
+    return getXproperty(BwXproperty.pollCompletion);
+  }
+
   /** Set the poll properties
    *
    * @param val    list of interesting properties
@@ -3574,62 +3661,20 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
   }
 
-  /** Get the vpoll items (candidates)
+  /** Get the participants
    *
    * @return Set<String>   candidates
    */
-  @IcalProperty(pindex = PropertyInfoIndex.VVOTER,
+  @IcalProperty(pindex = PropertyInfoIndex.PARTICIPANT,
                 vpollProperty = true
   )
   @NoProxy
-  public Set<String> getVoters() {
-    final List<BwXproperty> props = getXproperties(BwXproperty.pollVoter);
-
-    if (Util.isEmpty(props)) {
-      return null;
+  public BwParticipants getParticipants() {
+    if (participants == null) {
+      participants = new BwParticipants(this);
     }
 
-    final Set<String> vals = new TreeSet<>();
-
-    for (final BwXproperty p: props) {
-      vals.add(p.getValue());
-    }
-
-    return vals;
-  }
-
-  /** Clear the vpoll voters
-   *
-   */
-  @NoProxy
-  public void clearVoters() {
-    final List<BwXproperty> props = getXproperties(BwXproperty.pollVoter);
-
-    if (Util.isEmpty(props)) {
-      return;
-    }
-
-    for (final BwXproperty p: props) {
-      removeXproperty(p);
-    }
-  }
-
-  /** Add vpoll voter
-   *
-   * @param val the item
-   */
-  @NoProxy
-  public void addVoter(final String val) {
-    final Set<String> vs = getVoters();
-
-    if ((vs == null) || !vs.contains(val)) {
-      final BwXproperty xp = new BwXproperty(BwXproperty.pollVoter, null, val);
-      addXproperty(xp);
-
-      if (changeSet != null) {
-        changeSet.addValue(PropertyInfoIndex.XPROP, xp);
-      }
-    }
+    return participants;
   }
 
   /** Add vpoll item

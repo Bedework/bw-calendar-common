@@ -29,13 +29,14 @@ import org.bedework.calfacade.BwFreeBusyComponent;
 import org.bedework.calfacade.BwGeo;
 import org.bedework.calfacade.BwLocation;
 import org.bedework.calfacade.BwOrganizer;
+import org.bedework.calfacade.BwParticipant;
 import org.bedework.calfacade.BwRelatedTo;
 import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.base.StartEndComponent;
+import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.DifferResult;
-import org.bedework.convert.ical.IcalUtil;
 import org.bedework.jsforj.impl.JSFactory;
 import org.bedework.jsforj.impl.values.dataTypes.JSDurationImpl;
 import org.bedework.jsforj.impl.values.dataTypes.JSLocalDateTimeImpl;
@@ -78,20 +79,18 @@ import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.component.Participant;
-import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.DtStart;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Geo;
 import net.fortuna.ical4j.model.property.RRule;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.bedework.calfacade.BwXproperty.bedeworkParticipant;
 import static org.bedework.convert.BwDiffer.differs;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternateDescription;
@@ -1454,7 +1453,7 @@ public class BwEvent2JsCal {
   private static void doAttendees(final BwEvent event,
                                   final EventInfo master,
                                   final JSCalendarObject jsval,
-                                  final JSCalendarObject jsCalMaster) throws Throwable {
+                                  final JSCalendarObject jsCalMaster) {
     final Set<BwAttendee> attendees = event.getAttendees();
     final DifferResult<BwAttendee, Set<BwAttendee>> partDiff =
             differs(BwAttendee.class,
@@ -1465,8 +1464,8 @@ public class BwEvent2JsCal {
       return;
     }
 
-    final var xparts = IcalUtil.parseParticipants(
-            event.getXproperties(bedeworkParticipant));
+    final var participants =
+            event.getParticipants().getParticipants();
 
     if ((master == null) || partDiff.addAll) {
       // Just add to js
@@ -1474,7 +1473,7 @@ public class BwEvent2JsCal {
                     jsCalMaster,
                     jsval.getParticipants(true),
                     attendees,
-                    xparts);
+                    participants);
       return;
     }
 
@@ -1528,7 +1527,7 @@ public class BwEvent2JsCal {
                     jsCalMaster,
                     jsval.getParticipants(true),
                     partDiff.added,
-                    xparts);
+                    participants);
     }
 
     if (!Util.isEmpty(partDiff.differ)) {
@@ -1566,7 +1565,7 @@ public class BwEvent2JsCal {
                                     final JSCalendarObject master,
                                     final JSParticipants participants,
                                     final Set<BwAttendee> attendees,
-                                    final List<Participant> parts) {
+                                    final Set<BwParticipant> parts) {
     /* Note below we add participants in two passes - groups first
        then the rest. This is because an attendee with a MEMBER
        parameter needs to refer to a group participant by the id
@@ -1597,7 +1596,7 @@ public class BwEvent2JsCal {
                                    final JSCalendarObject master,
                                    final JSParticipants participants,
                                    final BwAttendee att,
-                                   final List<Participant> parts) {
+                                   final Set<BwParticipant> parts) {
     final var part = participants.makeParticipant().getValue();
 
     // We do attendee before organizer so this should be fine.
@@ -1689,16 +1688,16 @@ public class BwEvent2JsCal {
     /* Go through the participants looking for a calendar address match
      */
     for (final var participant: parts) {
-      final CalendarAddress calAddr = participant.getCalendarAddress();
+      final var calAddr = participant.getCalendarAddress();
       if (calAddr == null) {
         continue;
       }
 
-      if (calAddr.getValue().equals(att.getAttendeeUri())) {
+      if (calAddr.equals(att.getAttendeeUri())) {
         // Fill in any extra values
         final var desc = participant.getDescription();
         if (desc != null) {
-          part.setDescription(desc.getValue());
+          part.setDescription(desc);
         }
 
         // locationId
@@ -1715,7 +1714,7 @@ public class BwEvent2JsCal {
           final JSOverride jsval,
           final JSCalendarObject master,
           final BwAttendee attendee,
-          final BwAttendee masterAttendee) throws Throwable {
+          final BwAttendee masterAttendee) {
     /* Called because the attendee is present in the master but has
        changed in some way
      */
@@ -1784,7 +1783,13 @@ public class BwEvent2JsCal {
       if (mdir != null) {
         final var links = jsMatt.getLinks(false);
         if (links != null) {
-          final var linkp = links.findLink(new URI(mdir));
+          final URI mdirUri;
+          try {
+            mdirUri = new URI(mdir);
+          } catch (final URISyntaxException e) {
+            throw new CalFacadeException(e);
+          }
+          final var linkp = links.findLink(mdirUri);
           if (linkp != null) {
             jsval.setNull(JSPropertyNames.participants,
                           partId,

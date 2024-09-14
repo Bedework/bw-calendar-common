@@ -56,7 +56,7 @@ public class BwParticipants {
    */
   public BwParticipant newParticipant() {
     final var p = new BwParticipant(this);
-    participants.add(p);
+    getParticipantsSet().add(p);
     markChanged();
     return p;
   }
@@ -68,7 +68,7 @@ public class BwParticipants {
    */
   public BwParticipant newParticipant(final Participant part) {
     final var p = new BwParticipant(this, part);
-    participants.add(p);
+    getParticipantsSet().add(p);
     markChanged();
     return p;
   }

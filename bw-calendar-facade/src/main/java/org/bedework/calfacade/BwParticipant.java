@@ -39,8 +39,10 @@ import net.fortuna.ical4j.model.property.ParticipantType;
 import net.fortuna.ical4j.model.property.ParticipationDelegatedFrom;
 import net.fortuna.ical4j.model.property.ParticipationDelegatedTo;
 import net.fortuna.ical4j.model.property.ParticipationStatus;
+import net.fortuna.ical4j.model.property.SchedulingAgent;
 import net.fortuna.ical4j.model.property.SchedulingDtStamp;
 import net.fortuna.ical4j.model.property.SchedulingSequence;
+import net.fortuna.ical4j.model.property.SchedulingStatus;
 
 import java.net.URISyntaxException;
 import java.text.ParseException;
@@ -52,7 +54,9 @@ import static net.fortuna.ical4j.model.Property.LANG;
 import static net.fortuna.ical4j.model.Property.MEMBER_OF;
 import static net.fortuna.ical4j.model.Property.PARTICIPATION_DELEGATED_FROM;
 import static net.fortuna.ical4j.model.Property.PARTICIPATION_DELEGATED_TO;
+import static net.fortuna.ical4j.model.Property.SCHEDULING_AGENT;
 import static net.fortuna.ical4j.model.Property.SCHEDULING_SEQUENCE;
+import static net.fortuna.ical4j.model.Property.SCHEDULING_STATUS;
 
 /** Represent a participant component.
  *
@@ -299,7 +303,13 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    */
   public void setParticipationStatus(final String val) {
     final var p = participant.getParticipationStatus();
-    if (p == null) {
+    if (val == null) {
+      if (p != null) {
+        participant.getProperties().remove(p);
+        changed();
+        return;
+      }
+    } else if (p == null) {
       participant.getProperties().add(new ParticipationStatus(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
@@ -610,36 +620,66 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     return p.getValue();
   }
 
-  /** Set the schedule agent
+  /**
    *
    * @param val    schedule agent
-   * /
-  public void setScheduleAgent(final int val) {
-    scheduleAgent = val;
+   */
+  public void setScheduleAgent(final String val) {
+    final var p = (SchedulingAgent)participant.
+            getProperties().
+            getProperty(SCHEDULING_AGENT);
+    final String sval = String.valueOf(val);
+    if (p == null) {
+      participant.getProperties().add(new SchedulingAgent(val));
+    } else if (!sval.equals(p.getValue())) {
+      p.setValue(sval);
+      changed();
+    }
   }
 
   /** Get the schedule agent
    *
-   * @return int    schedule agent
-   * /
-  public int getScheduleAgent() {
-    return scheduleAgent;
+   * @return String   schedule agent
+   */
+  public String getScheduleAgent() {
+    final var p = (SchedulingAgent)participant.
+            getProperties().
+            getProperty(SCHEDULING_AGENT);
+    if (p == null) {
+      return null;
+    }
+    return p.getValue();
   }
 
   /** Set the schedule status
    *
    * @param val    schedule status
-   * /
+   */
   public void setScheduleStatus(final String val) {
-    scheduleStatus = val;
+    final var p = (SchedulingStatus)participant.
+            getProperties().
+            getProperty(SCHEDULING_STATUS);
+    final String sval = String.valueOf(val);
+    if (p == null) {
+      participant.getProperties().add(new SchedulingStatus(val));
+    } else if (!sval.equals(p.getValue())) {
+      p.setValue(sval);
+      changed();
+    }
   }
 
-  /** Get the schedule status
+  /**
    *
    * @return String    schedule status
-   * /
+   */
   public String getScheduleStatus() {
-    return scheduleStatus;
+    final var p = (SchedulingStatus)participant.
+            getProperties().
+            getProperty(SCHEDULING_STATUS);
+    if (p == null) {
+      return null;
+    }
+    return p.getValue();
   }
 
   /** Set the response - voter only
@@ -707,8 +747,8 @@ public class BwParticipant extends BwDbentity<BwParticipant>
 //    val.setSentByVal(getSentByVal());
     val.setSequence(getSequence());
     val.setSchedulingDtStamp(getSchedulingDtStamp());
-//    val.setScheduleAgent(getScheduleAgent());
-//    val.setScheduleStatus(getScheduleStatus());
+    val.setScheduleAgent(getScheduleAgent());
+    val.setScheduleStatus(getScheduleStatus());
   }
 
   /** Only true if something changes the status of, or information about, the
@@ -730,8 +770,8 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    */
   public boolean changedBy(final BwParticipant val, final boolean checkPartStat) {
     return ((checkPartStat &&
-             (Util.compareStrings(val.getParticipationStatus(),
-                                  getParticipationStatus()) != 0))) ||
+           (Util.compareStrings(val.getParticipationStatus(),
+                                getParticipationStatus()) != 0))) ||
            (Util.compareStrings(val.getCalendarAddress(),
                                 getCalendarAddress()) != 0) ||
            (Util.compareStrings(val.getKind(), getKind()) != 0) ||
@@ -746,8 +786,8 @@ public class BwParticipant extends BwDbentity<BwParticipant>
                                 getLanguage()) != 0) ||
            (Util.compareStrings(val.getMemberOf(),
                                 getMemberOf()) != 0) ||
-            (Util.compareStrings(val.getEmail(),
-                                 getEmail()) != 0);
+           (Util.compareStrings(val.getEmail(),
+                                getEmail()) != 0);
 //           (Util.compareStrings(val.getSentByVal(), getSentByVal()) != 0) ||
   }
 
@@ -767,7 +807,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
                                 getParticipantType()) != 0) ||
            (Util.compareStrings(val.getDelegatedFrom(),
                                 getDelegatedFrom()) != 0) ||
-            (Util.compareStrings(val.getDelegatedTo(),
+           (Util.compareStrings(val.getDelegatedTo(),
                                  getDelegatedTo()) != 0) ||
            (Util.compareStrings(val.getLanguage(),
                                 getLanguage()) != 0) ||
@@ -775,10 +815,10 @@ public class BwParticipant extends BwDbentity<BwParticipant>
                                 getMemberOf()) != 0) ||
            (Util.cmpBoolval(val.getExpectReply(),
                             getExpectReply()) != 0) ||
-            (Util.compareStrings(val.getEmail(),
-                                 getEmail()) != 0);
+           (Util.compareStrings(val.getEmail(),
+                                 getEmail()) != 0) ||
 //           (Util.compareStrings(val.getSentByVal(), getSentByVal()) != 0) ||
-//           (Util.cmpIntval(val.getScheduleAgent(), getScheduleAgent()) != 0);
+           (Util.compareStrings(val.getScheduleAgent(), getScheduleAgent()) != 0);
   }
 
   /* ==============================================================

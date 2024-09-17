@@ -29,10 +29,21 @@ public class BwParticipants {
 
   private Set<BwParticipant> participants;
 
+  private Set<Attendee> attendees;
+  private Map<String, Attendee> attendeesMap;
+
   private boolean changed;
 
   public BwParticipants(final BwEvent parent) {
     this.parent = parent;
+  }
+
+  /**
+   *
+   * @return unmodifiable set of attendee objects
+   */
+  public Set<Attendee> getAttendees() {
+    return Collections.unmodifiableSet(getAttendeesSet());
   }
 
   public Set<BwParticipant> getParticipants() {
@@ -47,6 +58,25 @@ public class BwParticipants {
   public void removeParticipant(final BwParticipant part) {
     getParticipantsSet().remove(part);
     markChanged();
+  }
+
+  public BwParticipant findParticipant(final String calAddr) {
+    for (final BwParticipant p: getParticipantsSet()) {
+      if (calAddr.equals(p.getCalendarAddress())) {
+        return p;
+      }
+    }
+    return null;
+  }
+
+  public Set<String> getAttendeeeAddrs() {
+    getAttendeesSet(); // Ensure populated
+    return attendeesMap.keySet();
+  }
+
+  public Attendee findAttendee(final String calAddr) {
+    getAttendeesSet(); // Ensure populated
+    return attendeesMap.get(calAddr);
   }
 
   /** The new object is added to the set.
@@ -185,10 +215,20 @@ public class BwParticipants {
 
   public void markChanged() {
     changed = true;
+    attendees = null;
   }
 
   public void onSave() {
     /* Ensure x-props reflect state of participants */
+    for (final BwAttendee att: parent.getAttendees()) {
+      final BwParticipant p = findParticipant(att.getAttendeeUri());
+      if ((p != null) &&
+              (Util.compareStrings(att.getScheduleStatus(),
+                                   p.getScheduleStatus()) != 0)) {
+        p.setScheduleStatus(att.getScheduleStatus());
+      }
+    }
+
     if (!changed) {
       return;
     }
@@ -264,5 +304,54 @@ public class BwParticipants {
     }
 
     return participants;
+  }
+
+  private Set<Attendee> getAttendeesSet() {
+    if (attendees != null) {
+      return attendees;
+    }
+
+    attendees = new HashSet<>();
+    attendeesMap = new HashMap<>();
+
+    final var evatts = parent.getAttendees();
+    final Map<String, BwAttendee> attMap = new HashMap<>();
+
+    for (final BwAttendee att: evatts) {
+      final var addr = att.getAttendeeUri();
+      attMap.put(addr, att);
+      final var part = findParticipant(addr);
+
+      final var attendee = new Attendee(this, parent, att, part);
+      attendees.add(attendee);
+      attendeesMap.put(addr, attendee);
+    }
+
+    for (final BwParticipant part: getParticipantsSet()) {
+      final var addr = part.getCalendarAddress();
+      if ((addr != null) ||
+              !part.includesParticipantType(ParticipantType.VALUE_ATTENDEE)) {
+        continue;
+      }
+
+      final var att = attMap.get(addr);
+      if (att == null) {
+        // No associated participant
+        final var attendee = new Attendee(this, parent, null, part);
+        attendees.add(attendee);
+        attendeesMap.put(addr, attendee);
+      } else {
+        attMap.remove(addr);
+      }
+    }
+
+    for (final BwAttendee att: attMap.values()) {
+      // Attendee with no participant
+      final var attendee = new Attendee(this, parent, att, null);
+      attendees.add(attendee);
+      attendeesMap.put(att.getAttendeeUri(), attendee);
+    }
+
+    return attendees;
   }
 }

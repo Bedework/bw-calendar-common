@@ -45,10 +45,9 @@ public interface SchedulingI extends Serializable {
    * involve at least incrementing th esequence and setting PARTSTAT to
    * NEEDS-ACTION
    *
-   * @param ei
-   * @throws CalFacadeException on fatal error
+   * @param ei event to be rescheduled
    */
-  void setupReschedule(EventInfo ei) throws CalFacadeException;
+  void setupReschedule(EventInfo ei);
 
   /** Schedule a meeting or publish an event. The event object must have the organizer
    * and attendees and possibly recipients set according to itip + caldav.
@@ -65,33 +64,30 @@ public interface SchedulingI extends Serializable {
    * @param fromAttUri attendee uri
    * @param iSchedule  true if it's an iSchedule request.
    * @return ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
   ScheduleResult schedule(EventInfo ei,
                           String recipient,
                           String fromAttUri,
-                          boolean iSchedule) throws CalFacadeException;
+                          boolean iSchedule);
 
   /**
-   * @param ei
-   * @param comment
-   * @param fromAtt
+   * @param ei event
+   * @param comment - optional comment
+   * @param fromAtt attendee
    * @return ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
   ScheduleResult declineCounter(EventInfo ei,
                                 String comment,
-                                BwAttendee fromAtt) throws CalFacadeException;
+                                BwAttendee fromAtt);
 
   /** Attendee wants a refresh
    *
    * @param ei event which is probably in a calendar.
    * @param comment - optional comment
    * @return   ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
   ScheduleResult requestRefresh(EventInfo ei,
-                                String comment) throws CalFacadeException;
+                                String comment);
 
   /** Attendee wants to send a reply
    *
@@ -99,11 +95,10 @@ public interface SchedulingI extends Serializable {
    * @param partstat - valid partstat.
    * @param comment - optional comment
    * @return   ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
   ScheduleResult sendReply(EventInfo ei,
                            int partstat,
-                           String comment) throws CalFacadeException;
+                           String comment);
 
   /** An attendee responds to a request.
    *
@@ -150,9 +145,8 @@ public interface SchedulingI extends Serializable {
    * @param ei         EventInfo object with event with method=REPLY, COUNTER or
    *                    REFRESH
    * @return ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
-  ScheduleResult scheduleResponse(EventInfo ei) throws CalFacadeException;
+  ScheduleResult scheduleResponse(EventInfo ei);
 
   /** Get the free busy for the given principal as a list of busy periods.
    *
@@ -161,22 +155,20 @@ public interface SchedulingI extends Serializable {
    *               Used for local access to a given calendar via e.g. caldav
    * @param who    If cal is null get the info for this user, otherwise
    *               this is used as the free/busy result owner
-   * @param start
-   * @param end
+   * @param start time for period start
+   * @param end time for period end
    * @param org - needed to make the result compliant
    * @param uid - uid of requesting component or null for no request
    * @param exceptUid if non-null omit this uid from the freebusy calculation
    * @return BwEvent
-   * @throws CalFacadeException on fatal error
    */
   BwEvent getFreeBusy(Collection<BwCalendar> fbset,
-                      BwPrincipal who,
+                      BwPrincipal<?> who,
                       BwDateTime start,
                       BwDateTime end,
                       BwOrganizer org,
                       String uid,
-                      String exceptUid)
-          throws CalFacadeException;
+                      String exceptUid);
 
   /** Used for user interface. Result of dividing VFREEBUSY into equal sized
    * chunks.
@@ -203,7 +195,7 @@ public interface SchedulingI extends Serializable {
     public Collection<EventPeriod> eps = new ArrayList<>();
 
     /**
-     * @param val
+     * @param val start of period
      */
     public void setStart(final BwDateTime val) {
       start = val;
@@ -217,7 +209,7 @@ public interface SchedulingI extends Serializable {
     }
 
     /**
-     * @param val
+     * @param val end of peiod
      */
     public void setEnd(final BwDateTime val) {
       end = val;
@@ -231,7 +223,7 @@ public interface SchedulingI extends Serializable {
     }
 
     /**
-     * @param val
+     * @param val int response code
      */
     public void setRespCode(final int val) {
       respCode = val;
@@ -245,7 +237,7 @@ public interface SchedulingI extends Serializable {
     }
 
     /**
-     * @param val
+     * @param val true if there was no response
      */
     public void setNoResponse(final boolean val) {
       noResponse = val;
@@ -259,7 +251,7 @@ public interface SchedulingI extends Serializable {
     }
 
     /**
-     * @param val
+     * @param val a recipient
      */
     public void setRecipient(final String val) {
       recipient = val;
@@ -272,7 +264,7 @@ public interface SchedulingI extends Serializable {
     }
 
     /**
-     * @param val
+     * @param val the attendee
      */
     public void setAttendee(final BwAttendee val) {
       attendee = val;
@@ -303,13 +295,13 @@ public interface SchedulingI extends Serializable {
     private FbGranulatedResponse aggregatedResponse;
 
     /**
-     * @param val
+     * @param val All responses with status
      */
     public void setResponses(final Collection<FbGranulatedResponse> val) {
       responses = val;
     }
 
-    /** All responses with status
+    /**
      *
      * @return Collection of FbResponse
      */
@@ -317,9 +309,9 @@ public interface SchedulingI extends Serializable {
       return responses;
     }
 
-    /** Aggregated response
+    /**
      *
-     * @param val
+     * @param val Aggregated response
      */
     public void setAggregatedResponse(final FbGranulatedResponse val) {
       aggregatedResponse = val;
@@ -337,44 +329,40 @@ public interface SchedulingI extends Serializable {
   /** Get calendar collections which affect freebusy.
    *
    * @return Collection of calendars.
-   * @throws CalFacadeException on fatal error
    */
-  Collection<BwCalendar> getFreebusySet() throws CalFacadeException;
+  Collection<BwCalendar> getFreebusySet();
 
   /** Get aggregated free busy for a ScheduleResult.
    *
    * @param sr ScheduleResult
-   * @param start
-   * @param end
-   * @param granularity
+   * @param start     start from original request
+   * @param end       end from original request
+   * @param granularity as a duration
    * @return FbResponses
-   * @throws CalFacadeException on fatal error
    */
   FbResponses aggregateFreeBusy(ScheduleResult sr,
                                 BwDateTime start, BwDateTime end,
-                                BwDuration granularity) throws CalFacadeException;
+                                BwDuration granularity);
 
   /** Granulate (divide into equal chunks and return the result. The response
    * from the original request may be for a different time range than requested.
    *
-   * @param fb
+   * @param fb event
    * @param start     start from original request
    * @param end       end from original request
-   * @param granularity
+   * @param granularity as a duration
    * @return FbResponse
-   * @throws CalFacadeException on fatal error
    */
   FbGranulatedResponse granulateFreeBusy(BwEvent fb,
                                          BwDateTime start,
                                          BwDateTime end,
-                                         BwDuration granularity) throws CalFacadeException;
+                                         BwDuration granularity);
 
   /** Return the users copy of the active meeting with the
    * same uid as that given.
    *
    * @param ev
    * @return possibly null meeting
-   * @throws CalFacadeException on fatal error
    */
-  EventInfo getStoredMeeting(BwEvent ev) throws CalFacadeException;
+  EventInfo getStoredMeeting(BwEvent ev);
 }

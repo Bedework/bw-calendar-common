@@ -42,14 +42,14 @@ import org.bedework.webdav.servlet.shared.WebdavException;
  * @author Mike Douglass
  * @version 1.0
  */
-public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
+public class BwObjectFilter extends ObjectFilter<ObjectFilter<?>> {
   /** Match on any of the categories.
    *
    * @param name - null one will be created
-   * @param of
+   * @param of object filter
    */
   public BwObjectFilter(final String name,
-                        final ObjectFilter of) {
+                        final ObjectFilter<?> of) {
     super(name, PropertyInfoIndex.CATEGORIES);
 
     setEntity(of);
@@ -82,10 +82,10 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
 
   @Override
   public boolean match(final Object o,
-                       final String userHref) throws WebdavException {
-    ObjectFilter of = getEntity();
-    Object ent = of.getEntity();
-    boolean not = of.getNot();
+                       final String userHref) {
+    final ObjectFilter<?> of = getEntity();
+    final Object ent = of.getEntity();
+    final boolean not = of.getNot();
 
     String val = null;
     Integer ival = null;
@@ -106,11 +106,11 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       ev = (BwEvent)o;
     }
 
-    if (of instanceof EntityTypeFilter) {
-      if (ev == null) {
-        return false;
-      }
+    if (ev == null) {
+      return false;
+    }
 
+    if (of instanceof EntityTypeFilter) {
       if (not) {
         return ev.getEntityType() != ival;
       }
@@ -119,7 +119,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
     }
 
     PropertyInfoIndex pii = of.getPropertyIndex();
-    BwIcalPropertyInfoEntry pi = BwIcalPropertyInfo.getPinfo(pii);
+    final BwIcalPropertyInfoEntry pi = BwIcalPropertyInfo.getPinfo(pii);
 
     if (pi.getParam()) {
       pii = of.getParentPropertyIndex();
@@ -136,7 +136,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return stringMatch(ev.getCreated(), val);
 
     case DESCRIPTION:
-      for (BwLongString ls: ev.getDescriptions()) {
+      for (final BwLongString ls: ev.getDescriptions()) {
         if (stringMatch(ls.getValue(), val)) {
           return true;
         }
@@ -200,7 +200,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return stringMatch(ev.getStatus(), val);
 
     case SUMMARY:
-      for (BwString s: ev.getSummaries()) {
+      for (final BwString s: ev.getSummaries()) {
         if (stringMatch(s.getValue(), val)) {
           return true;
         }
@@ -223,7 +223,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
           return false;
         }
         return stringMatch(ev.getPeruserTransparency(userHref), val);
-      } catch (Throwable t) {
+      } catch (final Throwable t) {
         throw new WebdavException(t);
       }
 
@@ -252,7 +252,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       break;
 
     case CATEGORIES:
-      for (BwCategory cat: ev.getCategories()) {
+      for (final BwCategory cat: ev.getCategories()) {
         if (stringMatch(cat.getWordVal(), val)) {
           return true;
         }
@@ -261,7 +261,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case COMMENT:
-      for (BwString s: ev.getComments()) {
+      for (final BwString s: ev.getComments()) {
         if (stringMatch(s.getValue(), val)) {
           return true;
         }
@@ -270,7 +270,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case CONTACT:
-      for (BwContact c: ev.getContacts()) {
+      for (final BwContact c: ev.getContacts()) {
         if (stringMatch(c.getCn().getValue(), val)) {
           return true;
         }
@@ -279,7 +279,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case EXDATE:
-      for (BwDateTime dt: ev.getExdates()) {
+      for (final BwDateTime dt: ev.getExdates()) {
         if (stringMatch(dt.getDtval(), val)) {
           return true;
         }
@@ -288,7 +288,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case EXRULE :
-      for (String s: ev.getExrules()) {
+      for (final String s: ev.getExrules()) {
         if (stringMatch(s, val)) {
           return true;
         }
@@ -297,7 +297,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case REQUEST_STATUS:
-      for (BwRequestStatus rs: ev.getRequestStatuses()) {
+      for (final BwRequestStatus rs: ev.getRequestStatuses()) {
         if (stringMatch(rs.getCode(), val)) {
           return true;
         }
@@ -313,7 +313,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return stringMatch(ev.getRelatedTo().getValue(), val);
 
     case RESOURCES:
-      for (BwString s: ev.getResources()) {
+      for (final BwString s: ev.getResources()) {
         if (stringMatch(s.getValue(), val)) {
           return true;
         }
@@ -322,7 +322,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case RDATE:
-      for (BwDateTime dt: ev.getRdates()) {
+      for (final BwDateTime dt: ev.getRdates()) {
         if (stringMatch(dt.getDtval(), val)) {
           return true;
         }
@@ -331,7 +331,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       return false;
 
     case RRULE :
-      for (String s: ev.getRrules()) {
+      for (final String s: ev.getRrules()) {
         if (stringMatch(s, val)) {
           return true;
         }
@@ -405,7 +405,7 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("(");
+    final StringBuilder sb = new StringBuilder("(");
 
     sb.append(getPropertyIndex());
 
@@ -432,12 +432,12 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
 
   private boolean stringMatch(final String fldVal,
                               final String val) {
-    boolean matches;
+    final boolean matches;
 
     domatch: {
       if (getExact()) {
         if (getCaseless()) {
-          matches = val.toLowerCase().equals(fldVal.toLowerCase());
+          matches = val.equalsIgnoreCase(fldVal);
           break domatch;
         }
 
@@ -446,11 +446,11 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter> {
       }
 
       if (getCaseless()) {
-        matches = fldVal.toLowerCase().indexOf(val.toLowerCase()) >= 0;
+        matches = fldVal.toLowerCase().contains(val.toLowerCase());
         break domatch;
       }
 
-      matches = val.indexOf(fldVal) >= 0;
+      matches = val.contains(fldVal);
     } // domatch
 
     if (getNot()) {

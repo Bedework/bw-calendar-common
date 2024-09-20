@@ -1315,7 +1315,7 @@ public class Ical2BwEvent extends IcalUtil {
                                        final BwEvent ev,
                                        final String lang,
                                        final String val) {
-    if ((val == null) || (val.length() == 0)) {
+    if ((val == null) || (val.isEmpty())) {
       return false;
     }
 
@@ -1444,11 +1444,9 @@ public class Ical2BwEvent extends IcalUtil {
     final ParameterList params = p.getParameters();
 
     for (final Parameter param: params) {
-      if (!(param instanceof XParameter)) {
+      if (!(param instanceof final XParameter xpar)) {
         continue;
       }
-
-      final XParameter xpar = (XParameter)param;
 
       if (xpar.getName().equalsIgnoreCase(BwXproperty.xparUid)) {
         continue;
@@ -1644,12 +1642,12 @@ public class Ical2BwEvent extends IcalUtil {
     final CalendarAddress calAddr =
             part.getProperty(CALENDAR_ADDRESS);
 
-    if (calAddr == null) {
-      return Response.error(new Response(),
-                            "No calendar address");
-    }
-
     changes.addValue(PropertyInfoIndex.PARTICIPANT, bwpart);
+
+    if (calAddr == null) {
+      // Just add it.
+      return Response.ok();
+    }
 
     if (bwpart.includesParticipantType(VALUE_VOTER)) {
       processVoter(calAddr, vpoll, cb, changes,
@@ -1657,11 +1655,6 @@ public class Ical2BwEvent extends IcalUtil {
     }
 
     if (bwpart.includesParticipantType(VALUE_OWNER)) {
-      if (ev.getOrganizer() != null) {
-        return Response.error(new Response(),
-                              "Multiple owners");
-      }
-
       final var newOrg = IcalUtil.getOrganizer(cb, part);
       if (changes.changed(ORGANIZER, ev.getOrganizer(), newOrg)) {
         ev.setOrganizer(newOrg);

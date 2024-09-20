@@ -30,6 +30,7 @@ import org.bedework.calfacade.base.CategorisedEntity;
 import org.bedework.calfacade.base.CollatableEntity;
 import org.bedework.calfacade.base.PropertiesEntity;
 import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -53,6 +54,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -83,11 +85,11 @@ import javax.xml.namespace.QName;
  * calendar collections. That requirement is relaxed for other special
  * calendars.
  *
- * Collections may be tombstoned - that is they are effectively deleted but
- * remain for the purpose of synchronization reports. Currently we indicate a
+ * <p>Collections may be tombstoned - that is, they are effectively deleted but
+ * remain for the purpose of synchronization reports. Currently, we indicate a
  * tombstoned collection by setting the filter value to "--TOMBSTONED--".
  *
- * XXX We suffix the name and path also to avoid some ugly clashes related to
+ * <p>XXX We suffix the name and path also to avoid some ugly clashes related to
  * lastmod
  *
  *  @author Mike Douglass douglm - rpi.edu
@@ -289,9 +291,9 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   private String remotePw;
 
-  /* ====================================================================
+  /* ==============================================================
    *                      Non-db fields
-   * ==================================================================== */
+   * ============================================================== */
 
   private BwCalendar aliasTarget;
 
@@ -860,11 +862,12 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
     return ts;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Property convenience methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  /**
+  /** This is only valid on creation.
+   *
    * @param val the supported component names e.g. "VEVENT", "VTODO" etc.
    */
   public void setSupportedComponents(final List<String> val) {
@@ -879,53 +882,42 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
                  String.join(",",  val));
   }
 
-  /**
+  /** If there is a default value return that. Otherwise, return any
+   * explicitly set value.
+   *
    * @return the supported components
    */
   @NoDump
   public List<String> getSupportedComponents() {
     if (supportedComponents == null) {
-      supportedComponents = new ArrayList<>();
+      supportedComponents = entityTypes.get(getCalType());
 
-      final int ctype = getCalType();
-
-      if (ctype == calTypePoll) {
-        supportedComponents.add("VPOLL");
-        return supportedComponents;
-      }
-
-      if (ctype == calTypeTasks) {
-        supportedComponents.add("VTODO");
-        return supportedComponents;
-      }
-
-      if (ctype == calTypeInbox) {
-        supportedComponents.add("VPOLL");
-        supportedComponents.add("VEVENT");
-        supportedComponents.add("VTODO");
-        supportedComponents.add("VAVAILABILITY");
-        return supportedComponents;
-      }
-
-      if ((ctype != calTypeCalendarCollection) &&
-          (ctype != calTypeOutbox) &&
-          (ctype != calTypeExtSub)) {
+      if (supportedComponents != null) {
         return supportedComponents;
       }
 
       final String slist = getQproperty(CaldavTags.supportedCalendarComponentSet);
 
       if (slist == null) {
-        supportedComponents.add("VEVENT");
-        //supportedComponents.add("VTODO");
-        //supportedComponents.add("VAVAILABILITY");
+        supportedComponents = Collections.emptyList();
       } else {
-        final String[] ss = slist.split(",");
-        supportedComponents.addAll(Arrays.asList(ss));
+        supportedComponents =
+                Collections.unmodifiableList(
+                        Arrays.asList(slist.split(",")));
       }
     }
 
     return supportedComponents;
+  }
+
+  @NoDump
+  public boolean isSupportedComponent(final int val) {
+    return isSupportedComponent(IcalDefs.entityTypeIcalNames[val]);
+  }
+
+  @NoDump
+  public boolean isSupportedComponent(final String val) {
+    return getSupportedComponents().isEmpty() || getSupportedComponents().contains(val);
   }
 
   /**
@@ -1281,7 +1273,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
     for (final EventListEntry ele: val) {
       final String p = ele.getPath() + "/";
 
-      if (cur.length() > 0) {
+      if (!cur.isEmpty()) {
         cur.append("\t");
       }
 
@@ -1301,7 +1293,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
       }
     }
 
-    if (cur.length() > 0) {
+    if (!cur.isEmpty()) {
       vals.add(cur.toString());
     }
 
@@ -1623,7 +1615,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   /**
    *
-   * @return list of category hrefs.
+   * @return set of category hrefs.
    */
   @NoProxy
   @NoWrap
@@ -1752,7 +1744,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    * @return  boolean true for valid calendar name
    */
   public static boolean checkName(final String val) {
-    if ((val == null) || (val.length() == 0)) {
+    if ((val == null) || (val.isEmpty())) {
       return false;
     }
 
@@ -1775,7 +1767,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
   }
 
   /** Generate an encoded url referring to this calendar.
-   *
+   * <br/>
    * XXX This should not be here
    * @return String encoded url (or path)
    */

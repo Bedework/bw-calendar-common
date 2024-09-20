@@ -1634,6 +1634,7 @@ public class Ical2BwEvent extends IcalUtil {
                                              final EventInfo vpoll,
                                              final ChangeTable changes,
                                              final boolean mergeAttendees) {
+    boolean hadOwner = false;
     final BwEvent ev = vpoll.getEvent();
     final var bwpart = ev.getParticipants().newParticipant(part);
 
@@ -1655,10 +1656,16 @@ public class Ical2BwEvent extends IcalUtil {
     }
 
     if (bwpart.includesParticipantType(VALUE_OWNER)) {
+      if (hadOwner) {
+        return Response.error(new Response(),
+                              "Multiple owners");
+      }
+
       final var newOrg = IcalUtil.getOrganizer(cb, part);
       if (changes.changed(ORGANIZER, ev.getOrganizer(), newOrg)) {
         ev.setOrganizer(newOrg);
       }
+      hadOwner = true;
     }
 
     return Response.ok();

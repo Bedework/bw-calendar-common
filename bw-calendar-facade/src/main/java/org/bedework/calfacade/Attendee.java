@@ -109,6 +109,36 @@ public class Attendee implements Comparable<Attendee> {
 
   /**
    *
+   *  @param  val   kind: individual, group etc
+   */
+  public void setKind(final String val) {
+    if (attendee != null) {
+      attendee.setCuType(val);
+    }
+
+    if (participant != null) {
+      participant.setKind(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     kind: individual, group etc
+   */
+  public String getKind() {
+    if (attendee != null) {
+      return attendee.getCuType();
+    }
+
+    if (participant != null) {
+      return participant.getKind();
+    }
+
+    return null;
+  }
+
+  /**
+   *
    *  @param  val   String participation status as defined for
    *                PARTICIPANT
    */
@@ -133,6 +163,37 @@ public class Attendee implements Comparable<Attendee> {
 
     if (participant != null) {
       return participant.getParticipationStatus();
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   *  @param  val   String participation type as defined for
+   *                PARTICIPANT
+   */
+  public void setParticipantType(final String val) {
+    if (attendee != null) {
+      attendee.setRole(val);
+    }
+
+    if (participant != null) {
+      participant.setParticipantType(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     participation type
+   */
+  public String getParticipantType() {
+    if (attendee != null) {
+      return attendee.getRole();
+    }
+
+    if (participant != null) {
+      return participant.getParticipantType();
     }
 
     return null;

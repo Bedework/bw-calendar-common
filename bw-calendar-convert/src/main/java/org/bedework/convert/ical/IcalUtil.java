@@ -77,11 +77,9 @@ import net.fortuna.ical4j.model.parameter.Role;
 import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.ScheduleStatus;
 import net.fortuna.ical4j.model.parameter.SentBy;
-import net.fortuna.ical4j.model.parameter.StayInformed;
 import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.property.Attach;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.DateListProperty;
 import net.fortuna.ical4j.model.property.DateProperty;
 import net.fortuna.ical4j.model.property.DtEnd;
@@ -623,8 +621,8 @@ public class IcalUtil {
                                        final Attendee attProp) {
     final ParameterList pars = attProp.getParameters();
 
-    final BwAttendee att = initAttendeeVoter(cb, attProp.getValue(),
-                                             pars);
+    final BwAttendee att = initAttendee(cb, attProp.getValue(),
+                                        pars);
 
     att.setPartstat(getOptStr(pars, "PARTSTAT"));
     if (att.getPartstat() == null) {
@@ -638,35 +636,13 @@ public class IcalUtil {
 
   /**
    * @param cb          IcalCallback object
-   * @param ca - identifies the voter
-   * @return BwAttendee
-   */
-  public static BwAttendee getVoter(final IcalCallback cb,
-                                    final CalendarAddress ca) {
-    final ParameterList pars = ca.getParameters();
-
-    final BwAttendee att = initAttendeeVoter(cb, ca.getValue(),
-                                             pars);
-
-    att.setType(BwAttendee.typeVoter);
-
-    final Parameter par = pars.getParameter("STAY-INFORMED");
-    if (par != null) {
-      att.setStayInformed(((StayInformed)par).getStayInformed());
-    }
-
-    return att;
-  }
-
-  /**
-   * @param cb          IcalCallback object
    * @param val        init attendee
    * @param pars        par list
    * @return BwAttendee
    */
-  public static BwAttendee initAttendeeVoter(final IcalCallback cb,
-                                             final String val,
-                                             final ParameterList pars) {
+  public static BwAttendee initAttendee(final IcalCallback cb,
+                                        final String val,
+                                        final ParameterList pars) {
     final BwAttendee att = new BwAttendee();
 
     att.setAttendeeUri(cb.getCaladdr(val));

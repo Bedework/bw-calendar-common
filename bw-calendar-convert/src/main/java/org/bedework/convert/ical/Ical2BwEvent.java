@@ -37,10 +37,10 @@ import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.ChangeTable;
-import org.bedework.convert.Icalendar;
-import org.bedework.convert.Icalendar.TimeZoneInfo;
 import org.bedework.convert.CnvUtil;
 import org.bedework.convert.EventTimeZonesRegistry;
+import org.bedework.convert.Icalendar;
+import org.bedework.convert.Icalendar.TimeZoneInfo;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -82,7 +82,6 @@ import net.fortuna.ical4j.model.parameter.Value;
 import net.fortuna.ical4j.model.parameter.XParameter;
 import net.fortuna.ical4j.model.property.Attach;
 import net.fortuna.ical4j.model.property.Attendee;
-import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.Categories;
 import net.fortuna.ical4j.model.property.Concept;
 import net.fortuna.ical4j.model.property.DateListProperty;
@@ -115,13 +114,9 @@ import java.util.TreeSet;
 
 import javax.xml.ws.Holder;
 
-import static net.fortuna.ical4j.model.Property.CALENDAR_ADDRESS;
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
-import static net.fortuna.ical4j.model.property.ParticipantType.VALUE_OWNER;
-import static net.fortuna.ical4j.model.property.ParticipantType.VALUE_VOTER;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
-import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ORGANIZER;
 import static org.bedework.util.misc.response.Response.Status.failed;
 import static org.bedework.util.misc.response.Response.Status.ok;
 
@@ -1640,79 +1635,9 @@ public class Ical2BwEvent extends IcalUtil {
 
     final ParticipantType partType = part.getParticipantType();
 
-    final CalendarAddress calAddr =
-            part.getProperty(CALENDAR_ADDRESS);
-
     changes.addValue(PropertyInfoIndex.PARTICIPANT, bwpart);
 
-    if (calAddr == null) {
-      // Just add it.
-      return Response.ok();
-    }
-
-    if (bwpart.includesParticipantType(VALUE_VOTER)) {
-      processVoter(calAddr, vpoll, cb, changes,
-                   mergeAttendees);
-    }
-
-    if (bwpart.includesParticipantType(VALUE_OWNER)) {
-      if (ev.getOrganizer() != null) {
-        return Response.error(new Response(),
-                              "Multiple owners");
-      }
-
-      final var newOrg = IcalUtil.getOrganizer(cb, part);
-      if (changes.changed(ORGANIZER, ev.getOrganizer(), newOrg)) {
-        ev.setOrganizer(newOrg);
-      }
-    }
-
     return Response.ok();
-  }
-
-  private static void processVoter(final CalendarAddress ca,
-                                   final EventInfo vpoll,
-                                   final IcalCallback cb,
-                                   final ChangeTable chg,
-                                   final boolean mergeAttendees) {
-    final BwEvent ev = vpoll.getEvent();
-
-    /*
-    if (methodType == ScheduleMethods.methodTypePublish) {
-      if (cb.getStrictness() == IcalCallback.conformanceStrict) {
-        throw new CalFacadeException(CalFacadeException.attendeesInPublish);
-      }
-
-      if (cb.getStrictness() == IcalCallback.conformanceWarn) {
-        //warn("Had attendees for PUBLISH");
-      }
-    }
-    */
-
-    if (vpoll.getNewEvent() || !mergeAttendees) {
-      chg.addValue(ATTENDEE, IcalUtil.getVoter(cb, ca));
-      return;
-    }
-
-    final String pUri = cb.getCaladdr(ca.getValue());
-
-    if (pUri.equals(cb.getCaladdr(cb.getPrincipal().getPrincipalRef()))) {
-      /* Only update for our own attendee
-                 * We're doing a PUT and this must be the attendee updating their
-                 * response. We don't allow them to change other voters
-               * whatever the PUT content says.
-               */
-      chg.addValue(ATTENDEE, IcalUtil.getVoter(cb, ca));
-      return;
-    }
-
-    // Use the value we currently have
-    for (final BwAttendee att: ev.getAttendees()) {
-      if (pUri.equals(att.getAttendeeUri())) {
-        chg.addValue(ATTENDEE, att.clone());
-        break;
-      }
-    }
   }
 
   private static Response processCandidate(final VPoll val,

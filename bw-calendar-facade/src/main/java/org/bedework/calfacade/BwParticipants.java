@@ -113,9 +113,15 @@ public class BwParticipants {
   }
 
   public void removeAttendee(final Attendee val) {
+    final var ctab = parent.getChangeset();
     final var att = val.getAttendee();
     if (att != null) {
-      parent.removeAttendee(att);
+      if (ctab == null) {
+        parent.removeAttendee(att);
+      } else {
+        ctab.changed(PropertyIndex.PropertyInfoIndex.ATTENDEE,
+                     att, null);
+      }
     }
 
     final var part = val.getParticipant();
@@ -125,6 +131,44 @@ public class BwParticipants {
 
     getAttendeesSet().remove(val);
     markChanged();
+  }
+
+  public Attendee addAttendee(final Attendee val) {
+    final var evAtt = parent.findAttendee(val.getCalendarAddress());
+    final var att = val.getAttendee();
+    final var ctab = parent.getChangeset();
+
+    if (att != null) {
+      if (ctab == null) {
+        parent.addAttendee(val.getAttendee());
+      } else {
+        final ChangeTableEntry cte = ctab.getEntry(
+                PropertyIndex.PropertyInfoIndex.ATTENDEE);
+        if (evAtt != null) {
+          cte.addChangedValue(att);
+        } else {
+          cte.addAddedValue(att);
+        }
+      }
+    }
+
+    final var part = val.getParticipant();
+
+    if (part != null) {
+      final var xpart = new BwXproperty(BwXproperty.bedeworkParticipant, null, part.asString());
+      if (ctab == null) {
+        parent.addXproperty(xpart);
+      } else {
+        final ChangeTableEntry cte = ctab.getEntry(
+                PropertyIndex.PropertyInfoIndex.XPROP);
+        cte.addAddedValue(xpart);
+      }
+    }
+
+    getAttendeesSet().add(val);
+    markChanged();
+
+    return val;
   }
 
   public Attendee copyAttendee(final Attendee val) {
@@ -139,42 +183,18 @@ public class BwParticipants {
 
     if (val.getParticipant() != null) {
       part = (BwParticipant)val.getParticipant().clone();
+      addParticipant(part);
     } else {
       part = null;
     }
 
-    addParticipant(part);
-    final var evAtt = parent.findAttendee(val.getCalendarAddress());
-    final var ctab = parent.getChangeset();
-
-    if (ctab == null) {
-      parent.addAttendee(att);
-    } else {
-      final ChangeTableEntry cte = ctab.getEntry(
-              PropertyIndex.PropertyInfoIndex.ATTENDEE);
-      if (evAtt != null) {
-        cte.addChangedValue(att);
-      } else {
-        cte.addAddedValue(att);
-      }
-    }
-
-    final var a = new Attendee(this, parent, att, part);
-    getAttendeesSet().add(a);
-    markChanged();
-
-    return a;
+    return addAttendee(new Attendee(this, parent, att, part));
   }
 
   public Attendee makeAttendee(final BwAttendee att,
                                final BwParticipant part) {
-    parent.addAttendee(att);
-
     final var a = new Attendee(this, parent, att, part);
-    getAttendeesSet().add(a);
-    markChanged();
-
-    return a;
+    return addAttendee(a);
   }
 
   /** The new object is added to the set.

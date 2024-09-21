@@ -3,6 +3,8 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.calfacade.util.ChangeTableEntry;
+import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.Calendar;
@@ -20,7 +22,9 @@ import java.util.Set;
 
 import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
 
-/** Handle component participants
+/** Handle component participants.
+ * Currently, we have the complication of having attendee only,
+ * participant only, or both.
  *
  * User: mike Date: 9/10/24 Time: 13:40
  */
@@ -74,9 +78,103 @@ public class BwParticipants {
     return attendeesMap.keySet();
   }
 
+  public void clearAttendees() {
+    parent.getAttendees().clear();
+    getAttendeesSet().clear();
+
+    clearParticipants();
+    markChanged();
+  }
+
+  /**
+   *
+   * @param attendee we want left
+   */
+  public void setOnlyAttendee(final Attendee attendee) {
+    clearAttendees();
+    makeAttendee(attendee.getAttendee(), attendee.getParticipant());
+  }
+
   public Attendee findAttendee(final String calAddr) {
     getAttendeesSet(); // Ensure populated
     return attendeesMap.get(calAddr);
+  }
+
+  public Attendee makeAttendee() {
+    final var p = newParticipant();
+    final var att = new BwAttendee();
+    parent.addAttendee(att);
+
+    final var a = new Attendee(this, parent, att, p);
+    getAttendeesSet().add(a);
+    markChanged();
+
+    return a;
+  }
+
+  public void removeAttendee(final Attendee val) {
+    final var att = val.getAttendee();
+    if (att != null) {
+      parent.removeAttendee(att);
+    }
+
+    final var part = val.getParticipant();
+    if (part != null) {
+      removeParticipant(part);
+    }
+
+    getAttendeesSet().remove(val);
+    markChanged();
+  }
+
+  public Attendee copyAttendee(final Attendee val) {
+    final BwAttendee att;
+    final BwParticipant part;
+
+    if (val.getAttendee() != null) {
+      att = (BwAttendee)val.getAttendee().clone();
+    } else {
+      att = null;
+    }
+
+    if (val.getParticipant() != null) {
+      part = (BwParticipant)val.getParticipant().clone();
+    } else {
+      part = null;
+    }
+
+    addParticipant(part);
+    final var evAtt = parent.findAttendee(val.getCalendarAddress());
+    final var ctab = parent.getChangeset();
+
+    if (ctab == null) {
+      parent.addAttendee(att);
+    } else {
+      final ChangeTableEntry cte = ctab.getEntry(
+              PropertyIndex.PropertyInfoIndex.ATTENDEE);
+      if (evAtt != null) {
+        cte.addChangedValue(att);
+      } else {
+        cte.addAddedValue(att);
+      }
+    }
+
+    final var a = new Attendee(this, parent, att, part);
+    getAttendeesSet().add(a);
+    markChanged();
+
+    return a;
+  }
+
+  public Attendee makeAttendee(final BwAttendee att,
+                               final BwParticipant part) {
+    parent.addAttendee(att);
+
+    final var a = new Attendee(this, parent, att, part);
+    getAttendeesSet().add(a);
+    markChanged();
+
+    return a;
   }
 
   /** The new object is added to the set.

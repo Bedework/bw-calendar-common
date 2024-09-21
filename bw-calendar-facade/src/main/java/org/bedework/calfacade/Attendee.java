@@ -79,6 +79,36 @@ public class Attendee implements Comparable<Attendee> {
 
   /**
    *
+   *  @param  val   calendar address
+   */
+  public void setCalendarAddress(final String val) {
+    if (attendee != null) {
+      attendee.setAttendeeUri(val);
+    }
+
+    if (participant != null) {
+      participant.setCalendarAddress(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     calendar address
+   */
+  public String getCalendarAddress() {
+    if (attendee != null) {
+      return attendee.getAttendeeUri();
+    }
+
+    if (participant != null) {
+      return participant.getCalendarAddress();
+    }
+
+    return null;
+  }
+
+  /**
+   *
    *  @param  val   String participation status as defined for
    *                PARTICIPANT
    */

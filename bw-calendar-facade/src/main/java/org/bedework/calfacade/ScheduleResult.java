@@ -20,6 +20,7 @@ package org.bedework.calfacade;
 
 import org.bedework.util.calendar.ScheduleStates;
 import org.bedework.util.misc.ToString;
+import org.bedework.util.misc.response.Response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ import java.util.TreeSet;
  *
  * @author douglm
  */
-public class ScheduleResult {
+public class ScheduleResult extends Response {
   /** Result for a single recipient.
    */
   public static class ScheduleRecipientResult
@@ -73,14 +74,6 @@ public class ScheduleResult {
     }
   }
 
-  /** If non-null error from CalFacadeException
-   */
-  public String errorCode;
-
-  /** To go with the error code
-   */
-  public Object extraInfo;
-
   /** True if an event had a previously seen sequence and dtstamp.
    * recipient results will be set but no action taken.
    */
@@ -107,11 +100,11 @@ public class ScheduleResult {
   public String toString() {
     final ToString ts = new ToString(this);
 
-    ts.append("errorCode", errorCode);
+    super.toStringSegment(ts);
 
-    ts.append("ignored", ignored);
-    ts.append("reschedule", reschedule);
-    ts.append("ignored", ignored);
+    ts.append("ignored", ignored)
+      .append("reschedule", reschedule)
+      .append("ignored", ignored);
 
     if ((recipientResults != null) && !recipientResults.isEmpty()) {
       for (final ScheduleRecipientResult srr: recipientResults.values()) {

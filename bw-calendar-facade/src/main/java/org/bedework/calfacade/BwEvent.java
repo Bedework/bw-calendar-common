@@ -4281,6 +4281,17 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return changeSet;
   }
 
+  /** Get current change set for the event.
+   *
+   * @return null for no changes
+   */
+  @NoProxy
+  @NoWrap
+  @NoDump
+  public ChangeTable getChangeset() {
+    return changeSet;
+  }
+
   /** Will force update
    *
    */

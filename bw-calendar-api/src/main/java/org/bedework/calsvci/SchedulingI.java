@@ -18,6 +18,7 @@
 */
 package org.bedework.calsvci;
 
+import org.bedework.calfacade.Attendee;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwDateTime;
@@ -26,7 +27,6 @@ import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwOrganizer;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.ScheduleResult;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.EventPeriod;
 import org.bedework.util.calendar.ScheduleStates;
@@ -68,7 +68,8 @@ public interface SchedulingI extends Serializable {
   ScheduleResult schedule(EventInfo ei,
                           String recipient,
                           String fromAttUri,
-                          boolean iSchedule);
+                          boolean iSchedule,
+                          ScheduleResult res);
 
   /**
    * @param ei event
@@ -105,10 +106,10 @@ public interface SchedulingI extends Serializable {
    * @param ei  The stored updated copy of the meeting
    * @param method - the scheduling method
    * @return   ScheduleResult
-   * @throws CalFacadeException on fatal error
    */
   ScheduleResult attendeeRespond(EventInfo ei,
-                                 int method) throws CalFacadeException;
+                                 int method,
+                                 ScheduleResult res);
 
   /* * Handle replies to scheduling requests - that is the schedule
    * method was REPLY. We, as an organizer (or their delegate) are going to
@@ -146,7 +147,8 @@ public interface SchedulingI extends Serializable {
    *                    REFRESH
    * @return ScheduleResult
    */
-  ScheduleResult scheduleResponse(EventInfo ei);
+  ScheduleResult scheduleResponse(EventInfo ei,
+                                  ScheduleResult res);
 
   /** Get the free busy for the given principal as a list of busy periods.
    *
@@ -361,8 +363,15 @@ public interface SchedulingI extends Serializable {
   /** Return the users copy of the active meeting with the
    * same uid as that given.
    *
-   * @param ev
+   * @param ev event to locate
    * @return possibly null meeting
    */
   EventInfo getStoredMeeting(BwEvent ev);
+
+  /** Find the attendee in this event which corresponds to the current user
+   *
+   * @param ei to search
+   * @return attendee or null.
+   */
+  Attendee findUserAttendee(EventInfo ei);
 }

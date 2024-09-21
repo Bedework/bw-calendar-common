@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade.ifs;
 
+import org.bedework.access.AccessPrincipal;
 import org.bedework.calfacade.BwGroup;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwPrincipalInfo;
@@ -263,7 +264,7 @@ public interface Directories extends Serializable {
    * @param val        principal
    * @return caladdr
    */
-  String principalToCaladdr(BwPrincipal<?> val);
+  String principalToCaladdr(AccessPrincipal val);
 
   /** Given a user account return a calendar address.
    * For example, we might have an account<br/>

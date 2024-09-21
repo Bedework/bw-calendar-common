@@ -32,7 +32,6 @@ import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.Response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -54,9 +53,12 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   /** This class allows add and update event to signal changes back to the
    * caller.
    */
-  public static class UpdateResult extends Response {
+  public static class UpdateResult extends ScheduleResult {
     /** False if the update method(s) could find no changes */
     public boolean hasChanged;
+
+    /** True if the entity was scheduled */
+    public boolean wasScheduled;
 
     /** False if the sequence doesn't need updating */
     public boolean sequenceChange;
@@ -104,11 +106,6 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
     /** Marked entity */
     public Integer pollWinner;
-
-    /** Non-null if the object we added was a scheduling object and
-     * resulted in some scheduling operations.
-     */
-    public ScheduleResult schedulingResult;
   }
 
   private EventInfo retrievedEvent;
@@ -211,15 +208,15 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   private boolean replyUpdate;
 
   /**
-   * @param event
+   * @param event the contained event
    */
   public EventInfo(final BwEvent event) {
     setEvent(event);
   }
 
   /**
-   * @param event
-   * @param overrides
+   * @param event the contained event
+   * @param overrides set of overrides
    */
   public EventInfo(final BwEvent event,
                    final Set<EventInfo> overrides) {
@@ -318,7 +315,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
   /** editable is set at retrieval to indicate an event owned by the current
    * user. This only has significance for the personal calendar.
-   *
+   * <br/>
    * XXX - not applicable in a shared world?
    *
    * @param val true if object is considered editable
@@ -381,8 +378,8 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       return schedulingInfo;
     }
 
-    SchedulingInfo si = new SchedulingInfo();
-    BwEvent ev = getEvent();
+    final SchedulingInfo si = new SchedulingInfo();
+    final BwEvent ev = getEvent();
 
     si.setMasterSuppressed(getEvent().getSuppressed());
 
@@ -392,8 +389,8 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     }
 
     if (getNumOverrides() > 0) {
-      for (EventInfo oei: getOverrides()) {
-        BwEvent oev = oei.getEvent();
+      for (final EventInfo oei: getOverrides()) {
+        final BwEvent oev = oei.getEvent();
         si.setMaxAttendees(Math.max(si.getMaxAttendees(),
                                     oev.getNumAttendees()));
         if (si.getOrganizer() == null) {
@@ -502,7 +499,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   /** Get change set for the event. The absence of a changes does not
    * mean no changes - there may be overrides to apply.
    *
-   * @param userHref
+   * @param userHref these apply to
    * @return null for no changes
    */
   public ChangeTable getChangeset(final String userHref) {
@@ -549,7 +546,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       return false;
     }
 
-    for (EventOverride oe: overrides) {
+    for (final EventOverride oe: overrides) {
       if (!retrievedOverrides.contains(oe)) {
         return true;
       }
@@ -558,12 +555,12 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     return false;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Alarms methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
-   * @param val
+   * @param val collection of alarms
    */
   public void setAlarms(final Collection<BwAlarm> val) {
     alarms = val;
@@ -580,7 +577,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
    * @return int number of alarms.
    */
   public int getNumAlarms() {
-    Collection<BwAlarm> as = getAlarms();
+    final Collection<BwAlarm> as = getAlarms();
     if (as == null) {
       return 0;
     }
@@ -591,14 +588,14 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   /** clear the event's alarms
    */
   public void clearAlarms() {
-    Collection<BwAlarm> as = getAlarms();
+    final Collection<BwAlarm> as = getAlarms();
     if (as != null) {
       as.clear();
     }
   }
 
   /**
-   * @param val
+   * @param val an alarm
    */
   public void addAlarm(final BwAlarm val) {
     Collection<BwAlarm> as = getAlarms();
@@ -611,9 +608,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Overrides methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
    *
@@ -700,10 +697,10 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       return null;
     }
 
-    TreeSet<BwEventProxy> proxies = new TreeSet<>();
+    final TreeSet<BwEventProxy> proxies = new TreeSet<>();
 
-    for (EventInfo ei: getOverrides()) {
-      BwEventProxy proxy = (BwEventProxy)ei.getEvent();
+    for (final EventInfo ei: getOverrides()) {
+      final BwEventProxy proxy = (BwEventProxy)ei.getEvent();
       proxies.add(proxy);
     }
 
@@ -715,18 +712,18 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
    * @return Collection of deleted override proxy events or null
    */
   public Collection<BwEventProxy> getDeletedOverrideProxies(final String userHref) {
-    TreeSet<BwEventProxy> proxies = new TreeSet<>();
+    final TreeSet<BwEventProxy> proxies = new TreeSet<>();
 
     if ((retrievedOverrides == null) || instanceOnly) {
       return proxies;
     }
 
-    for (EventOverride eo: retrievedOverrides) {
+    for (final EventOverride eo: retrievedOverrides) {
       if (overrides.contains(eo)) {
         continue;
       }
 
-      BwEventProxy proxy = (BwEventProxy)eo.getEvent();
+      final BwEventProxy proxy = (BwEventProxy)eo.getEvent();
 
       if (proxy.getRef().unsaved()) {
         throw new RuntimeException("Unsaved override in delete list");
@@ -773,14 +770,14 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       }
 
       /* Update the changes */
-      ChangeTable chg = getChangeset(userHref);
+      final ChangeTable chg = getChangeset(userHref);
 
       if (pu != null) {
         chg.addValue(PropertyInfoIndex.XPROP, pu);
       }
 
       if (!Util.isEmpty(toRemove)) {
-        for (BwAlarm a: toRemove) {
+        for (final BwAlarm a: toRemove) {
           chg.addValue(PropertyInfoIndex.VALARM, a);
         }
       }
@@ -820,9 +817,10 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
       return null;
     }
 
-    BwEventProxy proxy = BwEventProxy.makeAnnotation(getEvent(), null, true);
+    final BwEventProxy proxy =
+            BwEventProxy.makeAnnotation(getEvent(), null, true);
     proxy.setRecurring(Boolean.FALSE);
-    EventInfo oei = new EventInfo(proxy);
+    final EventInfo oei = new EventInfo(proxy);
     proxy.setRecurrenceId(rid);
 
     oei.setNewEvent(true);
@@ -883,43 +881,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     return inboxEventName;
   }
 
-  /** Set the attendee in the output event from the corresponding component in
-   * this calendar event.
-   *
-   * @param outEi - destined for somebodies inbox
-   * @param attUri - the attendee URI
-   */
-  public void setOnlyAttendee(final EventInfo outEi,
-                              final String attUri) {
-    if (!getEvent().getSuppressed()) {
-      final BwEvent ev = getEvent();
-      final BwEvent outEv = outEi.getEvent();
-
-      if (!Util.isEmpty(outEv.getAttendees())) {
-        outEv.getAttendees().clear();
-      }
-      final BwAttendee att = ev.findAttendee(attUri);
-      outEv.addAttendee((BwAttendee)att.clone());
-    }
-
-    if (getNumOverrides() > 0) {
-      for (final EventInfo oei: getOverrides()) {
-        final BwEvent ev = oei.getEvent();
-        final EventInfo oOutEi = outEi.findOverride(ev.getRecurrenceId());
-        final BwEvent outEv = oOutEi.getEvent();
-
-        if (!Util.isEmpty(outEv.getAttendees())) {
-          outEv.getAttendees().clear();
-        }
-        final BwAttendee att = ev.findAttendee(attUri);
-        outEv.addAttendee((BwAttendee)att.clone());
-      }
-    }
-  }
-
-  /* ====================================================================
+  /* ==============================================================
    *                   Contained item methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** set the contained items
    *
@@ -939,7 +903,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
   /** Add a contained item
    *
-   * @param val
+   * @param val contained event
    */
   public void addContainedItem(final EventInfo val) {
     Set<EventInfo> cis = getContainedItems();
@@ -965,9 +929,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     return cis.size();
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int compare(final EventInfo e1, final EventInfo e2) {
@@ -1013,7 +977,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
   @Override
   public String toString() {
-    ToString ts = new ToString(this);
+    final ToString ts = new ToString(this);
 
     if (getEvent() == null) {
       ts.append("eventId", (Integer)null);
@@ -1025,7 +989,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     ts.append("kind", kindStr[getKind()]);
 
     if (getAlarms() != null) {
-      for (BwAlarm alarm: getAlarms()) {
+      for (final BwAlarm alarm: getAlarms()) {
         ts.append("alarm", alarm.toString());
       }
     }
@@ -1034,12 +998,12 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     return ts.toString();
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Private methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /**
-   * @param val
+   * @param val the event
    */
   private void setEvent(final BwEvent val) {
     event = val;

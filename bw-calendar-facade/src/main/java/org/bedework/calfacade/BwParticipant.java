@@ -121,7 +121,17 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String calendar address
    */
   public void setCalendarAddress(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getCalendarAddress();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
         participant.getProperties().add(new CalendarAddress(val));
@@ -151,7 +161,17 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String name
    */
   public void setName(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getNameProperty();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
       participant.getProperties().add(new Name(val));
     } else if (!val.equals(p.getValue())) {
@@ -177,9 +197,19 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String description
    */
   public void setDescription(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getDescription();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
-      participant.getProperties().add(new Description(val));
+      props.add(new Description(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
       changed();
@@ -203,9 +233,18 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String kind
    */
   public void setKind(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getKind();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
     if (p == null) {
-      participant.getProperties().add(new Kind(val));
+      props.add(new Kind(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
       changed();
@@ -229,9 +268,19 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String participant type
    */
   public void setParticipantType(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getParticipantType();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
-      participant.getProperties().add(new ParticipantType(val));
+      props.add(new ParticipantType(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
       changed();
@@ -256,6 +305,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    */
   public List<String> getParticipantTypes() {
     final var p = participant.getParticipantType();
+
     if (p == null) {
       return Collections.EMPTY_LIST;
     }
@@ -302,15 +352,17 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String participation status
    */
   public void setParticipationStatus(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getParticipationStatus();
+
     if (val == null) {
       if (p != null) {
-        participant.getProperties().remove(p);
+        props.remove(p);
         changed();
         return;
       }
     } else if (p == null) {
-      participant.getProperties().add(new ParticipationStatus(val));
+      props.add(new ParticipationStatus(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
       changed();
@@ -334,9 +386,18 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String delegatedFrom
    */
   public void setDelegatedFrom(final String val) {
-    final var p = (ParticipationDelegatedFrom)participant.
-            getProperties().
-            getProperty(PARTICIPATION_DELEGATED_FROM);
+    final var props = participant.getProperties();
+    final var p = (ParticipationDelegatedFrom)props
+            .getProperty(PARTICIPATION_DELEGATED_FROM);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
         participant.getProperties().
@@ -369,13 +430,21 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String delegatedTo
    */
   public void setDelegatedTo(final String val) {
-    final var p = (ParticipationDelegatedTo)participant.
-            getProperties().
-            getProperty(PARTICIPATION_DELEGATED_TO);
+    final var props = participant.getProperties();
+    final var p = (ParticipationDelegatedTo)props
+            .getProperty(PARTICIPATION_DELEGATED_TO);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
-        participant.getProperties().
-                   add(new ParticipationDelegatedTo(val));
+        props.add(new ParticipationDelegatedTo(val));
       } else if (!val.equals(p.getValue())) {
         p.setValue(val);
         changed();
@@ -404,11 +473,19 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String language
    */
   public void setLanguage(final String val) {
-    final var p = (Lang)participant.
-            getProperties().
-            getProperty(LANG);
+    final var props = participant.getProperties();
+    final var p = (Lang)props.getProperty(LANG);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
-      participant.getProperties().add(new Lang(val));
+      props.add(new Lang(val));
     } else if (!val.equals(p.getValue())) {
       p.setValue(val);
       changed();
@@ -434,12 +511,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String member
    */
   public void setMemberOf(final String val) {
-    final var p = (MemberOf)participant.
-            getProperties().
-            getProperty(MEMBER_OF);
+    final var props = participant.getProperties();
+    final var p = (MemberOf)props.getProperty(MEMBER_OF);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
-        participant.getProperties().add(new MemberOf(val));
+        props.add(new MemberOf(val));
       } else if (!val.equals(p.getValue())) {
         p.setValue(val);
         changed();
@@ -467,13 +552,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   boolean ExpectReply
    */
   public void setExpectReply(final boolean val) {
-    final var p = (ExpectReply)participant.getProperties().
-                                          getProperty(EXPECT_REPLY);
+    final var props = participant.getProperties();
+    final var p = (ExpectReply)props.getProperty(EXPECT_REPLY);
     final var sval = String.valueOf(val);
+
     if (p == null) {
-      participant.getProperties().add(new ExpectReply(sval));
+      if (val) {
+        props.add(new ExpectReply(sval));
+      }
     } else if (!sval.equals(p.getValue())) {
-      p.setValue(sval);
+      if (!val) {
+        props.remove(p);
+      } else {
+        p.setValue(sval);
+      }
       changed();
     }
   }
@@ -516,10 +608,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *  @param  val   String email
    */
   public void setEmail(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getEmail();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
-        participant.getProperties().add(new EmailAddress(val));
+        props.add(new EmailAddress(val));
       } else if (!val.equals(p.getValue())) {
         p.setValue(val);
         changed();
@@ -566,14 +668,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    * @param val    scheduling sequence number
    */
   public void setSequence(final int val) {
-    final var p = (SchedulingSequence)participant.
-            getProperties().
-            getProperty(SCHEDULING_SEQUENCE);
+    final var props = participant.getProperties();
+    final var p = (SchedulingSequence)props.getProperty(SCHEDULING_SEQUENCE);
     final String sval = String.valueOf(val);
+
     if (p == null) {
-      participant.getProperties().add(new SchedulingSequence(val));
+      if (val != 0) {
+        props.add(new SchedulingSequence(val));
+      }
     } else if (!sval.equals(p.getValue())) {
-      p.setValue(sval);
+      if (val != 0) {
+        props.remove(p);
+      } else {
+        p.setValue(sval);
+      }
       changed();
     }
   }
@@ -596,10 +704,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    * @param val the dtstamp
    */
   public void setSchedulingDtStamp(final String val) {
+    final var props = participant.getProperties();
     final var p = participant.getSchedulingDtStamp();
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     try {
       if (p == null) {
-        participant.getProperties().add(new SchedulingDtStamp(val));
+        props.add(new SchedulingDtStamp(val));
       } else if (!val.equals(p.getValue())) {
         p.setValue(val);
         changed();
@@ -625,14 +743,21 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    * @param val    schedule agent
    */
   public void setScheduleAgent(final String val) {
-    final var p = (SchedulingAgent)participant.
-            getProperties().
-            getProperty(SCHEDULING_AGENT);
-    final String sval = String.valueOf(val);
+    final var props = participant.getProperties();
+    final var p = (SchedulingAgent)props.getProperty(SCHEDULING_AGENT);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
-      participant.getProperties().add(new SchedulingAgent(val));
-    } else if (!sval.equals(p.getValue())) {
-      p.setValue(sval);
+      props.add(new SchedulingAgent(val));
+    } else if (!val.equals(p.getValue())) {
+      p.setValue(val);
       changed();
     }
   }
@@ -656,14 +781,21 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    * @param val    schedule status
    */
   public void setScheduleStatus(final String val) {
-    final var p = (SchedulingStatus)participant.
-            getProperties().
-            getProperty(SCHEDULING_STATUS);
-    final String sval = String.valueOf(val);
+    final var props = participant.getProperties();
+    final var p = (SchedulingStatus)props.getProperty(SCHEDULING_STATUS);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
     if (p == null) {
-      participant.getProperties().add(new SchedulingStatus(val));
-    } else if (!sval.equals(p.getValue())) {
-      p.setValue(sval);
+      props.add(new SchedulingStatus(val));
+    } else if (!val.equals(p.getValue())) {
+      p.setValue(val);
       changed();
     }
   }

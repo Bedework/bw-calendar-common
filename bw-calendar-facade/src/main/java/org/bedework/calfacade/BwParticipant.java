@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static net.fortuna.ical4j.model.Property.EXPECT_REPLY;
+import static net.fortuna.ical4j.model.Property.INVITED_BY;
 import static net.fortuna.ical4j.model.Property.LANG;
 import static net.fortuna.ical4j.model.Property.MEMBER_OF;
 import static net.fortuna.ical4j.model.Property.PARTICIPATION_DELEGATED_FROM;
@@ -66,7 +67,7 @@ import static net.fortuna.ical4j.model.Property.SCHEDULING_STATUS;
  */
 public class BwParticipant extends BwDbentity<BwParticipant>
          implements BwCloneable, Differable<BwParticipant> {
-  private final BwParticipants parent;
+  private final SchedulingInfo parent;
 
   // Derived from the participant object.
   private String stringRepresentation;
@@ -76,7 +77,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
   /** Constructor
    *
    */
-  BwParticipant(final BwParticipants parent) {
+  BwParticipant(final SchedulingInfo parent) {
     this.parent = parent;
     participant = new Participant();
     participant.getProperties().add(
@@ -86,7 +87,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
   /** Constructor
    *
    */
-  BwParticipant(final BwParticipants parent,
+  BwParticipant(final SchedulingInfo parent,
                 final Participant participant) {
     this.parent = parent;
     this.participant = participant;
@@ -643,20 +644,38 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     return p.getValue();
   }
 
-  /** Set the sentBy
+  /**
    *
-   *  @param  val   String sentBy
-   * /
-  public void setSentByVal(final String val) {
-    sentBy = val;
+   *  @param  val   String invitedBy
+   */
+  public void setInvitedBy(final String val) {
+    final var props = participant.getProperties();
+    final var p = (SchedulingSequence)props.getProperty(INVITED_BY);
+
+    if (val == null) {
+      if (p != null) {
+        props.remove(p);
+        changed();
+      }
+      return;
+    }
+
+    if (p == null) {
+      props.add(new Lang(val));
+    } else if (!val.equals(p.getValue())) {
+      p.setValue(val);
+      changed();
+    }
   }
 
-  /** Get the sentBy
+  /**
    *
-   *  @return String     sentBy
-   * /
-  public String getSentByVal() {
-    return sentBy;
+   *  @return String     invitedBy
+   */
+  public String getInvitedBy() {
+    final var p = (Lang)participant.
+            getProperties().
+            getProperty(INVITED_BY);
     if (p == null) {
       return null;
     }

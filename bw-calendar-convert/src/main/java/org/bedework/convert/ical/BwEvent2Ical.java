@@ -208,8 +208,8 @@ public class BwEvent2Ical extends IcalUtil {
       }
 
       /* ------------------- Attendees -------------------- */
-      if (val.getParticipants().getNumAttendees() > 0) {
-        for (final var att: val.getParticipants().getAttendees()) {
+      if (val.getSchedulingInfo().getNumAttendees() > 0) {
+        for (final var att: val.getSchedulingInfo().getAttendees()) {
           if (att.getAttendee() != null) {
             prop = setAttendee(att.getAttendee());
             mergeXparams(prop, xcomp);

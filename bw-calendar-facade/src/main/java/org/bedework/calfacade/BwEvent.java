@@ -692,7 +692,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    * ============================================================== */
 
   /* Manages participants for this component */
-  private BwParticipants participants;
+  private SchedulingInfo schedulingInfo;
 
   /** If the event is a master recurring event and we asked for the master +
    * overides or for fully expanded, this will hold all the overrides for that
@@ -730,8 +730,8 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
   @NoProxy
   public void onSave() {
-    if (participants != null) {
-      participants.onSave();
+    if (schedulingInfo != null) {
+      schedulingInfo.onSave();
     }
   }
 
@@ -3674,12 +3674,12 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
                 vpollProperty = true
   )
   @NoProxy
-  public BwParticipants getParticipants() {
-    if (participants == null) {
-      participants = new BwParticipants(this);
+  public SchedulingInfo getSchedulingInfo() {
+    if (schedulingInfo == null) {
+      schedulingInfo = new SchedulingInfo(this);
     }
 
-    return participants;
+    return schedulingInfo;
   }
 
   /** Add vpoll item

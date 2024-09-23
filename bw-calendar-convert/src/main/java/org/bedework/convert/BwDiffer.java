@@ -18,9 +18,9 @@
 */
 package org.bedework.convert;
 
+import org.bedework.calfacade.Attendee;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttachment;
-import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
@@ -204,8 +204,8 @@ public class BwDiffer {
         return (DifferResult<T, CT>)cmpObjval((Set<BwAttachment>)val,
                                              ev.getAttachments());
 
-      case ATTENDEE :
-        return (DifferResult<T, CT>)cmpObjval((Set<BwAttendee>)val, ev.getAttendees());
+      case ATTENDEE:
+        return (DifferResult<T, CT>)cmpObjval((Set<Attendee>)val, ev.getSchedulingInfo().getAttendees());
 
       case CATEGORIES:
         return (DifferResult<T, CT>)cmpObjval((Set<BwCategory>)val, ev.getCategories());

@@ -30,7 +30,7 @@ import net.fortuna.ical4j.model.property.ParticipantType;
  *  @author Mike Douglass   douglm - bedework.org
  */
 public class SchedulingOwner implements Comparable<SchedulingOwner> {
-  private final BwParticipants parent;
+  private final SchedulingInfo parent;
 
   /* An owner may be indicated by a Participant object with
      participationType including owner or by a BwOrganizer object only.
@@ -44,7 +44,7 @@ public class SchedulingOwner implements Comparable<SchedulingOwner> {
   /** Constructor
    *
    */
-  SchedulingOwner(final BwParticipants parent,
+  SchedulingOwner(final SchedulingInfo parent,
                   final BwOrganizer organizer,
                   final BwParticipant participant) {
     this.parent = parent;

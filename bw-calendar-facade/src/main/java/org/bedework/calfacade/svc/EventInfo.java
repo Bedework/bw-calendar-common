@@ -375,14 +375,14 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   public int getMaxAttendees() {
     int maxAttendees = 0;
     if (!getEvent().getSuppressed()) {
-      maxAttendees = getEvent().getParticipants().getNumAttendees();
+      maxAttendees = getEvent().getSchedulingInfo().getNumAttendees();
     }
 
     if (getNumOverrides() > 0) {
       for (final EventInfo oei: getOverrides()) {
         final BwEvent oev = oei.getEvent();
         maxAttendees = Math.max(maxAttendees,
-                                oev.getParticipants()
+                                oev.getSchedulingInfo()
                                    .getNumAttendees());
       }
     }
@@ -393,7 +393,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   public SchedulingOwner getSchedulingOwner() {
     SchedulingOwner sowner = null;
     if (!getEvent().getSuppressed()) {
-      sowner = getEvent().getParticipants().getSchedulingOwner();
+      sowner = getEvent().getSchedulingInfo().getSchedulingOwner();
     }
 
     if (sowner != null) {
@@ -403,7 +403,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     if (getNumOverrides() > 0) {
       for (final EventInfo oei: getOverrides()) {
         final BwEvent oev = oei.getEvent();
-        sowner = oev.getParticipants()
+        sowner = oev.getSchedulingInfo()
                     .getSchedulingOwner();
         if (sowner != null) {
           return sowner;

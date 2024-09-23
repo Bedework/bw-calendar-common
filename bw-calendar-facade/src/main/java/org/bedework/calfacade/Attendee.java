@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.calfacade.base.Differable;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -28,8 +29,9 @@ import org.bedework.util.misc.Util;
  *
  *  @author Mike Douglass   douglm - bedework.org
  */
-public class Attendee implements Comparable<Attendee> {
-  private final BwParticipants parent;
+public class Attendee
+        implements Comparable<Attendee>, Differable<Attendee> {
+  private final SchedulingInfo parent;
 
   /* Attendance may be indicated by a Participant object with
      participantType = attendee or by a BwAttendee object only.
@@ -43,7 +45,7 @@ public class Attendee implements Comparable<Attendee> {
   /** Constructor
    *
    */
-  Attendee(final BwParticipants parent,
+  Attendee(final SchedulingInfo parent,
            final BwAttendee attendee,
            final BwParticipant participant) {
     this.parent = parent;
@@ -101,6 +103,68 @@ public class Attendee implements Comparable<Attendee> {
     }
 
     return null;
+  }
+
+  /**
+   *
+   *  @param  val   name
+   */
+  public void setName(final String val) {
+    if (attendee != null) {
+      attendee.setCn(val);
+    }
+
+    if (participant != null) {
+      participant.setName(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     name
+   */
+  public String getName() {
+    String val = null;
+    if (attendee != null) {
+      val = attendee.getCn();
+    }
+
+    if ((participant != null) && (val == null)) {
+      return participant.getName();
+    }
+
+    return val;
+  }
+
+  /**
+   *
+   *  @param  val   Language
+   */
+  public void setLanguage(final String val) {
+    if (attendee != null) {
+      attendee.setLanguage(val);
+    }
+
+    if (participant != null) {
+      participant.setLanguage(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     Language
+   */
+  public String getLanguage() {
+    String val = null;
+    if (attendee != null) {
+      val = attendee.getLanguage();
+    }
+
+    if ((participant != null) && (val == null)) {
+      return participant.getLanguage();
+    }
+
+    return val;
   }
 
   /**
@@ -364,6 +428,36 @@ public class Attendee implements Comparable<Attendee> {
 
   /**
    *
+   *  @param  val   String invitedBy
+   */
+  public void setInvitedBy(final String val) {
+    if (attendee != null) {
+      attendee.setSentBy(val);
+    }
+
+    if (participant != null) {
+      participant.setInvitedBy(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String  invitedBy
+   */
+  public String getInvitedBy() {
+    if (attendee != null) {
+      return attendee.getSentBy();
+    }
+
+    if (participant != null) {
+      return participant.getInvitedBy();
+    }
+
+    return null;
+  }
+
+  /**
+   *
    * @param val    scheduling sequence number
    */
   public void setSequence(final int val) {
@@ -573,6 +667,32 @@ public class Attendee implements Comparable<Attendee> {
       ts.append("participant", participant);
     }
     return toString();
+  }
+
+  @Override
+  public boolean differsFrom(final Attendee val) {
+    return (Util.compareStrings(val.getParticipationStatus(),
+                                getParticipationStatus()) != 0) ||
+            (Util.compareStrings(val.getCalendarAddress(),
+                                 getCalendarAddress()) != 0) ||
+            (Util.compareStrings(val.getKind(), getKind()) != 0) ||
+            (Util.compareStrings(val.getName(), getName()) != 0) ||
+            (Util.compareStrings(val.getParticipantType(),
+                                 getParticipantType()) != 0) ||
+            (Util.compareStrings(val.getDelegatedFrom(),
+                                 getDelegatedFrom()) != 0) ||
+            (Util.compareStrings(val.getDelegatedTo(),
+                                 getDelegatedTo()) != 0) ||
+            (Util.compareStrings(val.getLanguage(),
+                                 getLanguage()) != 0) ||
+            (Util.compareStrings(val.getMemberOf(),
+                                 getMemberOf()) != 0) ||
+            (Util.cmpBoolval(val.getExpectReply(),
+                             getExpectReply()) != 0) ||
+            (Util.compareStrings(val.getEmail(),
+                                 getEmail()) != 0) ||
+           (Util.compareStrings(val.getInvitedBy(), getInvitedBy()) != 0) ||
+            (Util.compareStrings(val.getScheduleAgent(), getScheduleAgent()) != 0);
   }
 }
 

@@ -28,20 +28,20 @@ import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
  * <br/>
  * User: mike Date: 9/10/24 Time: 13:40
  */
-public class BwParticipants {
+public class SchedulingInfo {
   private final BwEvent parent;
 
   /* Manages the owner (scheduling) for the component */
   private SchedulingOwner schedulingOwner;
 
-  private Set<BwParticipant> participants;
+  private Set<BwParticipant> bwParticipants;
 
   private Set<Attendee> attendees;
   private Map<String, Attendee> attendeesMap;
 
   private boolean changed;
 
-  public BwParticipants(final BwEvent parent) {
+  public SchedulingInfo(final BwEvent parent) {
     this.parent = parent;
   }
 
@@ -105,10 +105,6 @@ public class BwParticipants {
     return getAttendeesSet().size();
   }
 
-  public Set<BwParticipant> getParticipants() {
-    return Collections.unmodifiableSet(getParticipantsSet());
-  }
-
   public Set<String> getAttendeeeAddrs() {
     getAttendeesSet(); // Ensure populated
     return attendeesMap.keySet();
@@ -119,7 +115,7 @@ public class BwParticipants {
     getAttendeesSet().clear();
 
 
-    participants = new HashSet<>();
+    bwParticipants = new HashSet<>();
 
     markChanged();
   }
@@ -139,7 +135,7 @@ public class BwParticipants {
   }
 
   public Attendee makeAttendee() {
-    final var p = newParticipant();
+    final var p = newBwParticipant();
     final var att = new BwAttendee();
     parent.addAttendee(att);
 
@@ -164,7 +160,7 @@ public class BwParticipants {
 
     final var part = val.getParticipant();
     if (part != null) {
-      removeParticipant(part);
+      removeBwParticipant(part);
     }
 
     getAttendeesSet().remove(val);
@@ -242,7 +238,7 @@ public class BwParticipants {
 
     if (val.getParticipant() != null) {
       part = (BwParticipant)val.getParticipant().clone();
-      getParticipantsSet().add(part);
+      getBwParticipantsSet().add(part);
     } else {
       part = null;
     }
@@ -271,7 +267,7 @@ public class BwParticipants {
       mAtt = new BwAttendee();
       mPart = null;
     } else {
-      mPart = newParticipant();
+      mPart = newBwParticipant();
       mAtt = null;
     }
 
@@ -309,97 +305,10 @@ public class BwParticipants {
     return vals;
   }
 
-  /** make a participant
-   *
-   * @param val BwAttendee to build from
-   * @return new participant
-   */
-  public BwParticipant makeParticipant(final BwAttendee val) {
-    final BwParticipant part = newParticipant();
-
-    part.setCalendarAddress(val.getAttendeeUri());
-
-    if (val.getRsvp()) {
-      part.setExpectReply(true);
-    }
-
-    String temp = val.getCn();
-    if (temp != null) {
-      part.setName(temp);
-    }
-
-    //temp = val.getScheduleStatus();
-    //if (temp != null) {
-    //  pars.add(new ScheduleStatus(temp));
-    //}
-
-    temp = val.getCuType();
-    if (temp != null) {
-      part.setKind(temp);
-    }
-
-    temp = val.getEmail();
-    if (temp != null) {
-      part.setEmail(temp);
-    }
-
-    temp = val.getDelegatedFrom();
-    if (temp != null) {
-      part.setDelegatedFrom(temp);
-    }
-
-    temp = val.getDelegatedTo();
-    if (temp != null) {
-      part.setDelegatedTo(temp);
-    }
-
-    //temp = val.getDir();
-    //if (temp != null) {
-    //  pars.add(new Dir(temp));
-    //}
-
-    temp = val.getLanguage();
-    if (temp != null) {
-      part.setLanguage(temp);
-    }
-
-    temp = val.getMember();
-    if (temp != null) {
-      part.setMemberOf(temp);
-    }
-
-    temp = val.getRole();
-    if (temp != null) {
-      if (temp.equalsIgnoreCase("CHAIR")) {
-        part.addParticipantType("CHAIR");
-      } else if (temp.equalsIgnoreCase("REQ-PARTICIPANT")) {
-        part.addParticipantType("ATTENDEE");
-      } else if (temp.equalsIgnoreCase("OPT-PARTICIPANT")) {
-        part.addParticipantType("OPTIONAL");
-      } else if (temp.equalsIgnoreCase("NON-PARTICIPANT")) {
-        part.addParticipantType("INFORMATIONAL");
-      } else {
-        part.addParticipantType(temp);
-      }
-    }
-
-    //temp = val.getSentBy();
-    //if (temp != null) {
-    //  pars.add(new SentBy(temp));
-    //}
-
-    temp = val.getPartstat();
-    if (temp != null) {
-      part.setParticipationStatus(temp);
-    }
-
-    return part;
-  }
-
   public void markChanged() {
     changed = true;
     attendees = null;
-    participants = null;
+    bwParticipants = null;
     schedulingOwner = null;
   }
 
@@ -417,7 +326,7 @@ public class BwParticipants {
       }
     }
 
-    for (final var p: getParticipants()) {
+    for (final var p: getBwParticipantsSet()) {
       final BwXproperty xp =
               new BwXproperty(BwXproperty.bedeworkParticipant,
                               null, p.asString());
@@ -425,62 +334,6 @@ public class BwParticipants {
     }
 
     changed = false;
-  }
-
-  private Set<BwParticipant> getParticipantsSet() {
-    if (participants == null) {
-      participants = new HashSet<>();
-
-      final var xprops =
-              parent.getXproperties(BwXproperty.bedeworkParticipant);
-
-      if (Util.isEmpty(xprops)) {
-        return participants;
-      }
-
-      // Better if ical4j supported sub-component parsing
-
-      final StringBuilder sb = new StringBuilder(
-               """
-                BEGIN:VCALENDAR
-                PRODID://Bedework.org//BedeWork V3.9//EN
-                VERSION:2.0
-                BEGIN:VEVENT
-                UID:0123
-                """);
-
-      boolean found = false;
-      for (final var xp: xprops) {
-        if (!xp.getName().equals(BwXproperty.bedeworkParticipant)) {
-          continue;
-        }
-
-        found = true;
-        sb.append(xp.getValue());
-      }
-
-      if (!found) {
-        return participants;
-      }
-
-      sb.append(
-       """
-       END:VEVENT
-       END:VCALENDAR
-       """);
-
-      final Calendar ical = fromBuilder(sb.toString());
-
-      /* Should be one event object */
-
-      final VEvent ev = ical.getComponent(Component.VEVENT);
-      for (final Component comp:
-              ev.getComponents().getComponents("PARTICIPANT")) {
-        participants.add(new BwParticipant(this, (Participant)comp));
-      }
-    }
-
-    return participants;
   }
 
   private Set<Attendee> getAttendeesSet() {
@@ -498,7 +351,7 @@ public class BwParticipants {
       for (final BwAttendee att: evatts) {
         final var addr = att.getAttendeeUri();
         attMap.put(addr, att);
-        final var part = findParticipant(addr);
+        final var part = findBwParticipant(addr);
 
         final var attendee = new Attendee(this, att, part);
         attendees.add(attendee);
@@ -506,7 +359,7 @@ public class BwParticipants {
       }
     }
 
-    for (final BwParticipant part: getParticipantsSet()) {
+    for (final BwParticipant part: getBwParticipantsSet()) {
       final var addr = part.getCalendarAddress();
       if ((addr != null) ||
               !part.includesParticipantType(ParticipantType.VALUE_ATTENDEE)) {
@@ -534,8 +387,64 @@ public class BwParticipants {
     return attendees;
   }
 
-  private BwParticipant findParticipant(final String calAddr) {
-    for (final BwParticipant p: getParticipantsSet()) {
+  private Set<BwParticipant> getBwParticipantsSet() {
+    if (bwParticipants == null) {
+      bwParticipants = new HashSet<>();
+
+      final var xprops =
+              parent.getXproperties(BwXproperty.bedeworkParticipant);
+
+      if (Util.isEmpty(xprops)) {
+        return bwParticipants;
+      }
+
+      // Better if ical4j supported sub-component parsing
+
+      final StringBuilder sb = new StringBuilder(
+              """
+               BEGIN:VCALENDAR
+               PRODID://Bedework.org//BedeWork V3.9//EN
+               VERSION:2.0
+               BEGIN:VEVENT
+               UID:0123
+               """);
+
+      boolean found = false;
+      for (final var xp: xprops) {
+        if (!xp.getName().equals(BwXproperty.bedeworkParticipant)) {
+          continue;
+        }
+
+        found = true;
+        sb.append(xp.getValue());
+      }
+
+      if (!found) {
+        return bwParticipants;
+      }
+
+      sb.append(
+              """
+              END:VEVENT
+              END:VCALENDAR
+              """);
+
+      final Calendar ical = fromBuilder(sb.toString());
+
+      /* Should be one event object */
+
+      final VEvent ev = ical.getComponent(Component.VEVENT);
+      for (final Component comp:
+              ev.getComponents().getComponents("PARTICIPANT")) {
+        bwParticipants.add(new BwParticipant(this, (Participant)comp));
+      }
+    }
+
+    return bwParticipants;
+  }
+
+  private BwParticipant findBwParticipant(final String calAddr) {
+    for (final BwParticipant p: getBwParticipantsSet()) {
       if (calAddr.equals(p.getCalendarAddress())) {
         return p;
       }
@@ -543,14 +452,14 @@ public class BwParticipants {
     return null;
   }
 
-  private void removeParticipant(final BwParticipant part) {
-    getParticipantsSet().remove(part);
+  private void removeBwParticipant(final BwParticipant part) {
+    getBwParticipantsSet().remove(part);
     markChanged();
   }
 
-  private BwParticipant newParticipant() {
+  private BwParticipant newBwParticipant() {
     final var p = new BwParticipant(this);
-    getParticipantsSet().add(p);
+    getBwParticipantsSet().add(p);
     markChanged();
     return p;
   }

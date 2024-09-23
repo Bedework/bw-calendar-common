@@ -25,7 +25,7 @@ import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
 /** Handle component participants.
  * Currently, we have the complication of having attendee only,
  * participant only, or both.
- *
+ * <br/>
  * User: mike Date: 9/10/24 Time: 13:40
  */
 public class BwParticipants {
@@ -54,25 +54,6 @@ public class BwParticipants {
     return Collections.unmodifiableSet(getParticipantsSet());
   }
 
-  public void addParticipant(final BwParticipant part) {
-    getParticipantsSet().add(part);
-    markChanged();
-  }
-
-  public void removeParticipant(final BwParticipant part) {
-    getParticipantsSet().remove(part);
-    markChanged();
-  }
-
-  public BwParticipant findParticipant(final String calAddr) {
-    for (final BwParticipant p: getParticipantsSet()) {
-      if (calAddr.equals(p.getCalendarAddress())) {
-        return p;
-      }
-    }
-    return null;
-  }
-
   public Set<String> getAttendeeeAddrs() {
     getAttendeesSet(); // Ensure populated
     return attendeesMap.keySet();
@@ -82,7 +63,9 @@ public class BwParticipants {
     parent.getAttendees().clear();
     getAttendeesSet().clear();
 
-    clearParticipants();
+
+    participants = new HashSet<>();
+
     markChanged();
   }
 
@@ -105,7 +88,7 @@ public class BwParticipants {
     final var att = new BwAttendee();
     parent.addAttendee(att);
 
-    final var a = new Attendee(this, parent, att, p);
+    final var a = new Attendee(this, att, p);
     getAttendeesSet().add(a);
     markChanged();
 
@@ -171,7 +154,28 @@ public class BwParticipants {
     return val;
   }
 
+  /** if there is no attendee with the same uri then a copy will be
+   * added and returned.
+   *
+   * <p>Otherwise the values in the parameter will be copied to the
+   * existing attendee.
+   *
+   * @param val attendee to copy
+   * @return copied attende
+   */
   public Attendee copyAttendee(final Attendee val) {
+    final var ourAttendee = findAttendee(val.getCalendarAddress());
+    if (ourAttendee != null) {
+      val.copyTo(ourAttendee);
+      final var ctab = parent.getChangeset();
+      if (ctab != null) {
+        final ChangeTableEntry cte = ctab.getEntry(
+                PropertyIndex.PropertyInfoIndex.ATTENDEE);
+        cte.addChangedValue(ourAttendee.getAttendee());
+      }
+      return ourAttendee;
+    }
+
     final BwAttendee att;
     final BwParticipant part;
 
@@ -183,65 +187,71 @@ public class BwParticipants {
 
     if (val.getParticipant() != null) {
       part = (BwParticipant)val.getParticipant().clone();
-      addParticipant(part);
+      getParticipantsSet().add(part);
     } else {
       part = null;
     }
 
-    return addAttendee(new Attendee(this, parent, att, part));
+    return addAttendee(new Attendee(this, att, part));
   }
 
   public Attendee makeAttendee(final BwAttendee att,
                                final BwParticipant part) {
-    final var a = new Attendee(this, parent, att, part);
+    final var a = new Attendee(this, att, part);
     return addAttendee(a);
   }
 
-  /** The new object is added to the set.
-   * getParticipants must be called to get new updated set.
+  /** Create an Attendee 'like' the parameter in that, if the
+   * param has a BwAttendee then so does the result. Ditto for
+   * participant. No values are copied.
    *
-   * @return a new BwParticipant enclosing an ical object with uid
+   * @param val template Attendee
+   * @return new Attendee
    */
-  public BwParticipant newParticipant() {
-    final var p = new BwParticipant(this);
-    getParticipantsSet().add(p);
-    markChanged();
-    return p;
-  }
+  public Attendee makeAttendeeLike(final Attendee val) {
+    final BwAttendee mAtt;
+    final BwParticipant mPart;
 
-  /** The new object is added to the set.
-   * getParticipants must be called to get new updated set.
-   *
-   * @return a new BwParticipant enclosing the ical object
-   */
-  public BwParticipant newParticipant(final Participant part) {
-    final var p = new BwParticipant(this, part);
-    getParticipantsSet().add(p);
-    markChanged();
-    return p;
-  }
-
-  public Map<String, BwParticipant> getVoters() {
-    final var parts = getParticipants();
-
-    final Map<String, BwParticipant> vals = new HashMap<>();
-
-    if (Util.isEmpty(parts)) {
-      return vals;
+    if (val.getAttendee() != null) {
+      mAtt = new BwAttendee();
+      mPart = null;
+    } else {
+      mPart = newParticipant();
+      mAtt = null;
     }
 
-    for (final var p: parts) {
-      if (p.includesParticipantType(ParticipantType.VALUE_VOTER)) {
-        vals.put(p.getCalendarAddress(), p);
+    return makeAttendee(mAtt, mPart);
+  }
+
+  /** The new object is added to the set.
+   * getAttendees must be called to get new updated set.
+   *
+   * @return a new Attendee enclosing the ical object
+   */
+  public Attendee newAttendee(final Participant part) {
+    final var chg = parent.getChangeset();
+    final var bwpart =  new BwParticipant(this, part);
+
+    final var att = new Attendee(this, null, bwpart);
+
+    chg.addValue(PropertyIndex.PropertyInfoIndex.XPROP,
+                 new BwXproperty(BwXproperty.bedeworkParticipant,
+                                 null,
+                                 bwpart.asString()));
+
+    return att;
+  }
+
+  public Map<String, Attendee> getAttendeesWithRole(final String role) {
+    final Map<String, Attendee> vals = new HashMap<>();
+
+    for (final var a: getAttendees()) {
+      if (a.includesParticipantType(role)) {
+        vals.put(a.getCalendarAddress(), a);
       }
     }
 
     return vals;
-  }
-
-  public void clearParticipants() {
-    participants = new HashSet<>();
-    markChanged();
   }
 
   /** make a participant
@@ -337,16 +347,6 @@ public class BwParticipants {
   }
 
   public void onSave() {
-    /* Ensure x-props reflect state of participants */
-    for (final BwAttendee att: parent.getAttendees()) {
-      final BwParticipant p = findParticipant(att.getAttendeeUri());
-      if ((p != null) &&
-              (Util.compareStrings(att.getScheduleStatus(),
-                                   p.getScheduleStatus()) != 0)) {
-        p.setScheduleStatus(att.getScheduleStatus());
-      }
-    }
-
     if (!changed) {
       return;
     }
@@ -360,12 +360,14 @@ public class BwParticipants {
       }
     }
 
-    for (final BwParticipant p: getParticipants()) {
+    for (final var p: getParticipants()) {
       final BwXproperty xp =
               new BwXproperty(BwXproperty.bedeworkParticipant,
                               null, p.asString());
       parent.addXproperty(xp);
     }
+
+    changed = false;
   }
 
   private Set<BwParticipant> getParticipantsSet() {
@@ -435,14 +437,16 @@ public class BwParticipants {
     final var evatts = parent.getAttendees();
     final Map<String, BwAttendee> attMap = new HashMap<>();
 
-    for (final BwAttendee att: evatts) {
-      final var addr = att.getAttendeeUri();
-      attMap.put(addr, att);
-      final var part = findParticipant(addr);
+    if (evatts != null) {
+      for (final BwAttendee att: evatts) {
+        final var addr = att.getAttendeeUri();
+        attMap.put(addr, att);
+        final var part = findParticipant(addr);
 
-      final var attendee = new Attendee(this, parent, att, part);
-      attendees.add(attendee);
-      attendeesMap.put(addr, attendee);
+        final var attendee = new Attendee(this, att, part);
+        attendees.add(attendee);
+        attendeesMap.put(addr, attendee);
+      }
     }
 
     for (final BwParticipant part: getParticipantsSet()) {
@@ -455,7 +459,7 @@ public class BwParticipants {
       final var att = attMap.get(addr);
       if (att == null) {
         // No associated participant
-        final var attendee = new Attendee(this, parent, null, part);
+        final var attendee = new Attendee(this, null, part);
         attendees.add(attendee);
         attendeesMap.put(addr, attendee);
       } else {
@@ -465,11 +469,32 @@ public class BwParticipants {
 
     for (final BwAttendee att: attMap.values()) {
       // Attendee with no participant
-      final var attendee = new Attendee(this, parent, att, null);
+      final var attendee = new Attendee(this, att, null);
       attendees.add(attendee);
       attendeesMap.put(att.getAttendeeUri(), attendee);
     }
 
     return attendees;
+  }
+
+  private BwParticipant findParticipant(final String calAddr) {
+    for (final BwParticipant p: getParticipantsSet()) {
+      if (calAddr.equals(p.getCalendarAddress())) {
+        return p;
+      }
+    }
+    return null;
+  }
+
+  private void removeParticipant(final BwParticipant part) {
+    getParticipantsSet().remove(part);
+    markChanged();
+  }
+
+  private BwParticipant newParticipant() {
+    final var p = new BwParticipant(this);
+    getParticipantsSet().add(p);
+    markChanged();
+    return p;
   }
 }

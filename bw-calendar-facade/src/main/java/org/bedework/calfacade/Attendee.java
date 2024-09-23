@@ -31,26 +31,22 @@ import org.bedework.util.misc.Util;
 public class Attendee implements Comparable<Attendee> {
   private final BwParticipants parent;
 
-  private final BwEvent event;
-
   /* Attendance may be indicated by a Participant object with
      participantType = attendee or by a BwAttendee object only.
 
-      If this is non-null we'll set the values appropriately.
+      If either is non-null we'll set the values appropriately.
    */
-  private final BwAttendee attendee;
+  private BwAttendee attendee;
 
-  private final BwParticipant participant;
+  private BwParticipant participant;
 
   /** Constructor
    *
    */
   Attendee(final BwParticipants parent,
-           final BwEvent event,
            final BwAttendee attendee,
            final BwParticipant participant) {
     this.parent = parent;
-    this.event = event;
     this.attendee = attendee;
     this.participant = participant;
   }
@@ -197,6 +193,23 @@ public class Attendee implements Comparable<Attendee> {
     }
 
     return null;
+  }
+
+  /**
+   *
+   * @param val participant type
+   * @return true if in list (ignoring case)
+   */
+  public boolean includesParticipantType(final String val) {
+    if (participant != null) {
+      return participant.includesParticipantType(val);
+    }
+
+    if (attendee != null) {
+      return val.equalsIgnoreCase(attendee.getRole());
+    }
+
+    return false;
   }
 
   /** Set the delegatedFrom
@@ -497,6 +510,25 @@ public class Attendee implements Comparable<Attendee> {
    * /
   public boolean getStayInformed() {
     return "T".equals(fetchSentByField(stayInformedIndex));
+  }
+  */
+
+  public void copyTo(final Attendee that)  {
+    if (attendee != null) {
+      if (that.attendee != null) {
+        attendee.copyTo(that.attendee);
+      } else {
+        that.attendee = (BwAttendee)attendee.clone();
+      }
+    }
+
+    if (participant != null) {
+      if (that.participant != null) {
+        that.participant.copyTo(that.participant);
+      } else {
+        that.participant = (BwParticipant)participant.clone();
+      }
+    }
   }
 
   /* ==============================================================

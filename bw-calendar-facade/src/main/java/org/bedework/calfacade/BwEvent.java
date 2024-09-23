@@ -44,6 +44,7 @@ import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.LastModified;
+import net.fortuna.ical4j.model.property.ParticipantType;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -687,12 +688,15 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
   /* Uids of AVAILABILITY components */
   private Set<String> availableUids;
 
-  /* ====================================================================
+  /* ==============================================================
    *                      Non-db fields
-   * ==================================================================== */
+   * ============================================================== */
 
-  /* Manages partiicpants for this component */
+  /* Manages participants for this component */
   private BwParticipants participants;
+
+  /* Manages the owner (scheduling) for this component */
+  private SchedulingOwner schedulingOwner;
 
   /** If the event is a master recurring event and we asked for the master +
    * overides or for fully expanded, this will hold all the overrides for that
@@ -735,9 +739,9 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                      Bean methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Set entity type defined in IcalDefs
    * @param val entity type
@@ -1297,7 +1301,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    *
    * <p>When the event is added this flag will be set true if the appropriate
    * conditions are satisfied.
-   *
+   * <br/>
    * NOTE: these have the NoProxy annotation as we treat them specially
    * in the proxy until we get a schema update (4.0)
    *
@@ -1327,7 +1331,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
   /** True if this is a valid attendee scheduling object.
    * (See CalDAV scheduling specification)
-   *
+   * <br/>
    * NOTE: these have the NoProxy annotation as we treat them specially
    * in the proxy until we get a schema update (4.0)
    *
@@ -1442,8 +1446,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
             eventProperty = true,
             todoProperty = true,
             journalProperty = true,
-            freeBusyProperty = true,
-            timezoneProperty = false),
+            freeBusyProperty = true),
     @IcalProperty(pindex = PropertyInfoIndex.DISPLAY,
             jname = "display",
             eventProperty = true,
@@ -1813,7 +1816,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
   public int removeXproperties(final String val) {
     final List<BwXproperty> xs = getXproperties(val);
 
-    if (xs.size() == 0) {
+    if (xs.isEmpty()) {
       return 0;
     }
 
@@ -1822,6 +1825,12 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     return xs.size();
+  }
+
+  @NoProxy
+  public void addParticipant(final BwParticipant val) {
+    addXproperty(new BwXproperty(BwXproperty.bedeworkParticipant,
+                                 null, val.asString()));
   }
 
   @Override
@@ -3677,6 +3686,49 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     return participants;
   }
 
+  @NoProxy
+  public SchedulingOwner getSchedulingOwner() {
+    if (schedulingOwner == null) {
+      final var owners = getParticipants().getAttendeesWithRole(
+              ParticipantType.VALUE_OWNER);
+      final BwParticipant powner;
+      if (owners.size() == 1) {
+        powner = owners.values().iterator().next().getParticipant();
+      } else {
+        powner = null;
+      }
+      schedulingOwner = new SchedulingOwner(this, getOrganizer(),
+                                            powner);
+    }
+
+    return schedulingOwner;
+  }
+
+  @NoProxy
+  public SchedulingOwner copySchedulingOwner(final SchedulingOwner from) {
+    final BwOrganizer org;
+    if (from.getOrganizer() != null) {
+      org = (BwOrganizer)from.getOrganizer().clone();
+    } else {
+      org = null;
+    }
+
+    final BwParticipant powner;
+    if (from.getParticipant() != null) {
+      powner = (BwParticipant)from.getParticipant().clone();
+    } else {
+      powner = null;
+    }
+
+    setOrganizer(org);
+    addParticipant(powner);
+
+    schedulingOwner = new SchedulingOwner(this, getOrganizer(),
+                                          powner);
+
+    return schedulingOwner;
+  }
+
   /** Add vpoll item
    *
    * @param val the item
@@ -4202,7 +4254,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
   /**
    *
-   * @return list of category uids.
+   * @return set of category uids.
    */
   @NoProxy
   @NoWrap
@@ -4226,7 +4278,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
   /**
    *
-   * @return list of contact uids.
+   * @return set of contact uids.
    */
   @NoProxy
   @NoWrap

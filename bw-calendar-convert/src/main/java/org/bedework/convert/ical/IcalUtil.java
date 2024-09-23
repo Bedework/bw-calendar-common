@@ -60,7 +60,6 @@ import net.fortuna.ical4j.model.PropertyBuilder;
 import net.fortuna.ical4j.model.PropertyFactory;
 import net.fortuna.ical4j.model.PropertyList;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
-import net.fortuna.ical4j.model.component.Participant;
 import net.fortuna.ical4j.model.parameter.AltRep;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
@@ -396,29 +395,6 @@ public class IcalUtil {
     org.setLanguage(getOptStr(pars, "LANGUAGE"));
     org.setScheduleStatus(getOptStr(pars, "SCHEDULE-STATUS"));
     org.setSentBy(getOptStr(pars, "SENT-BY"));
-
-    return org;
-  }
-
-  /** Make an organizer from an ical4j Participant.
-   *
-   * @param cb          IcalCallback object
-   * @param part ical4j Participant
-   * @return BwOrganizer
-   */
-  public static BwOrganizer getOrganizer(final IcalCallback cb,
-                                         final Participant part) {
-    final BwOrganizer org = new BwOrganizer();
-
-    org.setOrganizerUri(cb.getCaladdr(
-            part.getCalendarAddress().getValue()));
-/*
-    org.setCn(getOptStr(pars, "CN"));
-    org.setDir(getOptStr(pars, "DIR"));
-    org.setLanguage(getOptStr(pars, "LANGUAGE"));
-    org.setScheduleStatus(getOptStr(pars, "SCHEDULE-STATUS"));
-    org.setSentBy(getOptStr(pars, "SENT-BY"));
- */
 
     return org;
   }

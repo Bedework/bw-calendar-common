@@ -93,7 +93,6 @@ import net.fortuna.ical4j.model.property.Duration;
 import net.fortuna.ical4j.model.property.FreeBusy;
 import net.fortuna.ical4j.model.property.Geo;
 import net.fortuna.ical4j.model.property.Organizer;
-import net.fortuna.ical4j.model.property.ParticipantType;
 import net.fortuna.ical4j.model.property.PercentComplete;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.PollWinner;
@@ -1109,20 +1108,7 @@ public class Ical2BwEvent extends IcalUtil {
           }
 
           if (subComp instanceof Participant) {
-            if (vpoll) {
-              final var vresp =
-                      processParticipant(cb,
-                                         (Participant)subComp,
-                                         evinfo,
-                                         chg,
-                                         mergeAttendees);
-              if (!vresp.isOk()) {
-                return Response.fromResponse(resp, vresp);
-              }
-              continue;
-            }
-
-            logger.warn("Unimplemented Participant object");
+            ev.getParticipants().newAttendee((Participant)subComp);
             continue;
           }
 
@@ -1623,21 +1609,6 @@ public class Ical2BwEvent extends IcalUtil {
     vavail.getEvent().addAvailableUid(ei.getEvent().getUid());
 
     return resp;
-  }
-
-  private static Response processParticipant(final IcalCallback cb,
-                                             final Participant part,
-                                             final EventInfo vpoll,
-                                             final ChangeTable changes,
-                                             final boolean mergeAttendees) {
-    final BwEvent ev = vpoll.getEvent();
-    final var bwpart = ev.getParticipants().newParticipant(part);
-
-    final ParticipantType partType = part.getParticipantType();
-
-    changes.addValue(PropertyInfoIndex.PARTICIPANT, bwpart);
-
-    return Response.ok();
   }
 
   private static Response processCandidate(final VPoll val,

@@ -3,7 +3,7 @@
 */
 package org.bedework.calfacade.svc;
 
-import org.bedework.calfacade.BwOrganizer;
+import org.bedework.calfacade.SchedulingOwner;
 
 /** Scheduling information about an event (which may be recurring).
  * User: mike Date: 2/19/20 Time: 17:26
@@ -13,7 +13,7 @@ public class SchedulingInfo {
 
   private int maxAttendees;
 
-  private BwOrganizer organizer;
+  private SchedulingOwner schedulingOwner;
 
   private boolean organizerSchedulingObject;
 
@@ -51,18 +51,18 @@ public class SchedulingInfo {
 
   /** Set the organizer
    *
-   * @param val    BwOrganizer organizer
+   * @param val    scheduling owner
    */
-  public void setOrganizer(final BwOrganizer val) {
-    organizer = val;
+  public void setSchedulingOwner(final SchedulingOwner val) {
+    schedulingOwner = val;
   }
 
   /** Get the organizer
    *
-   * @return BwOrganizer   the organizer
+   * @return the scheduling owner
    */
-  public BwOrganizer getOrganizer() {
-    return organizer;
+  public SchedulingOwner getSchedulingOwner() {
+    return schedulingOwner;
   }
 
   /** True if this is a valid organizer scheduling object. (See CalDAV

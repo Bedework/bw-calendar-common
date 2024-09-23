@@ -844,6 +844,16 @@ public class Ical2BwEvent extends IcalUtil {
 
             break;
 
+          case POLL_COMPLETION:
+            /* ------------------- Poll mode -------------------- */
+
+            sval = prop.getValue();
+            if (chg.changed(pi, ev.getPollCompletion(), sval)) {
+              ev.setPollCompletion(sval);
+            }
+
+            break;
+
           case POLL_MODE:
             /* ------------------- Poll mode -------------------- */
 
@@ -1060,8 +1070,8 @@ public class Ical2BwEvent extends IcalUtil {
             break;
 
           default:
-            logger.debug("Unsupported property with index %s; " +
-                                 "class %s and value %s",
+            logger.debug("Unsupported property with index {}; " +
+                                 "class {} and value {}",
                          pi, prop.getClass(), pval);
         }
       }

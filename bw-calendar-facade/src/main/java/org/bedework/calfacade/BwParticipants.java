@@ -31,6 +31,9 @@ import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
 public class BwParticipants {
   private final BwEvent parent;
 
+  /* Manages the owner (scheduling) for the component */
+  private SchedulingOwner schedulingOwner;
+
   private Set<BwParticipant> participants;
 
   private Set<Attendee> attendees;
@@ -42,12 +45,64 @@ public class BwParticipants {
     this.parent = parent;
   }
 
+  public SchedulingOwner getSchedulingOwner() {
+    if (schedulingOwner == null) {
+      final var owners = getAttendeesWithRole(
+              ParticipantType.VALUE_OWNER);
+      final BwParticipant powner;
+      if (owners.size() == 1) {
+        powner = owners.values().iterator().next().getParticipant();
+      } else {
+        powner = null;
+      }
+      schedulingOwner = new SchedulingOwner(this,
+                                            parent.getOrganizer(),
+                                            powner);
+    }
+
+    return schedulingOwner;
+  }
+
+  public SchedulingOwner copySchedulingOwner(final SchedulingOwner from) {
+    final BwOrganizer org;
+    if (from.getOrganizer() != null) {
+      org = (BwOrganizer)from.getOrganizer().clone();
+    } else {
+      org = null;
+    }
+
+    final BwParticipant powner;
+    if (from.getParticipant() != null) {
+      powner = (BwParticipant)from.getParticipant().clone();
+    } else {
+      powner = null;
+    }
+
+    parent.setOrganizer(org);
+    parent.addParticipant(powner);
+
+    markChanged();
+    schedulingOwner = new SchedulingOwner(this,
+                                          parent.getOrganizer(),
+                                          powner);
+
+    return schedulingOwner;
+  }
+
   /**
    *
    * @return unmodifiable set of attendee objects
    */
   public Set<Attendee> getAttendees() {
     return Collections.unmodifiableSet(getAttendeesSet());
+  }
+
+  /**
+   *
+   * @return number of attendee objects
+   */
+  public int getNumAttendees() {
+    return getAttendeesSet().size();
   }
 
   public Set<BwParticipant> getParticipants() {
@@ -344,6 +399,8 @@ public class BwParticipants {
   public void markChanged() {
     changed = true;
     attendees = null;
+    participants = null;
+    schedulingOwner = null;
   }
 
   public void onSave() {

@@ -27,6 +27,7 @@ import org.bedework.calfacade.BwEventAnnotation;
 import org.bedework.calfacade.BwEventProxy;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.ScheduleResult;
+import org.bedework.calfacade.SchedulingOwner;
 import org.bedework.calfacade.base.BwUnversionedDbentity;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -113,8 +114,6 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   private EventInfo parent;
 
   protected BwEvent event;
-
-  private SchedulingInfo schedulingInfo;
 
   /** editable is set at retrieval to indicate an event owned by the current
    * user. This only has significance for the personal calendar.
@@ -373,34 +372,46 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
     return newEvent;
   }
 
-  public SchedulingInfo getSchedulingInfo() {
-    if (schedulingInfo != null) {
-      return schedulingInfo;
-    }
-
-    final SchedulingInfo si = new SchedulingInfo();
-    final BwEvent ev = getEvent();
-
-    si.setMasterSuppressed(getEvent().getSuppressed());
-
-    if (!ev.getSuppressed()) {
-      si.setMaxAttendees(ev.getNumAttendees());
-      si.setSchedulingOwner(ev.getSchedulingOwner());
+  public int getMaxAttendees() {
+    int maxAttendees = 0;
+    if (!getEvent().getSuppressed()) {
+      maxAttendees = getEvent().getParticipants().getNumAttendees();
     }
 
     if (getNumOverrides() > 0) {
       for (final EventInfo oei: getOverrides()) {
         final BwEvent oev = oei.getEvent();
-        si.setMaxAttendees(Math.max(si.getMaxAttendees(),
-                                    oev.getNumAttendees()));
-        if (si.getSchedulingOwner() == null) {
-          si.setSchedulingOwner(oev.getSchedulingOwner());
+        maxAttendees = Math.max(maxAttendees,
+                                oev.getParticipants()
+                                   .getNumAttendees());
+      }
+    }
+
+    return maxAttendees;
+  }
+
+  public SchedulingOwner getSchedulingOwner() {
+    SchedulingOwner sowner = null;
+    if (!getEvent().getSuppressed()) {
+      sowner = getEvent().getParticipants().getSchedulingOwner();
+    }
+
+    if (sowner != null) {
+      return sowner;
+    }
+
+    if (getNumOverrides() > 0) {
+      for (final EventInfo oei: getOverrides()) {
+        final BwEvent oev = oei.getEvent();
+        sowner = oev.getParticipants()
+                    .getSchedulingOwner();
+        if (sowner != null) {
+          return sowner;
         }
       }
     }
 
-    schedulingInfo = si;
-    return schedulingInfo;
+    return null;
   }
 
   /** This field is set when the organizers copy is being updated as the result

@@ -19,7 +19,6 @@
 package org.bedework.convert.ical;
 
 import org.bedework.calfacade.BwAttachment;
-import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
@@ -209,11 +208,19 @@ public class BwEvent2Ical extends IcalUtil {
       }
 
       /* ------------------- Attendees -------------------- */
-      if (!vpoll && (val.getNumAttendees() > 0)) {
-        for (final BwAttendee att: val.getAttendees()) {
-          prop = setAttendee(att);
-          mergeXparams(prop, xcomp);
-          pl.add(prop);
+      if (val.getParticipants().getNumAttendees() > 0) {
+        for (final var att: val.getParticipants().getAttendees()) {
+          if (att.getAttendee() != null) {
+            prop = setAttendee(att.getAttendee());
+            mergeXparams(prop, xcomp);
+            pl.add(prop);
+          }
+
+          final var p = att.getParticipant();
+          if (p != null) {
+            ((ComponentContainer<Component>)comp).getComponents()
+                                                 .add(p.getParticipant());
+          }
         }
       }
 
@@ -608,10 +615,7 @@ public class BwEvent2Ical extends IcalUtil {
         comp.getProperties().add(loc);
       }
 
-      for (final var p: val.getParticipants().getParticipants()) {
-        ((ComponentContainer<Component>)comp).getComponents()
-                                             .add(p.getParticipant());
-      }
+      // Participants done with attendees
 
       if (vpoll) {
         final Integer ival = val.getPollWinner();

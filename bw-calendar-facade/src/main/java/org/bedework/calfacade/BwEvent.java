@@ -44,7 +44,6 @@ import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.property.Created;
 import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.LastModified;
-import net.fortuna.ical4j.model.property.ParticipantType;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -694,9 +693,6 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
   /* Manages participants for this component */
   private BwParticipants participants;
-
-  /* Manages the owner (scheduling) for this component */
-  private SchedulingOwner schedulingOwner;
 
   /** If the event is a master recurring event and we asked for the master +
    * overides or for fully expanded, this will hold all the overrides for that
@@ -3684,49 +3680,6 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     return participants;
-  }
-
-  @NoProxy
-  public SchedulingOwner getSchedulingOwner() {
-    if (schedulingOwner == null) {
-      final var owners = getParticipants().getAttendeesWithRole(
-              ParticipantType.VALUE_OWNER);
-      final BwParticipant powner;
-      if (owners.size() == 1) {
-        powner = owners.values().iterator().next().getParticipant();
-      } else {
-        powner = null;
-      }
-      schedulingOwner = new SchedulingOwner(this, getOrganizer(),
-                                            powner);
-    }
-
-    return schedulingOwner;
-  }
-
-  @NoProxy
-  public SchedulingOwner copySchedulingOwner(final SchedulingOwner from) {
-    final BwOrganizer org;
-    if (from.getOrganizer() != null) {
-      org = (BwOrganizer)from.getOrganizer().clone();
-    } else {
-      org = null;
-    }
-
-    final BwParticipant powner;
-    if (from.getParticipant() != null) {
-      powner = (BwParticipant)from.getParticipant().clone();
-    } else {
-      powner = null;
-    }
-
-    setOrganizer(org);
-    addParticipant(powner);
-
-    schedulingOwner = new SchedulingOwner(this, getOrganizer(),
-                                          powner);
-
-    return schedulingOwner;
   }
 
   /** Add vpoll item

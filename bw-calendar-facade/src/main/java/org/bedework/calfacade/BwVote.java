@@ -23,8 +23,8 @@ public class BwVote
   /** Constructor
    *
    */
-  BwVote(final BwParticipant parent,
-         final Vote vote) {
+  public BwVote(final BwParticipant parent,
+                final Vote vote) {
     this.parent = parent;
     this.vote = vote;
   }
@@ -61,7 +61,7 @@ public class BwVote
     final var p = (Response)props.getProperty(RESPONSE);
 
     if (p == null) {
-      props.add(new PollItemId(val));
+      props.add(new Response(val));
     } else if (val != p.getResponse()) {
       p.setValue(String.valueOf(val));
     }

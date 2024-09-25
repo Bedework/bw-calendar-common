@@ -80,7 +80,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
   /** Constructor
    *
    */
-  BwParticipant(final SchedulingInfo parent) {
+  public BwParticipant(final SchedulingInfo parent) {
     this.parent = parent;
     participant = new Participant();
     participant.getProperties().add(

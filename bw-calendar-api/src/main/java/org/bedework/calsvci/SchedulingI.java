@@ -18,7 +18,7 @@
 */
 package org.bedework.calsvci;
 
-import org.bedework.calfacade.Attendee;
+import org.bedework.calfacade.Participant;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwDateTime;
@@ -373,5 +373,5 @@ public interface SchedulingI extends Serializable {
    * @param ei to search
    * @return attendee or null.
    */
-  Attendee findUserAttendee(EventInfo ei);
+  Participant findUserAttendee(EventInfo ei);
 }

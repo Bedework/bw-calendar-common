@@ -375,7 +375,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   public int getMaxAttendees() {
     int maxAttendees = 0;
     if (!getEvent().getSuppressed()) {
-      maxAttendees = getEvent().getSchedulingInfo().getNumAttendees();
+      maxAttendees = getEvent().getSchedulingInfo().getNumParticipants();
     }
 
     if (getNumOverrides() > 0) {
@@ -383,7 +383,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
         final BwEvent oev = oei.getEvent();
         maxAttendees = Math.max(maxAttendees,
                                 oev.getSchedulingInfo()
-                                   .getNumAttendees());
+                                   .getNumParticipants());
       }
     }
 

@@ -1118,7 +1118,7 @@ public class Ical2BwEvent extends IcalUtil {
           }
 
           if (subComp instanceof Participant) {
-            ev.getSchedulingInfo().newAttendee((Participant)subComp);
+            ev.getSchedulingInfo().newParticipant((Participant)subComp);
             continue;
           }
 

@@ -75,6 +75,24 @@ public class SchedulingOwner implements Comparable<SchedulingOwner> {
 
   /**
    *
+   * @return the organizer object or create one. Temp until changes made
+   */
+  public BwOrganizer makeOrganizer() {
+    if (organizer != null) {
+      return organizer;
+    }
+
+    final var org = new BwOrganizer();
+
+    org.setCn(getName());
+    org.setOrganizerUri(getCalendarAddress());
+    org.setLanguage(getLanguage());
+
+    return org;
+  }
+
+  /**
+   *
    * @return participant object. DO NOT MODIFY scheduling attributes
    * directly
    */
@@ -107,6 +125,98 @@ public class SchedulingOwner implements Comparable<SchedulingOwner> {
 
     if (participant != null) {
       return participant.getCalendarAddress();
+    }
+
+    return null;
+  }
+
+  /**
+   *
+   *  @param  val   name
+   */
+  public void setName(final String val) {
+    if (organizer != null) {
+      organizer.setCn(val);
+    }
+
+    if (participant != null) {
+      participant.setName(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     name
+   */
+  public String getName() {
+    String val = null;
+    if (organizer != null) {
+      val = organizer.getCn();
+    }
+
+    if ((participant != null) && (val == null)) {
+      return participant.getName();
+    }
+
+    return val;
+  }
+
+  /**
+   *
+   *  @param  val   Language
+   */
+  public void setLanguage(final String val) {
+    if (organizer != null) {
+      organizer.setLanguage(val);
+    }
+
+    if (participant != null) {
+      participant.setLanguage(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String     Language
+   */
+  public String getLanguage() {
+    String val = null;
+    if (organizer != null) {
+      val = organizer.getLanguage();
+    }
+
+    if ((participant != null) && (val == null)) {
+      return participant.getLanguage();
+    }
+
+    return val;
+  }
+
+  /**
+   *
+   *  @param  val   String invitedBy
+   */
+  public void setInvitedBy(final String val) {
+    if (organizer != null) {
+      organizer.setSentBy(val);
+    }
+
+    if (participant != null) {
+      participant.setInvitedBy(val);
+    }
+  }
+
+  /**
+   *
+   *  @return String  invitedBy
+   */
+  public String getInvitedBy() {
+    if (organizer != null) {
+      return organizer.getSentBy();
+    }
+
+    if (participant != null) {
+      return participant.getInvitedBy();
     }
 
     return null;

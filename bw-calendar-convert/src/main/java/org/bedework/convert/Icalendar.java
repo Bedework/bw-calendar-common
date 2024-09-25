@@ -19,7 +19,7 @@
 package org.bedework.convert;
 
 import org.bedework.calfacade.BwEvent;
-import org.bedework.calfacade.BwOrganizer;
+import org.bedework.calfacade.SchedulingOwner;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.IcalDefs.IcalComponentType;
@@ -246,25 +246,17 @@ public class Icalendar implements TimeZoneRegistry, ScheduleMethods, Serializabl
   /** An event or a free-busy request may contain an organizer. Return it if
    * it is present.
    *
-   * @return organizer object if present.
+   * @return SchedulingOwner object. Check noOwner() for presence.
    */
-  public BwOrganizer getOrganizer() {
+  public SchedulingOwner getOrganizer() {
     if (size() != 1) {
       return null;
     }
 
-    if (getComponentType() == IcalComponentType.event) {
-      final EventInfo ei = (EventInfo)iterator().next();
-      return ei.getEvent().getOrganizer();
-    }
+    final Object o = iterator().next();
+    if (o instanceof final EventInfo ei) {
+      return ei.getEvent().getSchedulingInfo().getSchedulingOwner();
 
-    if (getComponentType() == IcalComponentType.freebusy) {
-      final Object o = iterator().next();
-
-      if (o instanceof EventInfo) {
-        final EventInfo ei = (EventInfo)o;
-        return ei.getEvent().getOrganizer();
-      }
     }
 
     return null;

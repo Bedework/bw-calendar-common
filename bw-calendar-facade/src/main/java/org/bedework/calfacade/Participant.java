@@ -23,14 +23,21 @@ import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 
+import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.property.SchedulingAgent;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /** Represent an attending participant.
  *
  * These are not stored in the database.
  *
  *  @author Mike Douglass   douglm - bedework.org
  */
-public class Attendee
-        implements Comparable<Attendee>, Differable<Attendee> {
+public class Participant
+        implements Comparable<Participant>, Differable<Participant> {
   private final SchedulingInfo parent;
 
   /* Attendance may be indicated by a Participant object with
@@ -40,17 +47,17 @@ public class Attendee
    */
   private BwAttendee attendee;
 
-  private BwParticipant participant;
+  private BwParticipant bwParticipant;
 
   /** Constructor
    *
    */
-  Attendee(final SchedulingInfo parent,
-           final BwAttendee attendee,
-           final BwParticipant participant) {
+  Participant(final SchedulingInfo parent,
+              final BwAttendee attendee,
+              final BwParticipant bwParticipant) {
     this.parent = parent;
     this.attendee = attendee;
-    this.participant = participant;
+    this.bwParticipant = bwParticipant;
   }
 
   /* ==============================================================
@@ -71,8 +78,8 @@ public class Attendee
    * @return participant object. DO NOT MODIFY scheduling attributes
    * directly
    */
-  public BwParticipant getParticipant() {
-    return participant;
+  public BwParticipant getBwParticipant() {
+    return bwParticipant;
   }
 
   /**
@@ -84,8 +91,8 @@ public class Attendee
       attendee.setAttendeeUri(val);
     }
 
-    if (participant != null) {
-      participant.setCalendarAddress(val);
+    if (bwParticipant != null) {
+      bwParticipant.setCalendarAddress(val);
     }
   }
 
@@ -98,8 +105,8 @@ public class Attendee
       return attendee.getAttendeeUri();
     }
 
-    if (participant != null) {
-      return participant.getCalendarAddress();
+    if (bwParticipant != null) {
+      return bwParticipant.getCalendarAddress();
     }
 
     return null;
@@ -114,8 +121,8 @@ public class Attendee
       attendee.setCn(val);
     }
 
-    if (participant != null) {
-      participant.setName(val);
+    if (bwParticipant != null) {
+      bwParticipant.setName(val);
     }
   }
 
@@ -129,8 +136,8 @@ public class Attendee
       val = attendee.getCn();
     }
 
-    if ((participant != null) && (val == null)) {
-      return participant.getName();
+    if ((bwParticipant != null) && (val == null)) {
+      return bwParticipant.getName();
     }
 
     return val;
@@ -145,8 +152,8 @@ public class Attendee
       attendee.setLanguage(val);
     }
 
-    if (participant != null) {
-      participant.setLanguage(val);
+    if (bwParticipant != null) {
+      bwParticipant.setLanguage(val);
     }
   }
 
@@ -160,8 +167,8 @@ public class Attendee
       val = attendee.getLanguage();
     }
 
-    if ((participant != null) && (val == null)) {
-      return participant.getLanguage();
+    if ((bwParticipant != null) && (val == null)) {
+      return bwParticipant.getLanguage();
     }
 
     return val;
@@ -176,8 +183,8 @@ public class Attendee
       attendee.setCuType(val);
     }
 
-    if (participant != null) {
-      participant.setKind(val);
+    if (bwParticipant != null) {
+      bwParticipant.setKind(val);
     }
   }
 
@@ -190,8 +197,8 @@ public class Attendee
       return attendee.getCuType();
     }
 
-    if (participant != null) {
-      return participant.getKind();
+    if (bwParticipant != null) {
+      return bwParticipant.getKind();
     }
 
     return null;
@@ -207,8 +214,8 @@ public class Attendee
       attendee.setPartstat(val);
     }
 
-    if (participant != null) {
-      participant.setParticipationStatus(val);
+    if (bwParticipant != null) {
+      bwParticipant.setParticipationStatus(val);
     }
   }
 
@@ -218,14 +225,20 @@ public class Attendee
    */
   public String getParticipationStatus() {
     if (attendee != null) {
-      return attendee.getPartstat();
+      final var s = attendee.getPartstat();
+      if (s != null) {
+        return s;
+      }
     }
 
-    if (participant != null) {
-      return participant.getParticipationStatus();
+    if (bwParticipant != null) {
+      final var s = bwParticipant.getParticipationStatus();
+      if (s != null) {
+        return s;
+      }
     }
 
-    return null;
+    return "needs-action";
   }
 
   /**
@@ -235,11 +248,11 @@ public class Attendee
    */
   public void setParticipantType(final String val) {
     if (attendee != null) {
-      attendee.setRole(val);
+      attendee.setRole(iCalRole(val));
     }
 
-    if (participant != null) {
-      participant.setParticipantType(val);
+    if (bwParticipant != null) {
+      bwParticipant.setParticipantType(val);
     }
   }
 
@@ -249,11 +262,11 @@ public class Attendee
    */
   public String getParticipantType() {
     if (attendee != null) {
-      return attendee.getRole();
+      return jsCalRolesAsString(attendee.getRole());
     }
 
-    if (participant != null) {
-      return participant.getParticipantType();
+    if (bwParticipant != null) {
+      return bwParticipant.getParticipantType();
     }
 
     return null;
@@ -265,15 +278,94 @@ public class Attendee
    * @return true if in list (ignoring case)
    */
   public boolean includesParticipantType(final String val) {
-    if (participant != null) {
-      return participant.includesParticipantType(val);
+    if (bwParticipant != null) {
+      return bwParticipant.includesParticipantType(val);
     }
 
     if (attendee != null) {
-      return val.equalsIgnoreCase(attendee.getRole());
+      return jsCalRoles(attendee.getRole())
+              .contains(val.toLowerCase());
     }
 
     return false;
+  }
+
+  private static final Map<String, List<String>> jscalRoles =
+          new HashMap<>();
+  private static final Map<String, String> jscalRolesAsString =
+          new HashMap<>();
+  final private static List<String> defaultRoles =
+          List.of("attendee");
+  static {
+    jscalRoles.put("CHAIR",
+                   List.of("chair"));
+    jscalRoles.put("REQ-PARTICIPANT",
+                   defaultRoles);
+    jscalRoles.put("OPT-PARTICIPANT",
+                   List.of("attendee", "optional"));
+    jscalRoles.put("NON-PARTICIPANT",
+                   List.of("attendee", "informational"));
+
+    jscalRolesAsString.put("CHAIR", "chair");
+    jscalRolesAsString.put("REQ-PARTICIPANT", "attendee");
+    jscalRolesAsString.put("OPT-PARTICIPANT",
+                           "attendee, optional");
+    jscalRolesAsString.put("NON-PARTICIPANT",
+                           "attendee, informational");
+  }
+
+  public static List<String> jsCalRoles(final String icalRole) {
+    if (icalRole == null) {
+      return defaultRoles;
+    }
+
+    final var res = jscalRoles.get(icalRole.toUpperCase());
+
+    if (res == null) {
+      return defaultRoles;
+    }
+
+    return res;
+  }
+
+  public static String jsCalRolesAsString(final String icalRole) {
+    if (icalRole == null) {
+      return "attendee";
+    }
+
+    final var res = jscalRolesAsString.get(icalRole.toUpperCase());
+
+    if (res == null) {
+      return "attendee";
+    }
+
+    return res;
+  }
+
+  public static String iCalRole(final String jsCalRoles) {
+    final var roles = new TextList(jsCalRoles);
+
+    if (roles.containsIgnoreCase("chair")) {
+      return "CHAIR";
+    }
+
+    if (!roles.containsIgnoreCase("attendee")) {
+      return jsCalRoles;
+    }
+
+    if (roles.size() == 1) {
+      return "REQ-PARTICIPANT";
+    }
+
+    if (roles.containsIgnoreCase("optional")) {
+      return "OPT-PARTICIPANT";
+    }
+
+    if (roles.containsIgnoreCase("informational")) {
+      return "NON-PARTICIPANT";
+    }
+
+    return jsCalRoles;
   }
 
   /** Set the delegatedFrom
@@ -285,8 +377,8 @@ public class Attendee
       attendee.setDelegatedFrom(val);
     }
 
-    if (participant != null) {
-      participant.setDelegatedFrom(val);
+    if (bwParticipant != null) {
+      bwParticipant.setDelegatedFrom(val);
     }
   }
 
@@ -299,8 +391,8 @@ public class Attendee
       return attendee.getDelegatedFrom();
     }
 
-    if (participant != null) {
-      return participant.getDelegatedFrom();
+    if (bwParticipant != null) {
+      return bwParticipant.getDelegatedFrom();
     }
 
     return null;
@@ -315,8 +407,8 @@ public class Attendee
       attendee.setDelegatedTo(val);
     }
 
-    if (participant != null) {
-      participant.setDelegatedTo(val);
+    if (bwParticipant != null) {
+      bwParticipant.setDelegatedTo(val);
     }
   }
 
@@ -329,8 +421,8 @@ public class Attendee
       return attendee.getDelegatedTo();
     }
 
-    if (participant != null) {
-      return participant.getDelegatedTo();
+    if (bwParticipant != null) {
+      return bwParticipant.getDelegatedTo();
     }
 
     return null;
@@ -345,8 +437,8 @@ public class Attendee
       attendee.setMember(val);
     }
 
-    if (participant != null) {
-      participant.setMemberOf(val);
+    if (bwParticipant != null) {
+      bwParticipant.setMemberOf(val);
     }
   }
 
@@ -359,8 +451,8 @@ public class Attendee
       return attendee.getMember();
     }
 
-    if (participant != null) {
-      return participant.getMemberOf();
+    if (bwParticipant != null) {
+      return bwParticipant.getMemberOf();
     }
 
     return null;
@@ -375,8 +467,8 @@ public class Attendee
       attendee.setRsvp(val);
     }
 
-    if (participant != null) {
-      participant.setExpectReply(val);
+    if (bwParticipant != null) {
+      bwParticipant.setExpectReply(val);
     }
   }
 
@@ -389,8 +481,8 @@ public class Attendee
       return attendee.getRsvp();
     }
 
-    if (participant != null) {
-      return participant.getExpectReply();
+    if (bwParticipant != null) {
+      return bwParticipant.getExpectReply();
     }
 
     return false;
@@ -405,8 +497,8 @@ public class Attendee
       attendee.setEmail(val);
     }
 
-    if (participant != null) {
-      participant.setEmail(val);
+    if (bwParticipant != null) {
+      bwParticipant.setEmail(val);
     }
   }
 
@@ -419,8 +511,8 @@ public class Attendee
       return attendee.getEmail();
     }
 
-    if (participant != null) {
-      return participant.getEmail();
+    if (bwParticipant != null) {
+      return bwParticipant.getEmail();
     }
 
     return null;
@@ -435,8 +527,8 @@ public class Attendee
       attendee.setSentBy(val);
     }
 
-    if (participant != null) {
-      participant.setInvitedBy(val);
+    if (bwParticipant != null) {
+      bwParticipant.setInvitedBy(val);
     }
   }
 
@@ -449,8 +541,8 @@ public class Attendee
       return attendee.getSentBy();
     }
 
-    if (participant != null) {
-      return participant.getInvitedBy();
+    if (bwParticipant != null) {
+      return bwParticipant.getInvitedBy();
     }
 
     return null;
@@ -465,8 +557,8 @@ public class Attendee
       attendee.setSequence(val);
     }
 
-    if (participant != null) {
-      participant.setSequence(val);
+    if (bwParticipant != null) {
+      bwParticipant.setSequence(val);
     }
   }
 
@@ -479,8 +571,8 @@ public class Attendee
       return attendee.getSequence();
     }
 
-    if (participant != null) {
-      return participant.getSequence();
+    if (bwParticipant != null) {
+      return bwParticipant.getSequence();
     }
 
     return 0;
@@ -494,8 +586,8 @@ public class Attendee
       attendee.setDtstamp(val);
     }
 
-    if (participant != null) {
-      participant.setSchedulingDtStamp(val);
+    if (bwParticipant != null) {
+      bwParticipant.setSchedulingDtStamp(val);
     }
   }
 
@@ -507,8 +599,8 @@ public class Attendee
       return attendee.getDtstamp();
     }
 
-    if (participant != null) {
-      return participant.getSchedulingDtStamp();
+    if (bwParticipant != null) {
+      return bwParticipant.getSchedulingDtStamp();
     }
 
     return null;
@@ -528,8 +620,8 @@ public class Attendee
       }
     }
 
-    if (participant != null) {
-      participant.setScheduleAgent(val);
+    if (bwParticipant != null) {
+      bwParticipant.setScheduleAgent(val);
     }
   }
 
@@ -545,11 +637,14 @@ public class Attendee
       }
     }
 
-    if (participant != null) {
-      return participant.getScheduleAgent();
+    if (bwParticipant != null) {
+      final var agent = bwParticipant.getScheduleAgent();
+      if (agent != null) {
+        return bwParticipant.getScheduleAgent();
+      }
     }
 
-    return null;
+    return SchedulingAgent.VALUE_SERVER;
   }
 
   /** Set the schedule status
@@ -561,8 +656,8 @@ public class Attendee
       attendee.setScheduleStatus(val);
     }
 
-    if (participant != null) {
-      participant.setScheduleStatus(val);
+    if (bwParticipant != null) {
+      bwParticipant.setScheduleStatus(val);
     }
   }
 
@@ -575,8 +670,8 @@ public class Attendee
       return attendee.getScheduleStatus();
     }
 
-    if (participant != null) {
-      return participant.getScheduleStatus();
+    if (bwParticipant != null) {
+      return bwParticipant.getScheduleStatus();
     }
 
     return null;
@@ -607,7 +702,7 @@ public class Attendee
   }
   */
 
-  public void copyTo(final Attendee that)  {
+  public void copyTo(final Participant that)  {
     if (attendee != null) {
       if (that.attendee != null) {
         attendee.copyTo(that.attendee);
@@ -616,13 +711,51 @@ public class Attendee
       }
     }
 
-    if (participant != null) {
-      if (that.participant != null) {
-        that.participant.copyTo(that.participant);
+    if (bwParticipant != null) {
+      if (that.bwParticipant != null) {
+        that.bwParticipant.copyTo(that.bwParticipant);
       } else {
-        that.participant = (BwParticipant)participant.clone();
+        that.bwParticipant = (BwParticipant)bwParticipant.clone();
       }
     }
+  }
+
+  /** Only true if something changes the status of, or information about, the
+   * attendee.
+   *
+   * @param val incoming value
+   * @return true for significant change
+   */
+  public boolean changedBy(final Participant val) {
+    return changedBy(val, true);
+  }
+
+  /** Only true if something changes the status of, or information about, the
+   * attendee.
+   *
+   * @param val incoming value
+   * @param checkPartStat - true if we check the partstat
+   * @return true for significant change
+   */
+  public boolean changedBy(final Participant val,
+                           final boolean checkPartStat) {
+    if (attendee != null) {
+      if (val.attendee == null) {
+        return true;
+      }
+
+      return attendee.changedBy(val.attendee, checkPartStat);
+    }
+
+    if (bwParticipant != null) {
+      if (val.bwParticipant == null) {
+        return true;
+      }
+
+      return bwParticipant.changedBy(val.bwParticipant, checkPartStat);
+    }
+
+    return (val.attendee != null) || (val.bwParticipant != null);
   }
 
   /* ==============================================================
@@ -635,15 +768,15 @@ public class Attendee
       return attendee.hashCode();
     }
 
-    if (participant != null) {
-      return participant.hashCode();
+    if (bwParticipant != null) {
+      return bwParticipant.hashCode();
     }
 
     return -1;
   }
 
   @Override
-  public int compareTo(final Attendee that)  {
+  public int compareTo(final Participant that)  {
     if (this == that) {
       return 0;
     }
@@ -653,7 +786,7 @@ public class Attendee
       return res;
     }
 
-    return Util.cmpObjval(this.participant, that.participant);
+    return Util.cmpObjval(this.bwParticipant, that.bwParticipant);
   }
 
   @Override
@@ -663,14 +796,14 @@ public class Attendee
     if (attendee != null) {
       ts.append("attendee", attendee);
     }
-    if (participant != null) {
-      ts.append("participant", participant);
+    if (bwParticipant != null) {
+      ts.append("participant", bwParticipant);
     }
     return toString();
   }
 
   @Override
-  public boolean differsFrom(final Attendee val) {
+  public boolean differsFrom(final Participant val) {
     return (Util.compareStrings(val.getParticipationStatus(),
                                 getParticipationStatus()) != 0) ||
             (Util.compareStrings(val.getCalendarAddress(),

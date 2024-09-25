@@ -173,10 +173,11 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter<?>> {
       return stringMatch(ev.getLocation().getAddress().getValue(), val);
 
     case ORGANIZER:
-      if (ev.getOrganizer() == null) {
+      final var so = ev.getSchedulingInfo().getSchedulingOwner();
+      if (so.noOwner()) {
         return false;
       }
-      return stringMatch(ev.getOrganizer().getOrganizerUri(), val);
+      return stringMatch(so.getCalendarAddress(), val);
 
     case PRIORITY:
       if (ev.getPriority() == null) {

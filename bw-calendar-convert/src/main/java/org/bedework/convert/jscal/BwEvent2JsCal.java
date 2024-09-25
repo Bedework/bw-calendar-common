@@ -18,7 +18,7 @@
 */
 package org.bedework.convert.jscal;
 
-import org.bedework.calfacade.Attendee;
+import org.bedework.calfacade.Participant;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwCategory;
@@ -1452,12 +1452,12 @@ public class BwEvent2JsCal {
                                   final EventInfo master,
                                   final JSCalendarObject jsval,
                                   final JSCalendarObject jsCalMaster) {
-    final Set<Attendee> attendees = event.getSchedulingInfo()
-                                         .getAttendees();
-    final DifferResult<Attendee, Set<Attendee>> partDiff =
-            differs(Attendee.class,
+    final Set<Participant> participants = event.getSchedulingInfo()
+                                               .getParticipants();
+    final DifferResult<Participant, Set<Participant>> partDiff =
+            differs(Participant.class,
                     PropertyInfoIndex.ATTENDEE,
-                    attendees, master);
+                    participants, master);
 
     if (!partDiff.differs) {
       return;
@@ -1468,7 +1468,7 @@ public class BwEvent2JsCal {
       makeAttendees(jsval,
                     jsCalMaster,
                     jsval.getParticipants(true),
-                    attendees);
+                    participants);
       return;
     }
 
@@ -1531,7 +1531,7 @@ public class BwEvent2JsCal {
       // First non groups
       for (final var att: partDiff.differ) {
         // Find the attendee in the master and output the difference
-        final var matt = msi.findAttendee(att.getCalendarAddress());
+        final var matt = msi.findParticipant(att.getCalendarAddress());
         if (matt == null) {
           // Error
           throw new CalFacadeException("Unable to locate attendee " +
@@ -1549,7 +1549,7 @@ public class BwEvent2JsCal {
       // Now groups
       for (final var att: partDiff.differ) {
         // Find the attendee in the master and output the difference
-        final var matt = msi.findAttendee(att.getCalendarAddress());
+        final var matt = msi.findParticipant(att.getCalendarAddress());
 
         if (!"group".equalsIgnoreCase(att.getKind())) {
           continue;
@@ -1565,20 +1565,20 @@ public class BwEvent2JsCal {
   private static void makeAttendees(final JSCalendarObject jsval,
                                     final JSCalendarObject master,
                                     final JSParticipants participants,
-                                    final Set<Attendee> attendees) {
+                                    final Set<Participant> attendees) {
     /* Note below we add participants in two passes - groups first
        then the rest. This is because an attendee with a MEMBER
        parameter needs to refer to a group participant by the id
        which we don't know till we create the group.
      */
-    for (final Attendee att: attendees) {
+    for (final Participant att: attendees) {
       if (!"group".equalsIgnoreCase(att.getKind())) {
         continue;
       }
       makeAttendee(jsval, master, participants, att);
     }
 
-    for (final Attendee att: attendees) {
+    for (final Participant att: attendees) {
       if ("group".equalsIgnoreCase(att.getKind())) {
         continue;
       }
@@ -1589,66 +1589,67 @@ public class BwEvent2JsCal {
   /**
    *
    * @param master - needed to locate group participants and links
-   * @param att attendee
+   * @param participant attendee
    */
   private static void makeAttendee(final JSCalendarObject jsval,
                                    final JSCalendarObject master,
                                    final JSParticipants participants,
-                                   final Attendee att) {
-    final var part = participants.makeParticipant().getValue();
+                                   final Participant participant) {
+    final var jsParticipant = participants.makeParticipant().getValue();
 
     // We do attendee before organizer so this should be fine.
-    part.getSendTo(true).makeSendTo("imip",
-                                    att.getCalendarAddress());
+    jsParticipant.getSendTo(true)
+                 .makeSendTo("imip",
+                             participant.getCalendarAddress());
 
-    final String partStat = att.getParticipationStatus();
+    final String partStat = participant.getParticipationStatus();
 
     if ((partStat != null) &&
             !partStat.equals(IcalDefs.partstatValNeedsAction)) {
       // Not default value.
-      part.setParticipationStatus(partStat.toLowerCase());
+      jsParticipant.setParticipationStatus(partStat.toLowerCase());
     }
 
-    if (att.getExpectReply()) {
-      part.setExpectReply(true);
+    if (participant.getExpectReply()) {
+      jsParticipant.setExpectReply(true);
     }
 
-    String temp = att.getName();
+    String temp = participant.getName();
     if (temp != null) {
-      part.setName(temp);
+      jsParticipant.setName(temp);
     }
 
-    temp = jsCalCutype(att.getKind());
+    temp = jsCalCutype(participant.getKind());
     if (temp != null) {
-      part.setKind(temp);
+      jsParticipant.setKind(temp);
     }
 
-    temp = att.getDelegatedFrom();
-    if (temp != null) {
-      // Could be a list of cal-address
-      final var split = temp.split(",");
-      for (final var s: split) {
-        part.getDelegatedFrom(true).add(s);
-      }
-    }
-
-    temp = att.getDelegatedTo();
+    temp = participant.getDelegatedFrom();
     if (temp != null) {
       // Could be a list of cal-address
       final var split = temp.split(",");
       for (final var s: split) {
-        part.getDelegatedTo(true).add(s);
+        jsParticipant.getDelegatedFrom(true).add(s);
       }
     }
 
-//    addLink(part, att.getDir(), linkRelAlternate);
-
-    temp = att.getLanguage();
+    temp = participant.getDelegatedTo();
     if (temp != null) {
-      part.setLanguage(temp);
+      // Could be a list of cal-address
+      final var split = temp.split(",");
+      for (final var s: split) {
+        jsParticipant.getDelegatedTo(true).add(s);
+      }
     }
 
-    temp = att.getMemberOf();
+//    addLink(jsParticipant, participant.getDir(), linkRelAlternate);
+
+    temp = participant.getLanguage();
+    if (temp != null) {
+      jsParticipant.setLanguage(temp);
+    }
+
+    temp = participant.getMemberOf();
     if (temp != null) {
       /* Locate the associated group participant which may be in this
          participants object or that of the master
@@ -1662,40 +1663,40 @@ public class BwEvent2JsCal {
       }
 
       if (groupPart != null) {
-        part.getMemberOf(true).add(groupPart.getName());
+        jsParticipant.getMemberOf(true).add(groupPart.getName());
       }
     }
 
-    jsCalRole(part.getRoles(true), att.getParticipantType());
+    jsCalRole(jsParticipant.getRoles(true), participant.getParticipantType());
 
     if (temp != null) {
-      part.setScheduleAgent(att.getScheduleAgent());
+      jsParticipant.setScheduleAgent(participant.getScheduleAgent());
     }
 
-    temp = att.getScheduleStatus();
+    temp = participant.getScheduleStatus();
     if (temp != null) {
-      part.getScheduleStatus(true).add(new JSStringImpl(temp));
+      jsParticipant.getScheduleStatus(true).add(new JSStringImpl(temp));
     }
 
-    temp = att.getInvitedBy();
+    temp = participant.getInvitedBy();
     if (temp != null) {
-      part.setInvitedBy(temp);
+      jsParticipant.setInvitedBy(temp);
     }
   }
 
   private static void makeAttendeeOverride(
           final JSOverride jsval,
           final JSCalendarObject master,
-          final Attendee attendee,
-          final Attendee masterAttendee) {
+          final Participant participant,
+          final Participant masterParticipant) {
     /* Called because the attendee is present in the master but has
        changed in some way
      */
     final var jsMAttP = master.getParticipants(false).findParticipant(
-            masterAttendee.getCalendarAddress());
+            masterParticipant.getCalendarAddress());
     if (jsMAttP == null) {
       throw new CalFacadeException("Missing master attendee " +
-                                         masterAttendee.getCalendarAddress());
+                                         masterParticipant.getCalendarAddress());
     }
 
     final var partId = jsMAttP.getName();
@@ -1704,28 +1705,28 @@ public class BwEvent2JsCal {
 
     // partstat
     makeAttendeeOverrideVal(jsval,
-                            lower(attendee.getParticipationStatus()),
-                            lower(masterAttendee.getParticipationStatus()),
+                            lower(participant.getParticipationStatus()),
+                            lower(masterParticipant.getParticipationStatus()),
                             partId,
                             JSPropertyNames.participationStatus);
 
     // RSVP
-    if (attendee.getExpectReply() != masterAttendee.getExpectReply()) {
-      jsval.setOverrideProperty(attendee.getExpectReply(),
+    if (participant.getExpectReply() != masterParticipant.getExpectReply()) {
+      jsval.setOverrideProperty(participant.getExpectReply(),
                                 JSPropertyNames.participants,
                                 partId,
                                 JSPropertyNames.expectReply);
     }
 
     makeAttendeeOverrideVal(jsval,
-                            attendee.getName(),
-                            masterAttendee.getName(),
+                            participant.getName(),
+                            masterParticipant.getName(),
                             partId,
                             JSPropertyNames.name);
 
     makeAttendeeOverrideVal(jsval,
-                            jsCalCutype(attendee.getKind()),
-                            jsCalCutype(masterAttendee.getKind()),
+                            jsCalCutype(participant.getKind()),
+                            jsCalCutype(masterParticipant.getKind()),
                             partId,
                             JSPropertyNames.kind);
 
@@ -1790,8 +1791,8 @@ public class BwEvent2JsCal {
      */
 
     makeAttendeeOverrideVal(jsval,
-                            attendee.getLanguage(),
-                            masterAttendee.getLanguage(),
+                            participant.getLanguage(),
+                            masterParticipant.getLanguage(),
                             partId,
                             JSPropertyNames.language);
 
@@ -1815,8 +1816,8 @@ public class BwEvent2JsCal {
     }
      */
 
-    final String attVal = icalRole(attendee.getParticipantType());
-    final String mattVal = icalRole(masterAttendee.getParticipantType());
+    final String attVal = icalRole(participant.getParticipantType());
+    final String mattVal = icalRole(masterParticipant.getParticipantType());
     if (!attVal.equalsIgnoreCase(mattVal)) {
       final JSProperty<JSList<String>> roles =
               jsval.newOverrideProperty(
@@ -1830,20 +1831,20 @@ public class BwEvent2JsCal {
     }
 
     makeAttendeeOverrideVal(jsval,
-                            attendee.getScheduleAgent(),
-                            masterAttendee.getScheduleAgent(),
+                            participant.getScheduleAgent(),
+                            masterParticipant.getScheduleAgent(),
                             partId,
                             JSPropertyNames.scheduleAgent);
 
     makeAttendeeOverrideVal(jsval,
-                            attendee.getScheduleStatus(),
-                            masterAttendee.getScheduleStatus(),
+                            participant.getScheduleStatus(),
+                            masterParticipant.getScheduleStatus(),
                             partId,
                             JSPropertyNames.scheduleStatus);
 
     makeAttendeeOverrideVal(jsval,
-                            attendee.getInvitedBy(),
-                            masterAttendee.getInvitedBy(),
+                            participant.getInvitedBy(),
+                            masterParticipant.getInvitedBy(),
                             partId,
                             JSPropertyNames.invitedBy);
   }

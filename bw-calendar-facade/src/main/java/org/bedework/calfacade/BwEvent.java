@@ -3511,9 +3511,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
         removeXproperty(x);
       }
     } else {
-      final PollItmId pid = new PollItmId(val);
-
-      replaceXproperty(BwXproperty.pollItemId, pid.getVal());
+      replaceXproperty(BwXproperty.pollItemId, val.toString());
     }
   }
 
@@ -3533,9 +3531,11 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     final BwXproperty p = props.get(0);
-    final PollItmId pid = new PollItmId(p.getValue());
-
-    return pid.getId();
+    try {
+      return Integer.valueOf(p.getValue());
+    } catch (final NumberFormatException nfe) {
+      return -1;
+    }
   }
 
   /** Set the poll mode

@@ -27,6 +27,7 @@ import org.bedework.util.misc.Uid;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.component.Participant;
+import net.fortuna.ical4j.model.component.Vote;
 import net.fortuna.ical4j.model.property.CalendarAddress;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.EmailAddress;
@@ -46,9 +47,11 @@ import net.fortuna.ical4j.model.property.SchedulingStatus;
 
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static net.fortuna.ical4j.model.Component.VOTE;
 import static net.fortuna.ical4j.model.Property.EXPECT_REPLY;
 import static net.fortuna.ical4j.model.Property.INVITED_BY;
 import static net.fortuna.ical4j.model.Property.LANG;
@@ -696,7 +699,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         props.add(new SchedulingSequence(val));
       }
     } else if (!sval.equals(p.getValue())) {
-      if (val != 0) {
+      if (val == 0) {
         props.remove(p);
       } else {
         p.setValue(sval);
@@ -833,50 +836,54 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     return p.getValue();
   }
 
-  /** Set the response - voter only
+  public List<BwVote> getVotes() {
+    final var comps = participant.getComponents();
+    final var c = comps.getComponents(VOTE);
+    final var votes = new ArrayList<BwVote>();
+    for (final var cv: c) {
+      votes.add(new BwVote(this, (Vote)cv));
+    }
+
+    return votes;
+  }
+
+  public void setVotes(final List<BwVote> val) {
+    final var comps = participant.getComponents();
+    final var c = comps.getComponents(VOTE);
+    comps.removeAll(c);
+
+    for (final var v: val) {
+      comps.add(v.getVote());
+    }
+  }
+
+  /** Add the response - voter only
    *
    *  @param  val response for voter
-   * /
-  public void setResponse(final int val) {
-    assignSentByField(responseIndex, String.valueOf(val));
-  }
+   */
+  public void addVote(final BwVote val) {
+    final var comps = participant.getComponents();
+    final var c = comps.getComponents(VOTE);
+    final int id = val.getPollItemId();
 
-  /** Get the response
-   *
-   *  @return int
-   * /
-  public int getResponse() {
-    final String s = fetchSentByField(responseIndex);
+    BwVote vote = null;
+    for (final var cv: c) {
+      final var bwv = new BwVote(this, (Vote)cv);
+      if (id == bwv.getPollItemId()) {
+        vote = bwv;
+        break;
+      }
+    }
+    if (vote == null) {
+      comps.add(val.getVote());
+      changed();
 
-    if (s == null) {
-      return 0;
+      return;
     }
 
-    return Integer.parseInt(s);
-  }
-
-  /**
-   *
-   *  @param  val true/false for stay-informed
-   * /
-  public void setStayInformed(final boolean val) {
-    final String sival;
-
-    if (val) {
-      sival = "T";
-    } else {
-      sival = "F";
-    }
-
-    assignSentByField(stayInformedIndex, sival);
-  }
-
-  /**
-   *
-   *  @return boolean
-   * /
-  public boolean getStayInformed() {
-    return "T".equals(fetchSentByField(stayInformedIndex));
+    // Same id - set response.
+    vote.setResponse(val.getResponse());
+    changed();
   }
 
   /** Copy this objects values into the parameter
@@ -895,11 +902,12 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     val.setMemberOf(getMemberOf());
     val.setExpectReply(getExpectReply());
     val.setEmail(getEmail());
-//    val.setSentByVal(getSentByVal());
+    val.setInvitedBy(getInvitedBy());
     val.setSequence(getSequence());
     val.setSchedulingDtStamp(getSchedulingDtStamp());
     val.setScheduleAgent(getScheduleAgent());
     val.setScheduleStatus(getScheduleStatus());
+    val.setVotes(getVotes());
   }
 
   /** Only true if something changes the status of, or information about, the
@@ -938,8 +946,10 @@ public class BwParticipant extends BwDbentity<BwParticipant>
            (Util.compareStrings(val.getMemberOf(),
                                 getMemberOf()) != 0) ||
            (Util.compareStrings(val.getEmail(),
-                                getEmail()) != 0);
-//           (Util.compareStrings(val.getSentByVal(), getSentByVal()) != 0) ||
+                                getEmail()) != 0) ||
+           (Util.compareStrings(val.getInvitedBy(),
+                                getInvitedBy()) != 0) ||
+           (Util.cmpObjval(val.getVotes(), getVotes()) != 0);
   }
 
   /* ==============================================================
@@ -968,8 +978,11 @@ public class BwParticipant extends BwDbentity<BwParticipant>
                             getExpectReply()) != 0) ||
            (Util.compareStrings(val.getEmail(),
                                  getEmail()) != 0) ||
-//           (Util.compareStrings(val.getSentByVal(), getSentByVal()) != 0) ||
-           (Util.compareStrings(val.getScheduleAgent(), getScheduleAgent()) != 0);
+           (Util.compareStrings(val.getInvitedBy(),
+                                getInvitedBy()) != 0) ||
+           (Util.compareStrings(val.getScheduleAgent(), getScheduleAgent()) != 0) ||
+            (Util.cmpObjval(val.getVotes(),
+                            getVotes()) != 0);
   }
 
   /* ==============================================================
@@ -1026,7 +1039,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     return nobj;
   }
 
-  private void changed() {
+  void changed() {
     parent.markChanged();
     stringRepresentation = null;
   }

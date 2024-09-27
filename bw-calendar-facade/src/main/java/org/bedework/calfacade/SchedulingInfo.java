@@ -35,6 +35,7 @@ public class SchedulingInfo {
   private SchedulingOwner schedulingOwner;
 
   private Set<BwParticipant> bwParticipants;
+  private Map<String, BwParticipant> bwParticipantMap;
 
   private Set<Participant> participants;
   private Map<String, Participant> participantMap;
@@ -43,6 +44,10 @@ public class SchedulingInfo {
 
   public SchedulingInfo(final BwEvent parent) {
     this.parent = parent;
+  }
+
+  public BwEvent getParent() {
+    return parent;
   }
 
   public SchedulingOwner getSchedulingOwner() {
@@ -153,11 +158,16 @@ public class SchedulingInfo {
   }
 
   public void clearParticipants() {
-    parent.getAttendees().clear();
-    getParticipantsSet().clear();
+    if (parent.getAttendees() != null) {
+      parent.getAttendees().clear();
+    }
 
+    // Remove all but owner participant
+    final var owner = getSchedulingOwner().getCalendarAddress();
 
-    bwParticipants = new HashSet<>();
+    final var ownerParticipant = findParticipant(owner);
+
+    participantMap.clear();
 
     markChanged();
   }
@@ -188,7 +198,7 @@ public class SchedulingInfo {
     return a;
   }
 
-  public void removeParticipant(final Participant val) {
+  public void removeRecipientParticipant(final Participant val) {
     final var ctab = parent.getChangeset();
     final var att = val.getAttendee();
     if (att != null) {
@@ -202,10 +212,15 @@ public class SchedulingInfo {
 
     final var part = val.getBwParticipant();
     if (part != null) {
-      removeBwParticipant(part);
+      part.removeParticipantType(ParticipantType.VALUE_ATTENDEE);
+      part.removeParticipantType(ParticipantType.VALUE_CHAIR);
+      part.removeParticipantType(ParticipantType.VALUE_VOTER);
+      if (part.getParticipantType() == null) {
+        // No remaining roles - remove it.
+        removeBwParticipant(part);
+      }
     }
 
-    getParticipantsSet().remove(val);
     markChanged();
   }
 
@@ -228,6 +243,8 @@ public class SchedulingInfo {
       }
     }
 
+    final var evPart = getBwParticipantMap()
+            .get(val.getCalendarAddress());
     final var part = val.getBwParticipant();
 
     if (part != null) {
@@ -236,8 +253,12 @@ public class SchedulingInfo {
         parent.addXproperty(xpart);
       } else {
         final ChangeTableEntry cte = ctab.getEntry(
-                PropertyIndex.PropertyInfoIndex.XPROP);
-        cte.addAddedValue(xpart);
+                PropertyIndex.PropertyInfoIndex.PARTICIPANT);
+        if (evAtt != null) {
+          cte.addChangedValue(part);
+        } else {
+          cte.addAddedValue(part);
+        }
       }
     }
 
@@ -327,10 +348,15 @@ public class SchedulingInfo {
 
     final var participant = new Participant(this, null, bwpart);
 
-    chg.addValue(PropertyIndex.PropertyInfoIndex.XPROP,
-                 new BwXproperty(BwXproperty.bedeworkParticipant,
-                                 null,
-                                 bwpart.asString()));
+    final var np = new BwXproperty(BwXproperty.bedeworkParticipant,
+                    null,
+                    bwpart.asString());
+    if (chg != null) {
+      chg.addValue(PropertyIndex.PropertyInfoIndex.XPROP, np);
+      chg.addValue(PropertyIndex.PropertyInfoIndex.PARTICIPANT, np);
+    } else {
+      parent.addXproperty(np);
+    }
 
     return participant;
   }
@@ -365,7 +391,8 @@ public class SchedulingInfo {
   public void markChanged() {
     changed = true;
     participants = null;
-    bwParticipants = null;
+    participantMap = null;
+    bwParticipantMap = null;
     schedulingOwner = null;
   }
 
@@ -416,7 +443,7 @@ public class SchedulingInfo {
       }
     }
 
-    for (final BwParticipant part: getBwParticipantsSet()) {
+    for (final var part: getBwParticipantsSet()) {
       final var addr = part.getCalendarAddress();
       if (addr == null) {
         continue;
@@ -443,6 +470,18 @@ public class SchedulingInfo {
     return participants;
   }
 
+  private Map<String, BwParticipant> getBwParticipantMap() {
+    if (bwParticipantMap == null) {
+      bwParticipantMap = new HashMap<>();
+
+      for (final var part: getBwParticipantsSet()) {
+        bwParticipantMap.put(part.getCalendarAddress(), part);
+      }
+    }
+
+    return bwParticipantMap;
+  }
+
   private Set<BwParticipant> getBwParticipantsSet() {
     if (bwParticipants == null) {
       bwParticipants = new HashSet<>();
@@ -467,10 +506,6 @@ public class SchedulingInfo {
 
       boolean found = false;
       for (final var xp: xprops) {
-        if (!xp.getName().equals(BwXproperty.bedeworkParticipant)) {
-          continue;
-        }
-
         found = true;
         sb.append(xp.getValue());
       }

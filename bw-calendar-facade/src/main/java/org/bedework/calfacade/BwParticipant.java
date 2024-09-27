@@ -100,6 +100,10 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *                      Bean methods
    * ============================================================== */
 
+  public SchedulingInfo getParent() {
+    return parent;
+  }
+
   /**
    *
    * @return participant object. DO NOT MODIFY
@@ -297,7 +301,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    */
   public String getParticipantType() {
     final var p = participant.getParticipantType();
-    if (p == null) {
+    if ((p == null) || (p.getValue() == null)) {
       return null;
     }
     return p.getValue();
@@ -865,6 +869,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     final var comps = participant.getComponents();
     final var c = comps.getComponents(VOTE);
     final int id = val.getPollItemId();
+    final var ctab = parent.getParent().getChangeset();
 
     BwVote vote = null;
     for (final var cv: c) {

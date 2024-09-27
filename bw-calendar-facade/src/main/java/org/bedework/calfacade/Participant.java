@@ -24,6 +24,7 @@ import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.TextList;
+import net.fortuna.ical4j.model.property.ParticipantType;
 import net.fortuna.ical4j.model.property.SchedulingAgent;
 
 import java.util.HashMap;
@@ -289,6 +290,26 @@ public class Participant
 
     return false;
   }
+
+  /**
+   *
+   * @return true if is a recipient of scheduling messages
+   */
+  public boolean isRecipient() {
+    if (attendee != null) {
+      return true;
+    }
+
+    if (bwParticipant != null) {
+      return bwParticipant.includesParticipantType(ParticipantType.VALUE_ATTENDEE) ||
+
+              bwParticipant.includesParticipantType(ParticipantType.VALUE_CHAIR) ||
+              bwParticipant.includesParticipantType(ParticipantType.VALUE_VOTER);
+    }
+
+    return false;
+  }
+
 
   private static final Map<String, List<String>> jscalRoles =
           new HashMap<>();
@@ -799,7 +820,8 @@ public class Participant
     if (bwParticipant != null) {
       ts.append("participant", bwParticipant);
     }
-    return toString();
+
+    return ts.toString();
   }
 
   @Override

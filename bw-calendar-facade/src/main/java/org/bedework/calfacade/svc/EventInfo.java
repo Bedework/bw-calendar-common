@@ -25,6 +25,7 @@ import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwEventAnnotation;
 import org.bedework.calfacade.BwEventProxy;
+import org.bedework.calfacade.BwParticipant;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.ScheduleResult;
 import org.bedework.calfacade.SchedulingOwner;
@@ -100,6 +101,9 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
 
     /** */
     public Collection<BwAttendee> deletedAttendees;
+
+    /** */
+    public Collection<BwParticipant> deletedParticipants;
 
     /** The attendee who was responding
      */

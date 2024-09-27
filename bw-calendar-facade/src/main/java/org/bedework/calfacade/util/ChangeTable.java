@@ -184,13 +184,7 @@ public class ChangeTable implements Logged, Serializable {
    */
   public void addValue(final PropertyInfoIndex index,
                        final Object val) {
-    final ChangeTableEntry ent = getEntry(index);
-
-    if (ent == null) {
-      throw new RuntimeException("org.bedework.icalendar.notmultivalued");
-    }
-
-    ent.addValue(val);
+    getEntry(index).addValue(val);
   }
 
   /**
@@ -199,13 +193,7 @@ public class ChangeTable implements Logged, Serializable {
    */
   public void addValues(final PropertyInfoIndex index,
                         final Collection<?> val) {
-    final ChangeTableEntry ent = getEntry(index);
-
-    if (ent == null) {
-      throw new RuntimeException("org.bedework.icalendar.notmultivalued");
-    }
-
-    ent.addValues(val);
+    getEntry(index).addValues(val);
   }
 
   /** Get the indexed entry
@@ -673,7 +661,11 @@ public class ChangeTable implements Logged, Serializable {
         }
         break;
 
-      case REQUEST_STATUS:
+        case PARTICIPANT:
+          // Do nothing just flagging.
+          break;
+
+        case REQUEST_STATUS:
         originalVals = ev.getRequestStatuses();
         if (checkMulti(ent, originalVals, update)) {
           ev.setRequestStatuses((Set<BwRequestStatus>)ent.getAddedValues());
@@ -748,8 +740,6 @@ public class ChangeTable implements Logged, Serializable {
 
         /*
 
-      case VOTER:
-        break;
       case ACCEPT_RESPONSE:
         break;
       case ACTION:

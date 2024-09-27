@@ -1,13 +1,16 @@
 package org.bedework.calfacade;
 
 import org.bedework.calfacade.base.Differable;
+import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.component.Vote;
+import net.fortuna.ical4j.model.property.Comment;
 import net.fortuna.ical4j.model.property.PollItemId;
 import net.fortuna.ical4j.model.property.Response;
 
+import static net.fortuna.ical4j.model.Property.COMMENT;
 import static net.fortuna.ical4j.model.Property.POLL_ITEM_ID;
 import static net.fortuna.ical4j.model.Property.RESPONSE;
 
@@ -33,6 +36,12 @@ public class BwVote
     final var props = getVote().getProperties();
     final var p = (PollItemId)props.getProperty(POLL_ITEM_ID);
     final String sval = String.valueOf(val);
+    final var ctab = parent.getParent().getParent().getChangeset();
+
+    if (ctab != null) {
+      ctab.getEntry(PropertyIndex.PropertyInfoIndex.VOTE)
+          .addChangedValue(this);
+    }
 
     if (p == null) {
       props.add(new PollItemId(val));
@@ -59,6 +68,12 @@ public class BwVote
   public void setResponse(final int val) {
     final var props = getVote().getProperties();
     final var p = (Response)props.getProperty(RESPONSE);
+    final var ctab = parent.getParent().getParent().getChangeset();
+
+    if (ctab != null) {
+      ctab.getEntry(PropertyIndex.PropertyInfoIndex.VOTE)
+          .addChangedValue(this);
+    }
 
     if (p == null) {
       props.add(new Response(val));
@@ -82,6 +97,38 @@ public class BwVote
     return p.getResponse();
   }
 
+  public void setComment(final String val) {
+    final var props = getVote().getProperties();
+    final var p = (Comment)props.getProperty(COMMENT);
+    final var ctab = parent.getParent().getParent().getChangeset();
+
+    if (ctab != null) {
+      ctab.getEntry(PropertyIndex.PropertyInfoIndex.COMMENT)
+          .addChangedValue(this);
+    }
+
+    if (p == null) {
+      props.add(new Comment(val));
+    } else if (!val.equals(p.getValue())) {
+      p.setValue(val);
+    }
+    parent.changed();
+  }
+
+  /**
+   *
+   * @return int    the vote response
+   */
+  public String getComment() {
+    final var p = (Comment)getVote().
+            getProperties().
+            getProperty(COMMENT);
+    if (p == null) {
+      return null;
+    }
+    return p.getValue();
+  }
+
   public Vote getVote() {
     if (vote == null) {
       vote = new Vote();
@@ -94,6 +141,13 @@ public class BwVote
   public int hashCode() {
     return 19 + 17 * (getPollItemId() + 3) *
             (getResponse() + 3);
+  }
+
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof final BwVote vot)) {
+      return false;
+    }
+    return compareTo(vot) == 0;
   }
 
   @Override

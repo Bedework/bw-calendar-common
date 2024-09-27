@@ -20,6 +20,7 @@ package org.bedework.calfacade.util;
 
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.base.Differable;
+import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -91,7 +92,7 @@ public class ChangeTableEntry {
   @SuppressWarnings("unchecked")
   public void addValue(final Object val) {
     if (!index.getMultiValued()) {
-      throw new RuntimeException("org.bedework.icalendar.notmultivalued");
+      throw new CalFacadeException("org.bedework.icalendar.notmultivalued");
     }
 
     if (newValues == null) {
@@ -105,6 +106,7 @@ public class ChangeTableEntry {
     }
 
     present = true;
+    changed = true;
     newValues.add(val);
   }
 
@@ -115,7 +117,7 @@ public class ChangeTableEntry {
   @SuppressWarnings("unchecked")
   public void addValues(final Collection val) {
     if (!index.getMultiValued()) {
-      throw new RuntimeException("org.bedework.icalendar.notmultivalued");
+      throw new CalFacadeException("org.bedework.icalendar.notmultivalued");
     }
 
     if (newValues == null) {
@@ -127,6 +129,7 @@ public class ChangeTableEntry {
     }
 
     present = true;
+    changed = true;
     newValues.addAll(val);
   }
 

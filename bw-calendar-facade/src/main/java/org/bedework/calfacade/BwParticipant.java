@@ -50,6 +50,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static net.fortuna.ical4j.model.Component.VOTE;
 import static net.fortuna.ical4j.model.Property.EXPECT_REPLY;
@@ -311,13 +312,13 @@ public class BwParticipant extends BwDbentity<BwParticipant>
    *
    *  @return List&lt;String>     participant type as list
    */
-  public List<String> getParticipantTypes() {
+  public Set<String> getParticipantTypes() {
     final var p = participant.getParticipantType();
 
     if (p == null) {
-      return Collections.EMPTY_LIST;
+      return Collections.EMPTY_SET;
     }
-    return p.getTypes().asList();
+    return p.getTypes().asSet();
   }
 
   /** Remove the participant type
@@ -333,12 +334,14 @@ public class BwParticipant extends BwDbentity<BwParticipant>
   /** Add the participant type
    *
    */
-  public void addParticipantType(final String val) {
+  public void addParticipantType(final String... val) {
     final var p = participant.getParticipantType();
-    if (p == null) {
-      participant.getProperties().add(new ParticipantType(val));
-    } else {
-      p.getTypes().add(val);
+    for (final var s: val) {
+      if (p == null) {
+        participant.getProperties().add(new ParticipantType(s));
+      } else {
+        p.getTypes().add(s);
+      }
     }
   }
 
@@ -915,6 +918,34 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     val.setVotes(getVotes());
   }
 
+  /** Copy this objects values into the parameter
+   * merging the participation roles
+1   *
+   * @param val to copy
+   */
+  public void copyToMerge(final BwParticipant val) {
+    val.setCalendarAddress(getCalendarAddress());
+    val.setKind(getKind());
+    val.setName(getName());
+    final var types = val.getParticipantTypes();
+    if (!types.isEmpty()) {
+      addParticipantType((String[])types.toArray());
+    }
+    val.setParticipationStatus(getParticipationStatus());
+    val.setDelegatedFrom(getDelegatedFrom());
+    val.setDelegatedTo(getDelegatedTo());
+    val.setLanguage(getLanguage());
+    val.setMemberOf(getMemberOf());
+    val.setExpectReply(getExpectReply());
+    val.setEmail(getEmail());
+    val.setInvitedBy(getInvitedBy());
+    val.setSequence(getSequence());
+    val.setSchedulingDtStamp(getSchedulingDtStamp());
+    val.setScheduleAgent(getScheduleAgent());
+    val.setScheduleStatus(getScheduleStatus());
+    val.setVotes(getVotes());
+  }
+
   /** Only true if something changes the status of, or information about, the
    * attendee.
    *
@@ -1001,6 +1032,13 @@ public class BwParticipant extends BwDbentity<BwParticipant>
       return uid.hashCode();
     }
     return getCalendarAddress().hashCode();
+  }
+
+  public boolean equals(final BwParticipant val) {
+    if (val == null) {
+      return false;
+    }
+    return getCalendarAddress().equals(val.getCalendarAddress());
   }
 
   @Override

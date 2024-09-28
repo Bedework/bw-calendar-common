@@ -796,6 +796,13 @@ public class Participant
     return -1;
   }
 
+  public boolean equals(final Participant val) {
+    if (val == null) {
+      return false;
+    }
+    return getCalendarAddress().equals(val.getCalendarAddress());
+  }
+
   @Override
   public int compareTo(final Participant that)  {
     if (this == that) {

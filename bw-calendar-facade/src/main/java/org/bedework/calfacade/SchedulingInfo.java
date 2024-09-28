@@ -22,9 +22,19 @@ import java.util.Set;
 import static org.bedework.util.calendar.IcalDefs.entityTypeVpoll;
 import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
 
-/** Handle component participants.
+/** Handle component participants which represent attendees or
+ * organizer/owner.
+ * <p>
  * Currently, we have the complication of having attendee only,
- * participant only, or both.
+ * participant only, or both. Also, participants are stored as
+ * x-properties mixed in with others.
+ * <p>
+ * The approach taken is to load all the participants from
+ * the x-properties into the bwparticipants set on creation of
+ * this class. That set is updated as the result of various
+ * operations and the onSave() method updates th ex-properties to
+ * reflect the changes.
+ * </p>
  * <br/>
  * User: mike Date: 9/10/24 Time: 13:40
  */
@@ -50,6 +60,10 @@ public class SchedulingInfo {
     return parent;
   }
 
+  /**
+   *
+   * @return the SchedulingOwner - organizer in 5545 terms.
+   */
   public SchedulingOwner getSchedulingOwner() {
     if (schedulingOwner == null) {
       final var owners = getParticipantsWithRoles(
@@ -68,10 +82,22 @@ public class SchedulingInfo {
     return schedulingOwner;
   }
 
-  public SchedulingOwner newSchedulingOwner() {
+  /**
+   *
+   * @param calendarAddress of owner
+   * @return new owner with calendar address and role set.
+   */
+  public SchedulingOwner newSchedulingOwner(
+          final String calendarAddress) {
     final BwParticipant powner;
     if (parent.getEntityType() == entityTypeVpoll) {
-      powner = new BwParticipant(this);
+      final var part = findParticipant(calendarAddress);
+      if (part == null) {
+        powner = new BwParticipant(this);
+        getBwParticipantsSet().add(powner);
+      } else {
+        powner = part.getBwParticipant();
+      }
     } else {
       powner = null;
     }
@@ -85,6 +111,8 @@ public class SchedulingInfo {
     schedulingOwner = new SchedulingOwner(this,
                                           organizer,
                                           powner);
+    schedulingOwner.setCalendarAddress(calendarAddress);
+
     markChanged();
 
     return schedulingOwner;
@@ -108,6 +136,7 @@ public class SchedulingInfo {
       org = (BwOrganizer)from.getOrganizer().clone();
       parent.setOrganizer(org);
       schedulingOwner = newSchedulingOwner(org, null);
+      markChanged();
       return schedulingOwner;
     }
 
@@ -123,6 +152,8 @@ public class SchedulingInfo {
       // Just add a new copy with role set.
       powner = (BwParticipant)from.getParticipant().clone();
       powner.addParticipantType(ParticipantType.VALUE_OWNER);
+      getBwParticipantsSet().add(powner);
+
       schedulingOwner = newSchedulingOwner(null, powner);
       return schedulingOwner;
     }
@@ -132,6 +163,7 @@ public class SchedulingInfo {
     powner = p.getBwParticipant();
     from.getParticipant().copyTo(powner);
     powner.addParticipantType(ParticipantType.VALUE_OWNER);
+
     schedulingOwner = newSchedulingOwner(null, powner);
     return schedulingOwner;
   }
@@ -167,7 +199,8 @@ public class SchedulingInfo {
 
     final var ownerParticipant = findParticipant(owner);
 
-    participantMap.clear();
+    bwParticipants.clear();
+    bwParticipants.add(ownerParticipant.getBwParticipant());
 
     markChanged();
   }
@@ -177,7 +210,7 @@ public class SchedulingInfo {
    * @param participant we want left
    */
   public void setOnlyParticipant(final Participant participant) {
-    clearParticipants();
+    clearParticipants(); // Leaves owner
     makeParticipant(participant.getAttendee(), participant.getBwParticipant());
   }
 
@@ -243,26 +276,21 @@ public class SchedulingInfo {
       }
     }
 
-    final var evPart = getBwParticipantMap()
+    var evPart = getBwParticipantMap()
             .get(val.getCalendarAddress());
     final var part = val.getBwParticipant();
 
     if (part != null) {
-      final var xpart = new BwXproperty(BwXproperty.bedeworkParticipant, null, part.asString());
-      if (ctab == null) {
-        parent.addXproperty(xpart);
+      if (evPart != null) {
+        // Merge the two.
+        part.copyToMerge(evPart);
       } else {
-        final ChangeTableEntry cte = ctab.getEntry(
-                PropertyIndex.PropertyInfoIndex.PARTICIPANT);
-        if (evAtt != null) {
-          cte.addChangedValue(part);
-        } else {
-          cte.addAddedValue(part);
-        }
+        evPart = new BwParticipant(this);
+        part.copyTo(evPart);
+        getBwParticipantsSet().add(evPart);
       }
     }
 
-    getParticipantsSet().add(val);
     markChanged();
 
     return val;
@@ -345,18 +373,11 @@ public class SchedulingInfo {
   public Participant newParticipant(final net.fortuna.ical4j.model.component.Participant part) {
     final var chg = parent.getChangeset();
     final var bwpart =  new BwParticipant(this, part);
+    getBwParticipantsSet().add(bwpart);
 
     final var participant = new Participant(this, null, bwpart);
 
-    final var np = new BwXproperty(BwXproperty.bedeworkParticipant,
-                    null,
-                    bwpart.asString());
-    if (chg != null) {
-      chg.addValue(PropertyIndex.PropertyInfoIndex.XPROP, np);
-      chg.addValue(PropertyIndex.PropertyInfoIndex.PARTICIPANT, np);
-    } else {
-      parent.addXproperty(np);
-    }
+    markChanged();
 
     return participant;
   }
@@ -401,12 +422,15 @@ public class SchedulingInfo {
       return;
     }
 
+    final var ctab = parent.getChangeset();
+    final var cte = ctab.getEntry(PropertyIndex.PropertyInfoIndex
+                                          .XPROP);
     final List<BwXproperty> props =
             parent.getXproperties(BwXproperty.bedeworkParticipant);
 
     if (!Util.isEmpty(props)) {
       for (final BwXproperty p: props) {
-        parent.removeXproperty(p);
+        cte.addRemovedValue(p);
       }
     }
 
@@ -414,8 +438,11 @@ public class SchedulingInfo {
       final BwXproperty xp =
               new BwXproperty(BwXproperty.bedeworkParticipant,
                               null, p.asString());
-      parent.addXproperty(xp);
+      cte.addRemovedValue(xp);
     }
+
+    ctab.changed(PropertyIndex.PropertyInfoIndex
+                          .PARTICIPANT, null, null);
 
     changed = false;
   }

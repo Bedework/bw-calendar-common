@@ -345,6 +345,20 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     }
   }
 
+  /** Add the participant type
+   *
+   */
+  public void addParticipantType(final Set<String> val) {
+    final var p = participant.getParticipantType();
+    for (final var s: val) {
+      if (p == null) {
+        participant.getProperties().add(new ParticipantType(s));
+      } else {
+        p.getTypes().add(s);
+      }
+    }
+  }
+
   /**
    *
    * @param val participant type
@@ -929,7 +943,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     val.setName(getName());
     final var types = val.getParticipantTypes();
     if (!types.isEmpty()) {
-      addParticipantType((String[])types.toArray());
+      addParticipantType(types);
     }
     val.setParticipationStatus(getParticipationStatus());
     val.setDelegatedFrom(getDelegatedFrom());

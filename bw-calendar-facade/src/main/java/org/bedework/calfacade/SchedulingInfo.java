@@ -197,10 +197,12 @@ public class SchedulingInfo {
     // Remove all but owner participant
     final var owner = getSchedulingOwner().getCalendarAddress();
 
-    final var ownerParticipant = findParticipant(owner);
+    final var ownerParticipant = findParticipant(owner).getBwParticipant();
 
     bwParticipants.clear();
-    bwParticipants.add(ownerParticipant.getBwParticipant());
+
+    ownerParticipant.setParticipantType(ParticipantType.VALUE_OWNER);
+    bwParticipants.add(ownerParticipant);
 
     markChanged();
   }
@@ -422,15 +424,12 @@ public class SchedulingInfo {
       return;
     }
 
-    final var ctab = parent.getChangeset();
-    final var cte = ctab.getEntry(PropertyIndex.PropertyInfoIndex
-                                          .XPROP);
     final List<BwXproperty> props =
             parent.getXproperties(BwXproperty.bedeworkParticipant);
 
     if (!Util.isEmpty(props)) {
       for (final BwXproperty p: props) {
-        cte.addRemovedValue(p);
+        parent.removeXproperty(p);
       }
     }
 
@@ -438,13 +437,28 @@ public class SchedulingInfo {
       final BwXproperty xp =
               new BwXproperty(BwXproperty.bedeworkParticipant,
                               null, p.asString());
-      cte.addRemovedValue(xp);
+      parent.addXproperty(xp);
     }
 
-    ctab.changed(PropertyIndex.PropertyInfoIndex
-                          .PARTICIPANT, null, null);
-
     changed = false;
+  }
+
+  public SchedulingInfo copyFor(final BwEvent ev) {
+    final var res = new SchedulingInfo(ev);
+    BwOrganizer org = parent.getOrganizer();
+    if (org != null) {
+      org = (BwOrganizer)org.clone();
+    }
+    ev.setOrganizer(org);
+    ev.setAttendees(parent.cloneAttendees());
+
+    for (final BwParticipant p: getBwParticipantsSet()) {
+      res.getBwParticipantsSet().add((BwParticipant)p.clone());
+    }
+
+    res.markChanged();
+
+    return res;
   }
 
   private Set<Participant> getParticipantsSet() {

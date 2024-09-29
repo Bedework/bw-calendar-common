@@ -4725,11 +4725,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     ev.setStatus(getStatus());
     ev.setCost(getCost());
 
-    BwOrganizer org = getOrganizer();
-    if (org != null) {
-      org = (BwOrganizer)org.clone();
-    }
-    ev.setOrganizer(org);
+    ev.schedulingInfo = getSchedulingInfo().copyFor(ev);
 
     ev.setDtstamp(getDtstamp());
     ev.setLastmod(getLastmod());
@@ -4749,7 +4745,6 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
 
     ev.setContacts(copyContacts());
 
-    ev.setAttendees(cloneAttendees());
     ev.setCtoken(getCtoken());
 
     ev.setRecurrenceId(getRecurrenceId());

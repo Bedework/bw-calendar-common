@@ -3,9 +3,12 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.ChangeTableEntry;
 import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.misc.Util;
+import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.util.misc.response.Response;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -214,6 +217,19 @@ public class SchedulingInfo {
   public void setOnlyParticipant(final Participant participant) {
     clearParticipants(); // Leaves owner
     makeParticipant(participant.getAttendee(), participant.getBwParticipant());
+  }
+
+  public GetEntityResponse<Participant> getOnlyParticipant() {
+    final var resp = new GetEntityResponse<Participant>();
+    final var recipients = getRecipientParticipants();
+
+    if (recipients.size() != 1) {
+      return Response.error(resp, new CalFacadeException(
+              CalFacadeException.schedulingExpectOneAttendee));
+    }
+
+    resp.setEntity(recipients.values().iterator().next());
+    return resp;
   }
 
   public Participant findParticipant(final String calAddr) {

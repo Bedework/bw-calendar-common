@@ -734,7 +734,7 @@ public class Participant
 
     if (bwParticipant != null) {
       if (that.bwParticipant != null) {
-        that.bwParticipant.copyTo(that.bwParticipant);
+        bwParticipant.copyTo(that.bwParticipant);
       } else {
         that.bwParticipant = (BwParticipant)bwParticipant.clone();
       }

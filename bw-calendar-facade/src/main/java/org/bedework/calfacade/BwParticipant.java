@@ -389,7 +389,8 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     } else if (p == null) {
       props.add(new ParticipationStatus(val));
     } else if (!val.equals(p.getValue())) {
-      p.setValue(val);
+      props.remove(p);
+      props.add(new ParticipationStatus(val));
       changed();
     }
   }

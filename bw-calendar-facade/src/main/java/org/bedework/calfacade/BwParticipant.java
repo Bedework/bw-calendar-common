@@ -877,6 +877,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
     for (final var v: val) {
       comps.add(v.getVote());
     }
+    changed();
   }
 
   /** Add the response - voter only

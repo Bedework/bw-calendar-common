@@ -729,10 +729,15 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
   }
 
   @NoProxy
-  public void onSave() {
+  @Override
+  public void beforeUpdate() {
     if (schedulingInfo != null) {
       schedulingInfo.onSave();
     }
+  }
+
+  @NoProxy
+  public void onSave() {
   }
 
   /* ==============================================================

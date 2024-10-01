@@ -389,9 +389,47 @@ public class SchedulingInfo {
    * @return a new Participant enclosing the ical object
    */
   public Participant newParticipant(final net.fortuna.ical4j.model.component.Participant part) {
-    final var chg = parent.getChangeset();
     final var bwpart =  new BwParticipant(this, part);
+    final var calAddr = bwpart.getCalendarAddress();
+
+    if (calAddr != null) {
+      if (getBwParticipantMap().get(calAddr) != null) {
+        throw new CalFacadeException("Duplicate participant " + calAddr);
+      }
+    }
+
     getBwParticipantsSet().add(bwpart);
+
+    final var participant = new Participant(this, null, bwpart);
+
+    markChanged();
+
+    return participant;
+  }
+
+  /** if the participant is not in the set then a new object is
+   * added to the set. Otherwise, the exisiting object is updated
+   * from the parameter.
+   * getParticipants must be called to get new updated set.
+   *
+   * @return a new Participant enclosing the ical object
+   */
+  public Participant addUpdateParticipant(final net.fortuna.ical4j.model.component.Participant part) {
+    final var bwpart =  new BwParticipant(this, part);
+    final var calAddr = bwpart.getCalendarAddress();
+    boolean addIt = true;
+
+    if (calAddr != null) {
+      final var setBwpart = getBwParticipantMap().get(calAddr);
+      if (setBwpart != null) {
+        bwpart.copyToMerge(setBwpart);
+        addIt = false;
+      }
+    }
+
+    if (addIt) {
+      getBwParticipantsSet().add(bwpart);
+    }
 
     final var participant = new Participant(this, null, bwpart);
 

@@ -197,15 +197,18 @@ public class SchedulingInfo {
       parent.getAttendees().clear();
     }
 
-    // Remove all but owner participant
-    final var owner = getSchedulingOwner().getCalendarAddress();
+    // Remove all but owner participant if it exists.
+    final var owner = getSchedulingOwner();
 
-    final var ownerParticipant = findParticipant(owner).getBwParticipant();
+    final var ownerParticipant = owner.getParticipant();
 
     bwParticipants.clear();
 
-    ownerParticipant.setParticipantType(ParticipantType.VALUE_OWNER);
-    bwParticipants.add(ownerParticipant);
+    if (ownerParticipant != null) {
+      ownerParticipant.setParticipantType(
+              ParticipantType.VALUE_OWNER);
+      bwParticipants.add(ownerParticipant);
+    } // Else it's an ORGANIZER
 
     markChanged();
   }

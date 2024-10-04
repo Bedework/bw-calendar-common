@@ -845,7 +845,7 @@ public class Ical2BwEvent extends IcalUtil {
             break;
 
           case POLL_COMPLETION:
-            /* ------------------- Poll mode -------------------- */
+            /* ------------------- Poll completion --------------- */
 
             sval = prop.getValue();
             if (chg.changed(pi, ev.getPollCompletion(), sval)) {

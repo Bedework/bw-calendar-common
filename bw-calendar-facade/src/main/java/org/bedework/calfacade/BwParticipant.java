@@ -252,10 +252,13 @@ public class BwParticipant extends BwDbentity<BwParticipant>
       }
       return;
     }
+
     if (p == null) {
       props.add(new Kind(val));
+      changed();
     } else if (!val.equals(p.getValue())) {
-      p.setValue(val);
+      props.remove(p);
+      props.add(new Kind(val));
       changed();
     }
   }

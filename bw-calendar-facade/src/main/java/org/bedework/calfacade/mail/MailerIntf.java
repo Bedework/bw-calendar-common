@@ -21,7 +21,6 @@ package org.bedework.calfacade.mail;
 
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import net.fortuna.ical4j.model.Calendar;
 
@@ -74,84 +73,74 @@ public interface MailerIntf extends Serializable {
    * @param recipients   list of recipients
    * @param subject
    * @return boolean     true if message sent, false - probably disabled.
-   * @throws CalFacadeException
    */
   boolean mailEntity(Calendar cal,
                      String originator,
                      Collection<String>recipients,
-                     String subject) throws CalFacadeException;
+                     String subject);
 
   /** Add a list corresponding to the given calendar.
    *
    * @param cal
-   * @throws CalFacadeException
    */
-  void addList(BwCalendar cal) throws CalFacadeException;
+  void addList(BwCalendar cal);
 
   /** Delete a list corresponding to the given calendar.
    *
    * @param cal
-   * @throws CalFacadeException
    */
-  void deleteList(BwCalendar cal) throws CalFacadeException;
+  void deleteList(BwCalendar cal);
 
   /** Return a collection of mail list ids
    *
    * @return collection of mail list ids
-   * @throws CalFacadeException
    */
-  Collection<String> listLists() throws CalFacadeException;
+  Collection<String> listLists();
 
   /** Check a list corresponding to the given calendar exists.
    *
    * @param cal
    * @return true if list exists
-   * @throws CalFacadeException
    */
-  boolean checkList(BwCalendar cal) throws CalFacadeException;
+  boolean checkList(BwCalendar cal);
 
   /** Post a  message to the list corresponding to the given calendar.
    *
    * @param cal
    * @param val
-   * @throws CalFacadeException
    */
-  void postList(BwCalendar cal, Message val) throws CalFacadeException;
+  void postList(BwCalendar cal, Message val);
 
   /** Add a member to the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
-   * @throws CalFacadeException
    */
-  public void addMember(BwCalendar cal, BwPrincipal member) throws CalFacadeException;
+  public void addMember(BwCalendar cal, BwPrincipal<?> member);
 
   /** Remove a member from the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
-   * @throws CalFacadeException
    */
-  public void removeMember(BwCalendar cal, BwPrincipal member) throws CalFacadeException;
+  public void removeMember(BwCalendar cal, BwPrincipal<?> member);
 
   /** Check a member is on the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
    * @return boolean
-   * @throws CalFacadeException
    */
-  boolean checkMember(BwCalendar cal, BwPrincipal member) throws CalFacadeException;
+  boolean checkMember(BwCalendar cal, BwPrincipal<?> member);
 
   /** Update a members email address on the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
    * @param newEmail
-   * @throws CalFacadeException
    */
-  void updateMember(BwCalendar cal, BwPrincipal member, String newEmail)
-        throws CalFacadeException;
+  void updateMember(BwCalendar cal, BwPrincipal<?> member, String newEmail)
+       ;
 
   /** List members on the list corresponding to the given calendar. This requires
    * that the implementation has access to the database to match emails against
@@ -159,14 +148,12 @@ public interface MailerIntf extends Serializable {
    *
    * @param cal
    * @return Collection
-   * @throws CalFacadeException
    */
-  Collection<BwPrincipal> listMembers(BwCalendar cal) throws CalFacadeException;
+  Collection<BwPrincipal<?>> listMembers(BwCalendar cal);
 
   /**
    * @param val
-   * @throws CalFacadeException
    */
-  void post(Message val) throws CalFacadeException;
+  void post(Message val);
 }
 

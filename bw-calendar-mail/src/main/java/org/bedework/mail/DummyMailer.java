@@ -30,9 +30,12 @@ import org.bedework.util.logging.Logged;
 
 import net.fortuna.ical4j.model.Calendar;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.mail.Session;
 
 /** A dummy mailer which just writes to the log.
  *
@@ -43,16 +46,22 @@ public class DummyMailer implements Logged, MailerIntf {
 
   private MailConfigProperties config;
 
+  private Session sess;
+
   @Override
   public void init(final MailConfigProperties config) {
     this.config = config;
+
+    sess = MailUtil.getSession(config);
+
+    sess.setDebug(debug());
   }
 
   @Override
   public boolean mailEntity(final Calendar cal,
                             final String originator,
                             final Collection<String>recipients,
-                            final String subject) throws CalFacadeException {
+                            final String subject) {
     if (config.getDisabled()) {
       return false;
     }
@@ -60,80 +69,116 @@ public class DummyMailer implements Logged, MailerIntf {
     debug("mailEntity called with " + Arrays.toString(recipients.toArray()));
     debug(cal.toString());
 
+    var orig = originator;
+    if (orig == null) {
+      orig = config.getFrom();
+    }
+
+    var sub = subject;
+    if (sub == null) {
+      sub = config.getSubject();
+    }
+
+    final var toList = MailUtil.makeToList(recipients);
+    final var msg =
+            MailUtil.makeMimeMessage(sess,
+                                     cal,
+                                     orig,
+                                     toList,
+                                     sub);
+
+    final var baos = new ByteArrayOutputStream();
+
+    try {
+      msg.writeTo(baos);
+   } catch (final Throwable t) {
+      if (debug()) {
+        error(t);
+      }
+
+      throw new CalFacadeException(t);
+    }
+
+    debug(baos.toString());
+
     return true;
   }
 
   @Override
-  public void addList(final BwCalendar cal) throws CalFacadeException {
+  public void addList(final BwCalendar cal) {
     debug("addList called with " + cal.getName());
   }
 
   @Override
-  public void deleteList(final BwCalendar cal) throws CalFacadeException {
+  public void deleteList(final BwCalendar cal) {
     debug("deleteList called with " + cal.getName());
   }
 
   @Override
-  public Collection<String> listLists() throws CalFacadeException {
+  public Collection<String> listLists() {
     debug("listLists called");
     return new ArrayList<String>();
   }
 
   @Override
-  public boolean checkList(final BwCalendar cal) throws CalFacadeException {
+  public boolean checkList(final BwCalendar cal) {
     debug("checkList called with " + cal.getName());
     return true;
   }
 
   @Override
-  public void postList(final BwCalendar cal, final Message val) throws CalFacadeException {
+  public void postList(final BwCalendar cal, final Message val) {
     debug("postList called with " + cal.getName() + " and message:");
     debug(val.toString());
   }
 
   @Override
-  public void addMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public void addMember(final BwCalendar cal,
+                        final BwPrincipal<?> member) {
     debug("addUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public void removeMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public void removeMember(final BwCalendar cal,
+                           final BwPrincipal<?> member) {
     debug("removeUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public boolean checkMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public boolean checkMember(final BwCalendar cal,
+                             final BwPrincipal<?> member) {
     debug("checkUser called with " + cal.getName() + " and member " +
              member.getAccount());
     return true;
   }
 
   @Override
-  public void updateMember(final BwCalendar cal, final BwPrincipal member, final String newEmail)
-        throws CalFacadeException {
+  public void updateMember(final BwCalendar cal,
+                           final BwPrincipal<?> member, final String newEmail)
+        {
     debug("updateUser called with " + cal.getName() + " and member " +
         member.getAccount() + " and new email " + newEmail);
   }
 
   @Override
-  public Collection<BwPrincipal> listMembers(final BwCalendar cal) throws CalFacadeException {
+  public Collection<BwPrincipal<?>> listMembers(final BwCalendar cal) {
     debug("listUsers called with " + cal.getName());
-    return new ArrayList<BwPrincipal>();
+    return new ArrayList<BwPrincipal<?>>();
   }
 
   @Override
-  public void post(final Message val) throws CalFacadeException {
+  public void post(final Message val) {
     debug("Mailer called with:");
     debug(val.toString());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

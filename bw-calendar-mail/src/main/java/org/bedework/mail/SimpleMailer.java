@@ -28,20 +28,13 @@ import org.bedework.calfacade.mail.Message;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 
-import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Properties;
 
-import javax.activation.CommandMap;
-import javax.activation.MailcapCommandMap;
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import javax.mail.Message.RecipientType;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -54,8 +47,6 @@ import javax.mail.internet.MimeMessage;
  * @author  Mike Douglass douglm@rpi.edu
  */
 public class SimpleMailer implements Logged, MailerIntf {
-  private boolean debug;
-
   private MailConfigProperties config;
 
   private Session sess;
@@ -64,53 +55,16 @@ public class SimpleMailer implements Logged, MailerIntf {
   public void init(final MailConfigProperties config) {
     this.config = config;
 
-    final Properties props = new Properties();
+    sess = MailUtil.getSession(config);
 
-    setNonNull(props, "mail.transport.protocol", config.getProtocol());
-    setNonNull(props, "mail." + config.getProtocol() + ".host",
-               config.getServerUri());
-    if (config.getServerPort() != null) {
-      props.put("mail." + config.getProtocol() + ".port",
-                config.getServerPort());
-    }
-
-    props.put("mail." + config.getProtocol() + ".starttls.enable",
-              String.valueOf(config.getStarttls()));
-
-    //  add handlers for main MIME types
-    final MailcapCommandMap mc = (MailcapCommandMap)CommandMap.getDefaultCommandMap();
-    mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-    mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-    mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-    mc.addMailcap("text/calendar;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-    mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-    mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-    CommandMap.setDefaultCommandMap(mc);
-
-
-    final String username;
-    final String pw;
-    username = config.getServerUsername();
-    pw = config.getServerPassword();
-
-    if (username != null) {
-      // Authentication required.
-      final MailerAuthenticator authenticator =
-              new MailerAuthenticator(username, pw);
-      props.put("mail." + config.getProtocol() + ".auth", "true");
-      sess = Session.getInstance(props, authenticator);
-    } else {
-      sess = Session.getInstance(props);
-    }
-
-    sess.setDebug(debug);
+    sess.setDebug(debug());
   }
 
   @Override
   public boolean mailEntity(final Calendar cal,
-                            String originator,
+                            final String originator,
                             final Collection<String>recipients,
-                            String subject) throws CalFacadeException {
+                            String subject) {
     if (debug()) {
       debug("mailEntity called with " + cal);
     }
@@ -119,50 +73,34 @@ public class SimpleMailer implements Logged, MailerIntf {
       return false;
     }
 
+    var orig = originator;
+    if (orig == null) {
+      orig = config.getFrom();
+    }
+
+    var sub = subject;
+    if (sub == null) {
+      sub = config.getSubject();
+    }
+
+    final var toList = MailUtil.makeToList(recipients);
+    final var msg =
+            MailUtil.makeMimeMessage(sess,
+                                     cal,
+                                     orig,
+                                     toList,
+                                     sub);
+
     try {
-      /* Create a message with the appropriate mime-type
-       */
-      MimeMessage msg = new MimeMessage(sess);
-
-      if (originator == null) {
-        originator = config.getFrom();
-      }
-      msg.setFrom(new InternetAddress(originator));
-
-      InternetAddress[] tos = new InternetAddress[recipients.size()];
-
-      int i = 0;
-      for (String recip: recipients) {
-        tos[i] = new InternetAddress(recip);
-        i++;
-      }
-
-      msg.setRecipients(javax.mail.Message.RecipientType.TO, tos);
-
-      if (subject == null) {
-        subject = config.getSubject();
-      }
-
-      msg.setSubject(subject);
-      msg.setSentDate(new Date());
-
-      CalendarOutputter co = new CalendarOutputter(false);
-
-      Writer wtr =  new StringWriter();
-      co.output(cal, wtr);
-      final String content = wtr.toString();
-
-      msg.setContent(content, "text/calendar");
-
-      Transport tr = sess.getTransport(config.getProtocol());
+      final Transport tr = sess.getTransport(config.getProtocol());
 
       tr.connect();
-      tr.sendMessage(msg, tos);
+      tr.sendMessage(msg, toList);
 
       return true;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       if (debug()) {
-        t.printStackTrace();
+        error(t);
       }
 
       throw new CalFacadeException(t);
@@ -170,67 +108,72 @@ public class SimpleMailer implements Logged, MailerIntf {
   }
 
   @Override
-  public void addList(final BwCalendar cal) throws CalFacadeException {
+  public void addList(final BwCalendar cal) {
     debug("addList called with " + cal.getName());
   }
 
   @Override
-  public void deleteList(final BwCalendar cal) throws CalFacadeException {
+  public void deleteList(final BwCalendar cal) {
     debug("deleteList called with " + cal.getName());
   }
 
   @Override
-  public Collection<String> listLists() throws CalFacadeException {
+  public Collection<String> listLists() {
     debug("listLists called");
-    return new ArrayList<String>();
+    return new ArrayList<>();
   }
 
   @Override
-  public boolean checkList(final BwCalendar cal) throws CalFacadeException {
+  public boolean checkList(final BwCalendar cal) {
     debug("checkList called with " + cal.getName());
     return true;
   }
 
   @Override
-  public void postList(final BwCalendar cal, final Message val) throws CalFacadeException {
+  public void postList(final BwCalendar cal, final Message val) {
     debug("postList called with " + cal.getName() + " and message:");
     debug(val.toString());
   }
 
   @Override
-  public void addMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public void addMember(final BwCalendar cal,
+                        final BwPrincipal<?> member) {
     debug("addUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public void removeMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public void removeMember(final BwCalendar cal,
+                           final BwPrincipal<?> member) {
     debug("removeUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public boolean checkMember(final BwCalendar cal, final BwPrincipal member) throws CalFacadeException {
+  public boolean checkMember(final BwCalendar cal,
+                             final BwPrincipal<?> member) {
     debug("checkUser called with " + cal.getName() + " and member " +
              member.getAccount());
     return true;
   }
 
   @Override
-  public void updateMember(final BwCalendar cal, final BwPrincipal member, final String newEmail)
-        throws CalFacadeException {
+  public void updateMember(final BwCalendar cal,
+                           final BwPrincipal<?> member,
+                           final String newEmail)
+        {
     debug("updateUser called with " + cal.getName() + " and member " +
              member.getAccount() + " and new email " + newEmail);
   }
 
   @Override
-  public Collection<BwPrincipal> listMembers(final BwCalendar cal) throws CalFacadeException {
+  public Collection<BwPrincipal<?>> listMembers(final BwCalendar cal) {
     debug("listUsers called with " + cal.getName());
-    return new ArrayList<BwPrincipal>();
+    return new ArrayList<>();
   }
 
   @Override
-  public void post(final Message val) throws CalFacadeException {
+  public void post(final Message val) {
     debug("Mailer called with:");
     debug(val.toString());
 
@@ -241,65 +184,43 @@ public class SimpleMailer implements Logged, MailerIntf {
     try {
       /* Create a message with the appropriate mime-type
        */
-      MimeMessage msg = new MimeMessage(sess);
+      final MimeMessage msg = new MimeMessage(sess);
 
       msg.setFrom(new InternetAddress(val.getFrom()));
 
-      InternetAddress[] tos = new InternetAddress[val.getMailTo().length];
+      final InternetAddress[] tos = new InternetAddress[val.getMailTo().length];
 
       int i = 0;
-      for (String recip: val.getMailTo()) {
+      for (final String recip: val.getMailTo()) {
         tos[i] = new InternetAddress(recip);
         i++;
       }
 
-      msg.setRecipients(javax.mail.Message.RecipientType.TO, tos);
+      msg.setRecipients(RecipientType.TO, tos);
 
       msg.setSubject(val.getSubject());
       msg.setSentDate(new Date());
 
       msg.setContent(val.getContent(), "text/plain");
 
-      Transport tr = sess.getTransport(config.getProtocol());
+      final Transport tr = sess.getTransport(config.getProtocol());
 
       tr.connect();
       tr.sendMessage(msg, tos);
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       if (debug()) {
-        t.printStackTrace();
+        error(t);
       }
 
       throw new CalFacadeException(t);
     }
   }
 
-  private class MailerAuthenticator extends Authenticator {
-    private final PasswordAuthentication authentication;
-
-    MailerAuthenticator(final String user, final String password) {
-      authentication = new PasswordAuthentication(user, password);
-    }
-
-    protected PasswordAuthentication getPasswordAuthentication() {
-      return authentication;
-    }
-  }
-
-  private void setNonNull(final Properties props,
-                          final String name,
-                          final String val) {
-    if (val == null) {
-      throw new RuntimeException("Null property value for " + name);
-    }
-
-    props.setProperty(name, val);
-  }
-
-  /* ====================================================================
+  /* ==============================================================
    *                   Logged methods
-   * ==================================================================== */
+   * ============================================================== */
 
-  private BwLogger logger = new BwLogger();
+  private final BwLogger logger = new BwLogger();
 
   @Override
   public BwLogger getLogger() {

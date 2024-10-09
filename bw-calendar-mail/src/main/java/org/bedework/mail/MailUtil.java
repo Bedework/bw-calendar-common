@@ -35,7 +35,6 @@ import net.fortuna.ical4j.model.Calendar;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.DateFormat;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
@@ -249,11 +248,11 @@ public class MailUtil {
       final BodyPart appIcs = new MimeBodyPart();
       appIcs.setDisposition("attachment; filename=\"poll.ics\"");
       appIcs.setHeader("Content-Class", "urn:content-classes:calendarmessage");
-      appIcs.setContent(Base64.getEncoder().encode(content.getBytes()),
-                     "application/ics;" +
-                             " charset=\"UTF-8\";" +
-                             "METHOD=" + cal.getMethod().getValue() + ";" +
-                             "name=\"poll.ics\"");
+      appIcs.setContent(content,
+                        "application/ics;" +
+                                " charset=\"UTF-8\";" +
+                                "METHOD=" + cal.getMethod().getValue() + ";" +
+                                "name=\"poll.ics\"");
 
       final Multipart multipart = new MimeMultipart();
 

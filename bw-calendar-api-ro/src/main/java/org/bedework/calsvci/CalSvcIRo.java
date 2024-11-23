@@ -33,6 +33,8 @@ import org.bedework.calfacade.svc.CalSvcIPars;
 import org.bedework.calfacade.svc.PrincipalInfo;
 import org.bedework.calfacade.svc.UserAuth;
 
+import org.apache.james.jdkim.api.JDKIM;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -81,6 +83,12 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * @return SystemProperties object - never null.
    */
   SystemProperties getSystemProperties();
+
+  /**
+   *
+   * @return a JDKIM implementation.
+   */
+  JDKIM getJDKIM();
 
   /** Set the calendar suite we are running as. Must be running as an
    * unauthenticated user.

@@ -286,6 +286,16 @@ public final class ROSystemProperties implements SystemProperties {
   }
 
   @Override
+  public void setEventregWSUrl(final String val) {
+    throw new RuntimeException("Immutable");
+  }
+
+  @Override
+  public String getEventregWSUrl() {
+    return getConfig().getEventregWSUrl();
+  }
+
+  @Override
   public void setCacheUrlPrefix(final String val) {
     throw new RuntimeException("Immutable");
   }

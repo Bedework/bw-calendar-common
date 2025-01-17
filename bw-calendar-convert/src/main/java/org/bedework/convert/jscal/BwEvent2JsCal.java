@@ -18,7 +18,7 @@
 */
 package org.bedework.convert.jscal;
 
-import org.bedework.calfacade.Participant;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwCategory;
@@ -32,8 +32,8 @@ import org.bedework.calfacade.BwOrganizer;
 import org.bedework.calfacade.BwRelatedTo;
 import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.BwXproperty;
+import org.bedework.calfacade.Participant;
 import org.bedework.calfacade.base.StartEndComponent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.DifferResult;
 import org.bedework.jsforj.impl.JSFactory;
@@ -527,7 +527,7 @@ public class BwEvent2JsCal {
             } else if (type == BwFreeBusyComponent.typeBusyTentative) {
               addParameter(fb, FbType.BUSY_TENTATIVE);
             } else {
-              throw new CalFacadeException("Bad free-busy type " + type);
+              throw new BedeworkException("Bad free-busy type " + type);
             }
 
             PeriodList pdl =  fb.getPeriods();
@@ -806,8 +806,8 @@ public class BwEvent2JsCal {
        */
 
 //      throw new RuntimeException("Not done");
-//    } catch (final CalFacadeException cfe) {
-//      throw cfe;
+//    } catch (final BedeworkException be) {
+//      
       resp.setEntity(jsval);
     } catch (final Throwable t) {
       throw new RuntimeException(t);
@@ -1482,7 +1482,7 @@ public class BwEvent2JsCal {
       final var masterPart = jsCalMaster.getParticipants(false);
 
       if (masterPart == null) {
-        throw new CalFacadeException("Bad patch - removing from missing " +
+        throw new BedeworkException("Bad patch - removing from missing " +
                                            "master object");
       }
 
@@ -1534,7 +1534,7 @@ public class BwEvent2JsCal {
         final var matt = msi.findParticipant(att.getCalendarAddress());
         if (matt == null) {
           // Error
-          throw new CalFacadeException("Unable to locate attendee " +
+          throw new BedeworkException("Unable to locate attendee " +
                                                att.getCalendarAddress());
         }
         if ("group".equalsIgnoreCase(att.getKind())) {
@@ -1695,7 +1695,7 @@ public class BwEvent2JsCal {
     final var jsMAttP = master.getParticipants(false).findParticipant(
             masterParticipant.getCalendarAddress());
     if (jsMAttP == null) {
-      throw new CalFacadeException("Missing master attendee " +
+      throw new BedeworkException("Missing master attendee " +
                                          masterParticipant.getCalendarAddress());
     }
 
@@ -1763,7 +1763,7 @@ public class BwEvent2JsCal {
           try {
             mdirUri = new URI(mdir);
           } catch (final URISyntaxException e) {
-            throw new CalFacadeException(e);
+            throw new BedeworkException(e);
           }
           final var linkp = links.findLink(mdirUri);
           if (linkp != null) {

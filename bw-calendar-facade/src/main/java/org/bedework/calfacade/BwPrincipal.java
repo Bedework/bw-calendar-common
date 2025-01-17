@@ -21,12 +21,12 @@ package org.bedework.calfacade;
 import org.bedework.access.AccessException;
 import org.bedework.access.AccessPrincipal;
 import org.bedework.access.WhoDefs;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.configs.BasicSystemProperties;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
 import org.bedework.calfacade.util.CalFacadeUtil;
@@ -326,7 +326,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>>
         }
       }
 
-      throw new CalFacadeException(CalFacadeErrorCode.principalNotFound);
+      throw new BedeworkException(CalFacadeErrorCode.principalNotFound);
     } catch (final Throwable t) {
       throw new RuntimeException(t);
     }

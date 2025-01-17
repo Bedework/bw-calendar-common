@@ -18,11 +18,11 @@
 */
 package org.bedework.convert;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.base.StartEndComponent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.Icalendar.TimeZoneInfo;
@@ -156,7 +156,7 @@ public class IcalTranslator implements Logged, Serializable {
 
       return cal;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -172,10 +172,10 @@ public class IcalTranslator implements Logged, Serializable {
     try {
       Calendar cal = toIcal(vals, methodType);
       writeCalendar(cal, wtr);
-    } catch (CalFacadeException cfe) {
-      throw cfe;
+    } catch (BedeworkException bfe) {
+      throw bfe;
     } catch (Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }*/
 
@@ -202,7 +202,7 @@ public class IcalTranslator implements Logged, Serializable {
 
       return cal;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -222,7 +222,7 @@ public class IcalTranslator implements Logged, Serializable {
       if (debug()) {
         debug("Not icalendar");
       }
-      throw new CalFacadeException("Not icalendar");
+      throw new BedeworkException("Not icalendar");
     }
 
     /* This should be the only timezone in the Calendar object
@@ -261,10 +261,10 @@ public class IcalTranslator implements Logged, Serializable {
       final Calendar cal = bldr.fromXcal(ical);
 
       return makeIc(col, ic, cal, false);
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -289,10 +289,10 @@ public class IcalTranslator implements Logged, Serializable {
       cal.getComponents().add((CalendarComponent)comp);
 
       return makeIc(col, ic, cal, diff, mergeAttendees);
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }*/
 
@@ -336,12 +336,12 @@ public class IcalTranslator implements Logged, Serializable {
       }
 
       return makeIc(col, ic, cal, mergeAttendees);
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final ParserException pe) {
       throw new IcalMalformedException(pe);
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -364,10 +364,10 @@ public class IcalTranslator implements Logged, Serializable {
       ic.addComponent(ei);
 
       makeIc(null, ic, cal, false);
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -419,7 +419,7 @@ public class IcalTranslator implements Logged, Serializable {
             if (eiResp.getException() != null) {
               throw eiResp.getException();
             }
-            throw new CalFacadeException(eiResp.toString());
+            throw new BedeworkException(eiResp.toString());
           }
 
           if (eiResp.isOk()) {
@@ -440,10 +440,10 @@ public class IcalTranslator implements Logged, Serializable {
       }
 
       return ic;
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -528,47 +528,43 @@ public class IcalTranslator implements Logged, Serializable {
   private void addToCalendar(final Calendar cal,
                              final EventInfo val,
                              final TreeSet<String> added) {
-    try {
-      String currentPrincipal = null;
-      final BwPrincipal principal = cb.getPrincipal();
+    String currentPrincipal = null;
+    final BwPrincipal principal = cb.getPrincipal();
 
-      if (principal != null) {
-        currentPrincipal = principal.getPrincipalRef();
+    if (principal != null) {
+      currentPrincipal = principal.getPrincipalRef();
+    }
+
+    final BwEvent ev = val.getEvent();
+
+    final EventTimeZonesRegistry tzreg =
+            new EventTimeZonesRegistry(this, ev);
+
+    if (!cb.getTimezonesByReference()) {
+      /* Add referenced timezones to the calendar */
+      addIcalTimezones(cal, ev, added, tzreg);
+    }
+
+    if (!ev.getSuppressed()) {
+      /* Add it to the calendar */
+      final Component comp;
+
+      if (ev.getEntityType() == IcalDefs.entityTypeFreeAndBusy) {
+        comp = VFreeUtil.toVFreeBusy(ev);
+      } else {
+        comp = BwEvent2Ical.convert(val, false, tzreg,
+                                    currentPrincipal);
       }
+      cal.getComponents().add((CalendarComponent)comp);
+    }
 
-      final BwEvent ev = val.getEvent();
-
-      final EventTimeZonesRegistry tzreg =
-              new EventTimeZonesRegistry(this, ev);
-
-      if (!cb.getTimezonesByReference()) {
-        /* Add referenced timezones to the calendar */
-        addIcalTimezones(cal, ev, added, tzreg);
+    if (val.getNumOverrides() > 0) {
+      for (final EventInfo oei: val.getOverrides()) {
+        cal.getComponents().add(
+                (CalendarComponent)BwEvent2Ical
+                        .convert(oei, true, tzreg,
+                                 currentPrincipal));
       }
-
-      if (!ev.getSuppressed()) {
-        /* Add it to the calendar */
-        final Component comp;
-
-        if (ev.getEntityType() == IcalDefs.entityTypeFreeAndBusy) {
-          comp = VFreeUtil.toVFreeBusy(ev);
-        } else {
-          comp = BwEvent2Ical.convert(val, false, tzreg,
-                                      currentPrincipal);
-        }
-        cal.getComponents().add((CalendarComponent)comp);
-      }
-
-      if (val.getNumOverrides() > 0) {
-        for (final EventInfo oei: val.getOverrides()) {
-          cal.getComponents().add(
-                  (CalendarComponent)BwEvent2Ical
-                          .convert(oei, true, tzreg,
-                                   currentPrincipal));
-        }
-      }
-    } catch (final CalFacadeException cfe) {
-      throw new RuntimeException(cfe);
     }
   }
 

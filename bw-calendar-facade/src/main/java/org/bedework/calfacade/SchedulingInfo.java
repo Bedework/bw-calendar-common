@@ -3,8 +3,8 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.ChangeTableEntry;
 import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.misc.Util;
@@ -228,7 +228,7 @@ public class SchedulingInfo {
     final var recipients = getRecipientParticipants();
 
     if (recipients.size() != 1) {
-      return Response.error(resp, new CalFacadeException(
+      return Response.error(resp, new BedeworkException(
               CalFacadeErrorCode.schedulingExpectOneAttendee));
     }
 
@@ -398,7 +398,7 @@ public class SchedulingInfo {
 
     if (calAddr != null) {
       if (getBwParticipantMap().get(calAddr) != null) {
-        throw new CalFacadeException("Duplicate participant " + calAddr);
+        throw new BedeworkException("Duplicate participant " + calAddr);
       }
     }
 

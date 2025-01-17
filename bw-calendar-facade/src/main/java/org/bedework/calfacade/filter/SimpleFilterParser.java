@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade.filter;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.caldav.util.TimeRange;
 import org.bedework.caldav.util.filter.AndFilter;
 import org.bedework.caldav.util.filter.EntityTypeFilter;
@@ -29,7 +30,6 @@ import org.bedework.caldav.util.filter.parse.Filters;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo.BwIcalPropertyInfoEntry;
 import org.bedework.calfacade.svc.BwView;
@@ -163,7 +163,7 @@ public abstract class SimpleFilterParser implements Logged {
     public FilterBase filter;
 
     /**  */
-    public CalFacadeException cfe;
+    public BedeworkException be;
 
     /** Result from parseSort
      *
@@ -184,10 +184,10 @@ public abstract class SimpleFilterParser implements Logged {
       throw new ParseFailed();
     }
 
-    public ParseFailed setCfe(final CalFacadeException cfe) throws ParseFailed {
+    public ParseFailed setBfe(final BedeworkException bfe) throws ParseFailed {
       ok = false;
-      message = cfe.getMessage();
-      this.cfe = cfe;
+      message = bfe.getMessage();
+      this.be = bfe;
 
       throw new ParseFailed();
     }
@@ -195,7 +195,7 @@ public abstract class SimpleFilterParser implements Logged {
     public ParseFailed fromPr(final ParseResult pr) throws ParseFailed {
       ok = false;
       message = pr.message;
-      cfe = pr.cfe;
+      be = pr.be;
 
       throw new ParseFailed();
     }
@@ -209,7 +209,7 @@ public abstract class SimpleFilterParser implements Logged {
       if (ok) {
         ts.append("filter", filter);
       } else {
-        ts.append("errcode", cfe.getMessage());
+        ts.append("errcode", be.getMessage());
       }
 
       return ts.toString();
@@ -694,7 +694,7 @@ public abstract class SimpleFilterParser implements Logged {
     final FilterBase pfilter = makePropFilter(pis, oper.op);
 
     if (pfilter == null) {
-      error(new CalFacadeException(CalFacadeErrorCode.filterBadProperty,
+      error(new BedeworkException(CalFacadeErrorCode.filterBadProperty,
                                    listProps(pis) +
                                            " source: " + source));
       throw parseResult.fail("Bad property: " + listProps(pis) +
@@ -1087,7 +1087,7 @@ public abstract class SimpleFilterParser implements Logged {
     try {
       return EntityTypeFilter.makeEntityTypeFilter(null, val, false);
     } catch (final Throwable t) {
-      throw parseResult.setCfe(new CalFacadeException(t));
+      throw parseResult.setBfe(new BedeworkException(t));
     }
   }
 
@@ -1292,7 +1292,7 @@ public abstract class SimpleFilterParser implements Logged {
                                                  applyFilter,
                                                  explicitSelection);
     } catch (final Throwable t) {
-      throw parseResult.setCfe(new CalFacadeException(t));
+      throw parseResult.setBfe(new BedeworkException(t));
     }
   }
 
@@ -1323,7 +1323,7 @@ public abstract class SimpleFilterParser implements Logged {
 
       return new TimeRange(start, end);
     } catch (final Throwable t) {
-      throw parseResult.setCfe(new CalFacadeException(t));
+      throw parseResult.setBfe(new BedeworkException(t));
     }
   }
 
@@ -1488,8 +1488,8 @@ public abstract class SimpleFilterParser implements Logged {
       }
 
       return tkn;
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
   
@@ -1499,40 +1499,40 @@ public abstract class SimpleFilterParser implements Logged {
   private void assertString() throws ParseFailed {
     try {
       tokenizer.assertString();
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
   private void assertToken(final String val) throws ParseFailed {
     try {
       tokenizer.assertToken(val);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
   private void assertToken(final int val) throws ParseFailed {
     try {
       tokenizer.assertToken(val);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
   private boolean testToken(final String val) throws ParseFailed {
     try {
       return tokenizer.testToken(val);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
   private boolean testToken(final int val) throws ParseFailed {
     try {
       return tokenizer.testToken(val);
-    } catch (final CalFacadeException cfe) {
-      parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      parseResult.setBfe(bfe);
       return false;
     }
   }
@@ -1540,8 +1540,8 @@ public abstract class SimpleFilterParser implements Logged {
   private BwCategory callGetCategoryByName(final String name) throws ParseFailed {
     try {
       return getCategoryByName(name);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
@@ -1552,8 +1552,8 @@ public abstract class SimpleFilterParser implements Logged {
   private BwView callGetView(final String path) throws ParseFailed {
     try {
       return getView(path);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 
@@ -1561,8 +1561,8 @@ public abstract class SimpleFilterParser implements Logged {
           throws ParseFailed {
     try {
       return decomposeVirtualPath(vpath);
-    } catch (final CalFacadeException cfe) {
-      throw parseResult.setCfe(cfe);
+    } catch (final BedeworkException bfe) {
+      throw parseResult.setBfe(bfe);
     }
   }
 

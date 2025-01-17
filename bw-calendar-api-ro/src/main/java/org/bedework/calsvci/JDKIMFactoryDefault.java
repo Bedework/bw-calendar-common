@@ -1,6 +1,6 @@
 package org.bedework.calsvci;
 
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.base.exc.BedeworkException;
 
 import org.apache.james.jdkim.api.JDKIM;
 
@@ -24,13 +24,13 @@ public class JDKIMFactoryDefault implements JDKIMFactory {
       final Class<?> cl = loader.loadClass(cname);
 
       if (cl == null) {
-        throw new CalFacadeException("Class " + cname + " not found");
+        throw new BedeworkException("Class " + cname + " not found");
       }
 
       final Object o = cl.getDeclaredConstructor().newInstance();
 
       if (!interfaceClass.isInstance(o)) {
-        throw new CalFacadeException("Class " + cname +
+        throw new BedeworkException("Class " + cname +
                                              " is not a subclass of " +
                                              interfaceClass.getName());
       }
@@ -38,7 +38,7 @@ public class JDKIMFactoryDefault implements JDKIMFactory {
       return o;
     } catch (final Throwable t) {
       t.printStackTrace();
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 }

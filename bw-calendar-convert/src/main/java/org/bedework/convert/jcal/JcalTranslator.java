@@ -4,7 +4,6 @@
 package org.bedework.convert.jcal;
 
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.EventTimeZonesRegistry;

@@ -25,7 +25,6 @@ import org.bedework.access.PrivilegeDefs;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.calfacade.base.ShareableEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.PrincipalInfo;
 
 import java.io.Serializable;

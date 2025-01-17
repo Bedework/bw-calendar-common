@@ -18,7 +18,6 @@
 */
 package org.bedework.calfacade.filter;
 
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo.BwIcalPropertyInfoEntry;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -57,7 +56,7 @@ public class RetrieveList {
         pi = PropertyInfoIndex.fromName(pname);
         if (pi == null) {
           continue;
-//          throw new CalFacadeException(CalFacadeErrorCode.unknownProperty,
+//          throw new BedeworkException(CalFacadeErrorCode.unknownProperty,
 //                                       pname);
         }
       }

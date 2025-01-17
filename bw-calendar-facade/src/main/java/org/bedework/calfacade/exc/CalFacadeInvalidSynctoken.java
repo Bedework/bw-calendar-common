@@ -18,11 +18,14 @@
 */
 package org.bedework.calfacade.exc;
 
+import org.bedework.base.exc.BedeworkBadRequest;
+
 /** Exception that indicates someone sent a bad request
  *
  * @author Mike Douglass
  */
-public class CalFacadeInvalidSynctoken extends CalFacadeBadRequest {
+public class CalFacadeInvalidSynctoken extends BedeworkBadRequest {
+
   /** Constructor
    *
    * @param token

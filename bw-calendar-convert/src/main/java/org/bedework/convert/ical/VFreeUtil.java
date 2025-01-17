@@ -19,12 +19,12 @@
 
 package org.bedework.convert.ical;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwFreeBusyComponent;
 import org.bedework.calfacade.BwOrganizer;
 import org.bedework.calfacade.BwString;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Period;
@@ -108,7 +108,7 @@ public class VFreeUtil extends IcalUtil {
           } else if (type == BwFreeBusyComponent.typeBusyTentative) {
             addParameter(fb, FbType.BUSY_TENTATIVE);
           } else {
-            throw new CalFacadeException("Bad free-busy type " + type);
+            throw new BedeworkException("Bad free-busy type " + type);
           }
 
           PeriodList pdl =  fb.getPeriods();

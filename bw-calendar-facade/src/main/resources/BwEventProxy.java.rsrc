@@ -21,7 +21,6 @@ package org.bedework.calfacade;
 import org.bedework.calfacade.base.ChangeFlag;
 import org.bedework.calfacade.base.OverrideList;
 import org.bedework.calfacade.base.OverrideSet;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 
 //import org.bedework.util.misc.Util;

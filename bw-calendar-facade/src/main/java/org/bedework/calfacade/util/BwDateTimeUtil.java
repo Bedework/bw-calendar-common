@@ -18,11 +18,11 @@
 */
 package org.bedework.calfacade.util;
 
+import org.bedework.base.exc.BedeworkBadDateException;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.base.BwTimeRange;
-import org.bedework.calfacade.exc.CalFacadeBadDateException;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.locale.BwLocale;
 import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.timezones.Timezones;
@@ -72,10 +72,9 @@ public class BwDateTimeUtil {
    *
    * @param val bw date time object
    * @return Date object representing the date
-   * @throws CalFacadeBadDateException on bad date
    */
   public static Date getDate(final BwDateTime val)
-          throws CalFacadeBadDateException {
+          throws BedeworkBadDateException {
     return getDate(val, Timezones.getTzRegistry());
   }
 
@@ -84,12 +83,11 @@ public class BwDateTimeUtil {
    * @param val bw date time object
    * @param tzreg registry
    * @return Date object representing the date
-   * @throws CalFacadeBadDateException on bad date
    */
   public static Date getDate(final BwDateTime val,
                              final TimeZoneRegistry tzreg)
-          throws CalFacadeBadDateException {
-    String dtval = val.getDtval();
+          throws BedeworkBadDateException {
+    final String dtval = val.getDtval();
 
     try {
       if (val.getDateType()) {
@@ -100,15 +98,15 @@ public class BwDateTimeUtil {
         return DateTimeUtil.fromISODateTimeUTC(dtval);
       }
 
-      String tzid = val.getTzid();
+      final String tzid = val.getTzid();
       if (tzid == null) {
         return DateTimeUtil.fromISODateTime(dtval);
       }
 
       return DateTimeUtil.fromISODateTime(dtval,
                                           tzreg.getTimeZone(tzid));
-    } catch (Throwable t) {
-      throw new CalFacadeBadDateException();
+    } catch (final Throwable t) {
+      throw new BedeworkBadDateException();
     }
   }
 
@@ -118,7 +116,7 @@ public class BwDateTimeUtil {
    * @return BwDateTime object representing the date
    */
   public static BwDateTime getDateTime(final Date date) {
-    String dtval = DateTimeUtil.isoDateTime(date);
+    final String dtval = DateTimeUtil.isoDateTime(date);
     return getDateTime(dtval, false, false, null);
   }
 
@@ -129,7 +127,6 @@ public class BwDateTimeUtil {
    * @param floating    boolean true if this is a floating time
    * @param tzid - String tzid or null for default, UTC or floating.
    * @return Date object representing the date
-   * @throws RuntimeException on timezone error or bad date
    */
   public static BwDateTime getDateTime(String date, final boolean dateOnly,
                                        final boolean floating,
@@ -144,7 +141,7 @@ public class BwDateTimeUtil {
       if (tzid != null) {
         tz = Timezones.getTz(tzid);
         if (tz == null) {
-          throw new CalFacadeException(CalFacadeErrorCode.unknownTimezone, tzid);
+          throw new BedeworkException(CalFacadeErrorCode.unknownTimezone, tzid);
         }
       } else if (!floating) {
         // Asking for default
@@ -155,13 +152,13 @@ public class BwDateTimeUtil {
       if (DateTimeUtil.isISODateTimeUTC(date)) {
         // Convert to local time (relative to supplied timezone)
 
-        Date dt = DateTimeUtil.fromISODateTimeUTC(date);
+        final Date dt = DateTimeUtil.fromISODateTimeUTC(date);
         date = DateTimeUtil.isoDateTime(dt, tz);
       }
 
       return BwDateTime.makeBwDateTime(dateOnly, date, tzid);
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (final Throwable t) {
+      throw new BedeworkBadDateException(t);
     }
   }
 
@@ -191,13 +188,13 @@ public class BwDateTimeUtil {
                                       final int defaultVal,
                                       final int maxField,
                                       final int maxVal) {
-    Locale loc = BwLocale.getLocale();
-    Calendar startCal = Calendar.getInstance(loc);
+    final Locale loc = BwLocale.getLocale();
+    final Calendar startCal = Calendar.getInstance(loc);
     startCal.set(Calendar.HOUR_OF_DAY, 0);
     startCal.set(Calendar.MINUTE, 0);
     startCal.set(Calendar.SECOND, 0);
 
-    Calendar endCal = Calendar.getInstance(loc);
+    final Calendar endCal = Calendar.getInstance(loc);
     endCal.set(Calendar.HOUR_OF_DAY, 0);
     endCal.set(Calendar.MINUTE, 0);
     endCal.set(Calendar.SECOND, 0);
@@ -215,7 +212,7 @@ public class BwDateTimeUtil {
 
     // Don't allow more than the max
     if (maxVal > 0) {
-      Calendar check = Calendar.getInstance(loc);
+      final Calendar check = Calendar.getInstance(loc);
       check.setTime(startCal.getTime());
       check.add(maxField, maxVal);
 
@@ -252,8 +249,8 @@ public class BwDateTimeUtil {
       }
 
       return DateTimeUtil.fromRfcDate(dt);
-    } catch (Throwable t) {
-      throw new CalFacadeBadDateException();
+    } catch (final Throwable t) {
+      throw new BedeworkBadDateException();
     }
   }
 }

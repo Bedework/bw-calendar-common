@@ -18,12 +18,12 @@
 */
 package org.bedework.convert.ical;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAlarm.TriggerVal;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwXproperty;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -358,17 +358,17 @@ public class VAlarmUtil extends IcalUtil {
       }
 
       return alarm;
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
   private static void checkRequiredProperty(final String val,
                                             final String name) {
     if (val == null) {
-      throw new CalFacadeException("org.bedework.icalendar.missing.required.property",
+      throw new BedeworkException("org.bedework.icalendar.missing.required.property",
                                    name);
     }
   }

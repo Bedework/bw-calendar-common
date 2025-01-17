@@ -19,9 +19,9 @@
 
 package org.bedework.mail;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.mail.MailConfigProperties;
 import org.bedework.calfacade.mail.MailerIntf;
 import org.bedework.calfacade.mail.Message;
@@ -96,7 +96,7 @@ public class DummyMailer implements Logged, MailerIntf {
         error(t);
       }
 
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
 
     debug(baos.toString());

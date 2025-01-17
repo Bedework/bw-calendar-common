@@ -18,23 +18,13 @@
 */
 package org.bedework.calfacade.exc;
 
+import org.bedework.base.exc.BedeworkErrorCode;
+
 /** Codes for use in the calendar facade
  *
  * @author Mike Douglass douglm
  */
-public interface CalFacadeErrorCode {
-  /** Not allowed to set values */
-  String envCannotSetValues =
-      "org.bedework.exception.envcannotsetvalues";
-
-  /** Multiple getters for property xxx */
-  String envMultipleGetters =
-      "org.bedework.exception.envmultiplegetters";
-
-  /** No getters for property xxx */
-  String envNoGetters =
-      "org.bedework.exception.envnogetters";
-
+public interface CalFacadeErrorCode extends BedeworkErrorCode {
   /* ********************** dump/restore **************************** */
 
   /** No key fields defined */
@@ -323,10 +313,6 @@ public interface CalFacadeErrorCode {
   String duplicateGuid =
       "org.bedework.exception.duplicateguid";
 
-  /** The name for this event already exists in this collection */
-  String duplicateName =
-      "org.bedework.exception.duplicatename";
-
   /** Cannot locate instances for ... */
   String cannotLocateInstance =
       "org.bedework.exception.cannotlocateinstance";
@@ -439,10 +425,6 @@ public interface CalFacadeErrorCode {
   String unknownTimezone =
       "org.bedework.error.unknown.timezone";
 
-  /** Bad date */
-  String badDate =
-      "org.bedework.error.bad.date";
-
   /** No thread local timezones set */
   String noThreadLocalTimezones =
       "org.bedework.error.nothreadlocaltimezones";
@@ -492,19 +474,4 @@ public interface CalFacadeErrorCode {
   /** */
   String targetExists =
       "org.bedework.exception.targetexists";
-
-  /** */
-  String badRequest = "org.bedework.exception.badrequest";
-
-  /** */
-  String badResponse = "org.bedework.exception.badresponse";
-
-  /** Used to indicate something you're not allowed to do -
-   * not an access exception
-   */
-  String forbidden = "org.bedework.exception.forbidden";
-
-  /** */
-  String staleState =
-      "org.bedework.exception.stalestate";
 }

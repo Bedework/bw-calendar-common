@@ -18,6 +18,7 @@
 */
 package org.bedework.convert.ical;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm.TriggerVal;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwAttendee;
@@ -28,7 +29,6 @@ import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.BwXproperty.Xpar;
 import org.bedework.calfacade.base.StartEndComponent;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.CalFacadeUtil;
@@ -1055,7 +1055,7 @@ public class IcalUtil {
         if (ev.getEntityType() != IcalDefs.entityTypeFreeAndBusy) {
           // Apple is sending both - duration indicates the minimum
           // freebusy duration. Ignore for now.
-          throw new CalFacadeException(CalFacadeErrorCode.endAndDuration);
+          throw new BedeworkException(CalFacadeErrorCode.endAndDuration);
         }
       }
 
@@ -1102,10 +1102,10 @@ public class IcalUtil {
     }
 
     ev.setEndType(endType);
-//    } catch (CalFacadeException cfe) {
-//      throw cfe;
+//    } catch (BedeworkException be) {
+//      throw be;
 //    } catch (Throwable t) {
-//      throw new CalFacadeException(t);
+//      throw new BedeworkException(t);
 //    }
   }
 

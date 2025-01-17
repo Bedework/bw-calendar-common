@@ -18,12 +18,12 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwStringBase;
 import org.bedework.calfacade.base.CollatableEntity;
 import org.bedework.calfacade.base.SizedEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.QuotaUtil;
 import org.bedework.util.misc.ToString;
@@ -359,7 +359,7 @@ public class BwCategory extends BwEventProperty<BwCategory>
       }
       jgen.writeObjectField(name, value);
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

@@ -18,6 +18,7 @@
 */
 package org.bedework.convert.ical;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
@@ -32,7 +33,6 @@ import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.base.BwStringBase;
 import org.bedework.calfacade.base.StartEndComponent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.logging.BwLogger;
@@ -169,7 +169,7 @@ public class BwEvent2Ical extends IcalUtil {
         comp = new VPoll(pl);
         vpoll = true;
       } else {
-        throw new CalFacadeException("org.bedework.invalid.entity.type",
+        throw new BedeworkException("org.bedework.invalid.entity.type",
                                      String.valueOf(entityType));
       }
 
@@ -367,7 +367,7 @@ public class BwEvent2Ical extends IcalUtil {
             } else if (type == BwFreeBusyComponent.typeBusyTentative) {
               addParameter(fb, FbType.BUSY_TENTATIVE);
             } else {
-              throw new CalFacadeException("Bad free-busy type " + type);
+              throw new BedeworkException("Bad free-busy type " + type);
             }
 
             final PeriodList pdl =  fb.getPeriods();
@@ -649,10 +649,10 @@ public class BwEvent2Ical extends IcalUtil {
       }
 
       return comp;
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

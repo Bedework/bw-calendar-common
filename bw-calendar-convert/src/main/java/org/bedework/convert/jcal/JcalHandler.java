@@ -18,9 +18,9 @@
 */
 package org.bedework.convert.jcal;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwVersion;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.EventTimeZonesRegistry;
 import org.bedework.convert.ical.BwEvent2Ical;
@@ -116,10 +116,10 @@ public class JcalHandler implements Serializable {
       jgen.writeEndArray(); // for vcalendar
 
       jgen.flush();
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -169,10 +169,10 @@ public class JcalHandler implements Serializable {
       jgen.writeEndArray();
 
       jgen.flush();
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -208,7 +208,7 @@ public class JcalHandler implements Serializable {
 
       jgen.writeEndArray(); // end event
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -230,7 +230,7 @@ public class JcalHandler implements Serializable {
 
       jgen.writeEndArray();
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 }

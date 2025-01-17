@@ -18,13 +18,16 @@ under the License.
  */
 package org.bedework.calfacade.exc;
 
+import org.bedework.base.exc.BedeworkException;
+
 import static org.bedework.calfacade.exc.CalFacadeErrorCode.subscriptionLoopDetected;
 
 /** Something doesn't exist
  *
  * @author Mike Douglass douglm@bedework.edu
  */
-public class CalFacadeSubscriptionLoopException extends CalFacadeException {
+public class CalFacadeSubscriptionLoopException extends
+        BedeworkException {
   /**
    *
    */

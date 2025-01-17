@@ -22,7 +22,6 @@ import org.bedework.caldav.util.sharing.AccessType;
 import org.bedework.caldav.util.sharing.SetType;
 import org.bedework.caldav.util.sharing.ShareType;
 import org.bedework.calfacade.BwCalendar;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calsvci.CalSvcFactoryDefault;
 import org.bedework.calsvci.CalSvcI;
 import org.bedework.calfacade.svc.CalSvcIPars;

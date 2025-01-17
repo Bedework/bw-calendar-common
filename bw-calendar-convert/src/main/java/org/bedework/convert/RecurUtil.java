@@ -21,7 +21,6 @@ package org.bedework.convert;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwDuration;
 import org.bedework.calfacade.BwEvent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.ical.BwEvent2Ical;
 import org.bedework.convert.ical.IcalUtil;
@@ -205,7 +204,7 @@ public class RecurUtil {
     try {
       start.setValue(evstart.getDtval());
     } catch (Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }*/
 
     final DtStart start = ev.getDtstart().makeDtStart();
@@ -335,7 +334,7 @@ public class RecurUtil {
       try {
         periods.setTimeZone(Timezones.getDefaultTz());
       } catch (Throwable t) {
-        throw new CalFacadeException(t);
+        throw new BedeworkException(t);
       }
     }
     rp.instances = periods;

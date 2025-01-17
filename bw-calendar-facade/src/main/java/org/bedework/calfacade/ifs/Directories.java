@@ -24,7 +24,6 @@ import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwPrincipalInfo;
 import org.bedework.calfacade.DirectoryInfo;
 import org.bedework.calfacade.configs.Configurations;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwPreferences;
 import org.bedework.webdav.servlet.shared.WebdavProperty;
 
@@ -97,7 +96,6 @@ public interface Directories extends Serializable {
      *
      * @param  group           BwGroup group object to delete
      * @param admin          true for an admin group
-     * @exception CalFacadeException If there's a problem
      */
     public abstract void removeGroup(BwGroup<?> group,
                                      boolean admin);
@@ -107,7 +105,6 @@ public interface Directories extends Serializable {
      * @param group          a group principal
      * @param val             BwPrincipal new member
      * @param admin          true for an admin group
-     * @exception CalFacadeException   For invalid usertype values.
      */
     public abstract void addMember(BwGroup<?> group,
                                    BwPrincipal<?> val,
@@ -118,7 +115,6 @@ public interface Directories extends Serializable {
      * @param group          a group principal
      * @param val            BwPrincipal member
      * @param admin          true for an admin group
-     * @exception CalFacadeException   For invalid usertype values.
      */
     public abstract void removeMember(BwGroup<?> group,
                                       BwPrincipal<?> val,
@@ -394,7 +390,6 @@ public interface Directories extends Serializable {
   /** Add a group
    *
    * @param  group           BwGroup group object to add
-   * @exception CalFacadeException If there's a problem
    */
   void addGroup(BwGroup<?> group);
 
@@ -402,7 +397,6 @@ public interface Directories extends Serializable {
    *
    * @param  name           String group name
    * @return BwGroup        group object
-   * @exception RuntimeException If there's a problem
    */
   BwGroup<?> findGroup(String name);
 
@@ -410,7 +404,6 @@ public interface Directories extends Serializable {
    *
    * @param group          a group principal
    * @param val            BwPrincipal new member
-   * @exception CalFacadeException   For invalid usertype values.
    */
   void addMember(BwGroup<?> group,
                  BwPrincipal<?> val);
@@ -419,7 +412,6 @@ public interface Directories extends Serializable {
    *
    * @param group          a group principal
    * @param val            BwPrincipal new member
-   * @exception CalFacadeException   For invalid usertype values.
    */
   void removeMember(BwGroup<?> group,
                     BwPrincipal<?> val);
@@ -427,14 +419,12 @@ public interface Directories extends Serializable {
   /** Delete a group
    *
    * @param  group           BwGroup group object to delete
-   * @exception CalFacadeException If there's a problem
    */
   void removeGroup(BwGroup<?> group);
 
   /** update a group. This may have no meaning in some directories.
    *
    * @param  group           BwGroup group object to update
-   * @exception CalFacadeException If there's a problem
    */
   void updateGroup(BwGroup<?> group);
 

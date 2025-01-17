@@ -18,12 +18,12 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
@@ -1071,13 +1071,13 @@ public class BwXproperty extends BwDbentity<BwXproperty>
 
     try {
       if (tokeniser.nextToken() != StreamTokenizer.TT_WORD) {
-        throw new CalFacadeException(CalFacadeErrorCode.badRequest);
+        throw new BedeworkException(CalFacadeErrorCode.badRequest);
       }
 
       final String paramName = tokeniser.sval;
 
       if (tokeniser.nextToken() != '=') {
-        throw new CalFacadeException(CalFacadeErrorCode.badRequest);
+        throw new BedeworkException(CalFacadeErrorCode.badRequest);
       }
 
       final StringBuilder paramValue = new StringBuilder();
@@ -1112,7 +1112,7 @@ public class BwXproperty extends BwDbentity<BwXproperty>
 
       pars.add(new Xpar(paramName, paramValue.toString()));
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

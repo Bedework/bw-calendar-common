@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade.filter;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.caldav.util.filter.AndFilter;
 import org.bedework.caldav.util.filter.BooleanFilter;
 import org.bedework.caldav.util.filter.FilterBase;
@@ -25,7 +26,6 @@ import org.bedework.caldav.util.filter.ObjectFilter;
 import org.bedework.caldav.util.filter.OrFilter;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.EventListEntry;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.exc.CalFacadeSubscriptionLoopException;
 import org.bedework.calfacade.filter.SimpleFilterParser.ParseResult;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
@@ -132,8 +132,8 @@ public class FilterBuilder implements Logged {
     if (col == null) {
       try {
         col = parser.getCollection(path);
-      } catch (final CalFacadeException cfe) {
-        error(cfe);
+      } catch (final BedeworkException bfe) {
+        error(bfe);
         return BooleanFilter.falseFilter;
       }
 
@@ -153,8 +153,8 @@ public class FilterBuilder implements Logged {
                                 applyFilter,
                                 explicitSelection,
                                 pathElements);
-    } catch (CalFacadeException cfe) {
-      error(cfe);
+    } catch (final BedeworkException bfe) {
+      error(bfe);
       return BooleanFilter.falseFilter;
     }
 
@@ -541,7 +541,7 @@ public class FilterBuilder implements Logged {
                                col.getPath());
 
     if (!pr.ok) {
-      throw pr.cfe;
+      throw pr.be;
     }
 
     return pr.filter;

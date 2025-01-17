@@ -3,7 +3,6 @@
 */
 package org.bedework.calfacade.indexing;
 
-import org.bedework.calfacade.exc.CalFacadeException;
 
 /**
  * User: mike Date: 7/5/19 Time: 23:27

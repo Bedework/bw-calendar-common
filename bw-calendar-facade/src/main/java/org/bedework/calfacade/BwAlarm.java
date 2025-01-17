@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwXproperty.Xpar;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
@@ -30,7 +31,6 @@ import org.bedework.calfacade.base.DescriptionEntity;
 import org.bedework.calfacade.base.Differable;
 import org.bedework.calfacade.base.SummaryEntity;
 import org.bedework.calfacade.base.XpropsEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.BwDateTimeUtil;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.calendar.IcalDefs;
@@ -889,10 +889,10 @@ public class BwAlarm extends BwOwnedDbentity<BwAlarm>
       triggerDate = dt;
 
       return dt;
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

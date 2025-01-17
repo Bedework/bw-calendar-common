@@ -18,8 +18,8 @@
 */
 package org.bedework.calfacade.filter;
 
-import org.bedework.calfacade.exc.CalFacadeBadRequest;
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.base.exc.BedeworkBadRequest;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 
@@ -83,7 +83,7 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
     try {
       return nextToken();
     } catch (IOException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -95,8 +95,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
   public void assertToken(final int token) {
     try {
       if (nextToken() != token) {
-        throw new CalFacadeBadRequest("Expected [" + token + "], read [" +
-                                  ttype + "] at " + lineno());
+        throw new BedeworkBadRequest("Expected [" + token + "], read [" +
+                                             ttype + "] at " + lineno());
       }
 
       if (debug()) {
@@ -107,7 +107,7 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
         }
       }
     } catch (IOException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -124,7 +124,7 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
       return;
     }
 
-    throw new CalFacadeBadRequest("Expected <quoted-string>, read [" +
+    throw new BedeworkBadRequest("Expected <quoted-string>, read [" +
                                   ttype + "] at " + lineno());
   }
 
@@ -157,11 +157,11 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
 
     if (ignoreCase) {
       if (!token.equalsIgnoreCase(sval)) {
-        throw new CalFacadeBadRequest("Expected [" + token + "], read [" +
+        throw new BedeworkBadRequest("Expected [" + token + "], read [" +
                                   sval + "] at " + lineno());
       }
     } else if (!token.equals(sval)) {
-      throw new CalFacadeBadRequest( "Expected [" + token + "], read [" +
+      throw new BedeworkBadRequest( "Expected [" + token + "], read [" +
                                 sval + "] at " + lineno());
     }
 
@@ -195,7 +195,7 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
 
       return true;
     } catch (IOException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 

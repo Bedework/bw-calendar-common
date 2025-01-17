@@ -18,7 +18,7 @@
 */
 package org.bedework.convert.jcal;
 
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.base.exc.BedeworkException;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import net.fortuna.ical4j.model.AddressList;
@@ -74,8 +74,8 @@ public class JsonParameters implements Serializable {
       }
 
       jgen.writeEndObject();
-    } catch (Throwable t) {
-      throw new CalFacadeException(t);
+    } catch (final Throwable t) {
+      throw new BedeworkException(t);
     }
   }
 

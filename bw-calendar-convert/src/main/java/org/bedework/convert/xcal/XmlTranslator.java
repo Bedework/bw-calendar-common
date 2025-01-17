@@ -3,9 +3,9 @@
 */
 package org.bedework.convert.xcal;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.convert.EventTimeZonesRegistry;
@@ -242,8 +242,8 @@ public class XmlTranslator extends IcalTranslator {
     } else if (entityType == IcalDefs.entityTypeFreeAndBusy) {
       nm = VfreebusyType.class.getName();
     } else {
-      throw new CalFacadeException("org.bedework.invalid.entity.type",
-                                   String.valueOf(entityType));
+      throw new BedeworkException("org.bedework.invalid.entity.type",
+                                  String.valueOf(entityType));
     }
 
     for (final JAXBElement<? extends BaseComponentType> jbc:

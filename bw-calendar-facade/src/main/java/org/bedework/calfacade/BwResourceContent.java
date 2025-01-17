@@ -18,10 +18,10 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Util;
@@ -135,7 +135,7 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
       try {
         return getValue().getBinaryStream();
       } catch (final Throwable t) {
-        throw new CalFacadeException(t);
+        throw new BedeworkException(t);
       }
     }
 

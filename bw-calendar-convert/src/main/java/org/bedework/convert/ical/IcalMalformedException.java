@@ -19,12 +19,12 @@
 
 package org.bedework.convert.ical;
 
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.base.exc.BedeworkException;
 
 /**
  *   @author Mike Douglass   douglm @ rpi.edu
  */
-public class IcalMalformedException extends CalFacadeException {
+public class IcalMalformedException extends BedeworkException {
   /** Constructor
    *
    * @param msg test

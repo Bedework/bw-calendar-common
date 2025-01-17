@@ -18,10 +18,10 @@
 */
 package org.bedework.convert.xcal;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwEvent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.util.xml.tagdefs.XcalTags;
@@ -192,7 +192,7 @@ public class Xalarms extends Xutil {
                                                                   XcalTags.action);
 
     if (action == null) {
-      throw new CalFacadeException("Invalid alarm - no action");
+      throw new BedeworkException("Invalid alarm - no action");
     }
 
     String actionVal = action.getText().toUpperCase();
@@ -206,7 +206,7 @@ public class Xalarms extends Xutil {
     }
 
     if (atype < 0) {
-      throw new CalFacadeException("Unhandled alarm action");
+      throw new BedeworkException("Unhandled alarm action");
     }
 
     ba.setAlarmType(atype);
@@ -217,7 +217,7 @@ public class Xalarms extends Xutil {
 
     if (tr == null) {
       if (validate) {
-        throw new CalFacadeException("Invalid alarm - no action");
+        throw new BedeworkException("Invalid alarm - no action");
       }
     } else {
       if (tr.getDateTime() != null) {
@@ -246,7 +246,7 @@ public class Xalarms extends Xutil {
 
       if (rep == null) {
         if (validate) {
-          throw new CalFacadeException("Invalid alarm - no repeat");
+          throw new BedeworkException("Invalid alarm - no repeat");
         }
       } else {
         ba.setRepeat(rep.getInteger().intValue());

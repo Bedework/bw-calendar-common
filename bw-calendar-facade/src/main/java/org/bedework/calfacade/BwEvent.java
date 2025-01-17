@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwXproperty.Xpar;
 import org.bedework.calfacade.annotations.CloneForOverride;
 import org.bedework.calfacade.annotations.Dump;
@@ -30,7 +31,6 @@ import org.bedework.calfacade.annotations.ical.Immutable;
 import org.bedework.calfacade.annotations.ical.NoProxy;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.calfacade.base.EventEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.IcalDefs;
@@ -5058,7 +5058,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
       return new LastModified(ct[0]).getDate().getTime() * 1000000 +
               Integer.parseInt(ct[1], 16) * 100L;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

@@ -19,9 +19,9 @@
 
 package org.bedework.mail;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.locale.Resources;
 import org.bedework.calfacade.mail.MailConfigProperties;
 import org.bedework.calfacade.mail.MailerIntf;
@@ -203,7 +203,7 @@ public class MailUtil {
         i++;
       }
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
 
     return tos;
@@ -265,7 +265,7 @@ public class MailUtil {
 
       return msg;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
 
   }

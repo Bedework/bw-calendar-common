@@ -18,7 +18,7 @@
 */
 package org.bedework.convert.jcal;
 
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
 
@@ -77,10 +77,10 @@ public class JsonProperty implements Serializable {
       outValue(jgen, prop, type);
 
       jgen.writeEndArray();
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

@@ -18,7 +18,6 @@
 */
 package org.bedework.calfacade.configs;
 
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.util.Properties;
 

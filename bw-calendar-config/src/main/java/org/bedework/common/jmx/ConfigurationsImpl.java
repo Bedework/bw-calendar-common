@@ -18,6 +18,7 @@
 */
 package org.bedework.common.jmx;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwStats;
 import org.bedework.calfacade.configs.AuthProperties;
 import org.bedework.calfacade.configs.CardDavInfo;
@@ -29,7 +30,6 @@ import org.bedework.calfacade.configs.IndexProperties;
 import org.bedework.calfacade.configs.NotificationProperties;
 import org.bedework.calfacade.configs.SynchConfig;
 import org.bedework.calfacade.configs.SystemProperties;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.mail.MailConfigProperties;
 import org.bedework.calfacade.svc.CalSvcIPars;
 import org.bedework.calfacade.util.Sysprop;
@@ -132,10 +132,10 @@ public final class ConfigurationsImpl
       }
 
       unAuthProperties = new ROAuthProperties(getAuthProps(false));
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -219,7 +219,7 @@ public final class ConfigurationsImpl
       return new ObjectName(getServiceName(
               Configurations.unauthPropsNamePart));
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -231,7 +231,7 @@ public final class ConfigurationsImpl
       return new ObjectName(getServiceName(
               Configurations.authPropsNamePart));
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -243,7 +243,7 @@ public final class ConfigurationsImpl
       return new ObjectName(getServiceName(
               Configurations.systemPropsNamePart));
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -365,7 +365,7 @@ public final class ConfigurationsImpl
       /* ------------- Autokiller --------------------------------- */
       startAutoKiller();
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     } finally {
       if (!configured) {
         stop();
@@ -491,10 +491,10 @@ public final class ConfigurationsImpl
       }
 
       return (AuthProperties)ConfBase.getManagementContext().getAttribute(mbeanName, "Config");
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -504,7 +504,7 @@ public final class ConfigurationsImpl
       final Class<?> cl = loader.loadClass(cname);
 
       if (cl == null) {
-        throw new CalFacadeException("Class " + cname + " not found");
+        throw new BedeworkException("Class " + cname + " not found");
       }
 
       final Object o = cl.getDeclaredConstructor().newInstance();

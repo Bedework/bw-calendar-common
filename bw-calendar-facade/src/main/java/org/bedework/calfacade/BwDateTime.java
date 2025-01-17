@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.ical.IcalProperties;
@@ -25,7 +26,6 @@ import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.DumpEntity;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -351,7 +351,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
                                    final String date,
                                    final String tzid) {
     if (!dateType && !date.endsWith("Z")) {
-      throw new CalFacadeException(CalFacadeErrorCode.badDate);
+      throw new BedeworkException(CalFacadeErrorCode.badDate);
     }
 
     try {
@@ -376,7 +376,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
 
       return bwd;
     } catch (final Throwable t) {
-      throw new CalFacadeException(CalFacadeErrorCode.badDate);
+      throw new BedeworkException(CalFacadeErrorCode.badDate);
     }
   }
 

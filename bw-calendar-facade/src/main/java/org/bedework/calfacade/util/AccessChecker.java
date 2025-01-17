@@ -21,7 +21,6 @@ package org.bedework.calfacade.util;
 import org.bedework.access.CurrentAccess;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.base.BwShareableDbentity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.wrappers.CalendarWrapper;
 
 import java.io.Serializable;

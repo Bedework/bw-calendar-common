@@ -18,10 +18,9 @@
 */
 package org.bedework.calfacade.util.xml;
 
+import org.bedework.base.exc.BedeworkBadRequest;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.base.BwTimeRange;
-import org.bedework.calfacade.exc.CalFacadeBadRequest;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.BwDateTimeUtil;
 
 import org.w3c.dom.NamedNodeMap;
@@ -33,31 +32,33 @@ import org.w3c.dom.Node;
  */
 public class CalDavParseUtil {
   /** The given node must be a time-range element
-   *  <!ELEMENT time-range EMPTY>
+   * <pre>
+   *  &lt;!ELEMENT time-range EMPTY>
    *
-   *  <!ATTLIST time-range start CDATA
+   *  &lt;!ATTLIST time-range start CDATA
    *                       end CDATA>
    *
-   * e.g.        <C:time-range start="20040902T000000Z"
+   * e.g.        &lt;C:time-range start="20040902T000000Z"
    *                           end="20040902T235959Z"/>
+   *</pre>
    *
-   * @param nd
+   * @param nd time-range element
    * @param tzid - timezone to use if specified
    * @return TimeRange
    */
-  public static BwTimeRange parseBwTimeRange(Node nd,
-                                         String tzid) {
+  public static BwTimeRange parseBwTimeRange(final Node nd,
+                                             final String tzid) {
     BwDateTime start = null;
     BwDateTime end = null;
 
-    NamedNodeMap nnm = nd.getAttributes();
+    final NamedNodeMap nnm = nd.getAttributes();
 
     /* draft 5 has neither attribute required - the intent is that either
        may be absent */
 
     if ((nnm == null) || (nnm.getLength() == 0)) {
       // Infinite time-range?
-      throw new CalFacadeBadRequest("Infinite time range");
+      throw new BedeworkBadRequest("Infinite time range");
     }
 
     int attrCt = nnm.getLength();
@@ -90,12 +91,12 @@ public class CalDavParseUtil {
                                            tzid);
         }
       }
-    } catch (Throwable t) {
-      throw new CalFacadeBadRequest(t);
+    } catch (final Throwable t) {
+      throw new BedeworkBadRequest(t);
     }
 
     if (attrCt != 0) {
-      throw new CalFacadeBadRequest();
+      throw new BedeworkBadRequest();
     }
 
     return new BwTimeRange(start, end);

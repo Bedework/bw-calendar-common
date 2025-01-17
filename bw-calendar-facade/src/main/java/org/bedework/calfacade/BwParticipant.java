@@ -18,10 +18,10 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.base.Differable;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.misc.ToString;
 import org.bedework.util.misc.Uid;
 import org.bedework.util.misc.Util;
@@ -149,7 +149,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final URISyntaxException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -436,7 +436,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final URISyntaxException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -479,7 +479,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final URISyntaxException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -559,7 +559,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final URISyntaxException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -656,7 +656,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final ParseException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 
@@ -770,7 +770,7 @@ public class BwParticipant extends BwDbentity<BwParticipant>
         changed();
       }
     } catch (final ParseException e) {
-      throw new CalFacadeException(e);
+      throw new BedeworkException(e);
     }
   }
 

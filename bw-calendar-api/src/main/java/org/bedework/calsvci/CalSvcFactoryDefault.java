@@ -18,10 +18,10 @@
 */
 package org.bedework.calsvci;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.configs.Configurations;
 import org.bedework.calfacade.configs.SchemaBuilder;
 import org.bedework.calfacade.configs.SystemProperties;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.CalSvcIPars;
 import org.bedework.util.misc.Util;
 
@@ -110,7 +110,7 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
       final Properties pr = new Properties();
 
       if (Util.isEmpty(sysProps.getSyseventsProperties())) {
-        throw new CalFacadeException("No sysevent properties defined");
+        throw new BedeworkException("No sysevent properties defined");
       }
       
       final StringBuilder sb = new StringBuilder();
@@ -138,13 +138,13 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
       final Class<?> cl = loader.loadClass(cname);
 
       if (cl == null) {
-        throw new CalFacadeException("Class " + cname + " not found");
+        throw new BedeworkException("Class " + cname + " not found");
       }
 
       final Object o = cl.getDeclaredConstructor().newInstance();
 
       if (!interfaceClass.isInstance(o)) {
-        throw new CalFacadeException("Class " + cname +
+        throw new BedeworkException("Class " + cname +
                                      " is not a subclass of " +
                                      interfaceClass.getName());
       }

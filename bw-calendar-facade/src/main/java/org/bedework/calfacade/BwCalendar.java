@@ -19,6 +19,7 @@
 package org.bedework.calfacade;
 
 import org.bedework.access.CurrentAccess;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.NoWrap;
@@ -29,7 +30,6 @@ import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.calfacade.base.CategorisedEntity;
 import org.bedework.calfacade.base.CollatableEntity;
 import org.bedework.calfacade.base.PropertiesEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.misc.ToString;
@@ -1407,7 +1407,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
       final var seq = lm.getSequence();
       return micros * 1000000 + seq;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

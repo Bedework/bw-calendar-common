@@ -19,6 +19,7 @@
 package org.bedework.convert.xcal;
 
 import org.bedework.access.EvaluatedAccessCache;
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwAttendee;
@@ -33,7 +34,6 @@ import org.bedework.calfacade.BwOrganizer;
 import org.bedework.calfacade.BwRelatedTo;
 import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.base.BwStringBase;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.util.logging.BwLogger;
@@ -158,8 +158,8 @@ public class ToXEvent extends Xutil {
         el = of.createVfreebusy(new VfreebusyType());
         freeBusy = true;
       } else {
-        throw new CalFacadeException("org.bedework.invalid.entity.type",
-                                     String.valueOf(entityType));
+        throw new BedeworkException("org.bedework.invalid.entity.type",
+                                    String.valueOf(entityType));
       }
 
       final BaseComponentType comp = el.getValue();
@@ -400,7 +400,7 @@ public class ToXEvent extends Xutil {
                 fbtype = FbtypeValueType.BUSY_TENTATIVE;
               } else {
                 fbtype = FbtypeValueType.BUSY;
-  //              throw new CalFacadeException("Bad free-busy type " + type);
+  //              throw new BedeworkException("Bad free-busy type " + type);
               }
 
               ArrayOfParameters pars = getAop(fb);
@@ -650,10 +650,10 @@ public class ToXEvent extends Xutil {
       }
 
       return el;
-    } catch (final CalFacadeException cfe) {
-      throw cfe;
+    } catch (final BedeworkException bfe) {
+      throw bfe;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -759,10 +759,10 @@ public class ToXEvent extends Xutil {
         makeDlp(true, val.getExdates(), pl);
       }
       */
-//    } catch (CalFacadeException cfe) {
-  //    throw cfe;
+//    } catch (BedeworkException be) {
+  //    throw be;
     } catch (final Throwable t) {
-      throw new CalFacadeException(t);
+      throw new BedeworkException(t);
     }
   }
 

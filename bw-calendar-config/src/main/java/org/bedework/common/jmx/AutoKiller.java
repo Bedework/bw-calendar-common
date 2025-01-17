@@ -190,9 +190,8 @@ public class AutoKiller implements Logged {
   /** Get an svci object and return it. Also embed it in this object.
    *
    * @return svci object
-   * @throws CalFacadeException on fatal error
    */
-  private CalSvcI getSvci() throws CalFacadeException {
+  private CalSvcI getSvci() {
     if ((svci != null) && svci.isOpen()) {
       return svci;
     }

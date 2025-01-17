@@ -352,7 +352,7 @@ public class BwCategory extends BwEventProperty<BwCategory>
 
   private void outJsonField(final String name,
                             final String value,
-                            final JsonGenerator jgen) throws CalFacadeException {
+                            final JsonGenerator jgen) {
     try {
       if (value == null) {
         return;

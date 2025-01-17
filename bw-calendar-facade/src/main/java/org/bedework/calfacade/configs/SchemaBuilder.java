@@ -34,11 +34,10 @@ public interface SchemaBuilder {
    * @param outputFile
    * @param export
    * @param delimiter
-   * @throws CalFacadeException
    */
   void execute(Properties props,
                String outputFile,
                boolean export,
-               String delimiter) throws CalFacadeException;
+               String delimiter);
 }
 

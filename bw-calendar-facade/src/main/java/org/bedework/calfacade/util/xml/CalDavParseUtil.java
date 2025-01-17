@@ -44,10 +44,9 @@ public class CalDavParseUtil {
    * @param nd
    * @param tzid - timezone to use if specified
    * @return TimeRange
-   * @throws CalFacadeException
    */
   public static BwTimeRange parseBwTimeRange(Node nd,
-                                         String tzid) throws CalFacadeException {
+                                         String tzid) {
     BwDateTime start = null;
     BwDateTime end = null;
 

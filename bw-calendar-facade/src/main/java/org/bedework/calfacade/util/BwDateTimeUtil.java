@@ -21,6 +21,7 @@ package org.bedework.calfacade.util;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.base.BwTimeRange;
 import org.bedework.calfacade.exc.CalFacadeBadDateException;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.locale.BwLocale;
 import org.bedework.util.timezones.DateTimeUtil;
@@ -143,7 +144,7 @@ public class BwDateTimeUtil {
       if (tzid != null) {
         tz = Timezones.getTz(tzid);
         if (tz == null) {
-          throw new CalFacadeException(CalFacadeException.unknownTimezone, tzid);
+          throw new CalFacadeException(CalFacadeErrorCode.unknownTimezone, tzid);
         }
       } else if (!floating) {
         // Asking for default
@@ -183,14 +184,13 @@ public class BwDateTimeUtil {
    * @param maxField Calendar field id
    * @param maxVal - 0 for no max
    * @return TimeRange or null for bad request
-   * @throws CalFacadeException on bad date
    */
   public static BwTimeRange getPeriod(final String start,
                                       final String end,
                                       final int defaultField,
                                       final int defaultVal,
                                       final int maxField,
-                                      final int maxVal) throws CalFacadeException {
+                                      final int maxVal) {
     Locale loc = BwLocale.getLocale();
     Calendar startCal = Calendar.getInstance(loc);
     startCal.set(Calendar.HOUR_OF_DAY, 0);
@@ -237,7 +237,7 @@ public class BwDateTimeUtil {
                                       null));   // tzid
   }
 
-  private static Date fromDate(final String dt) throws CalFacadeException {
+  private static Date fromDate(final String dt) {
     try {
       if (dt.contains("T")) {
         if (!dt.contains("-")) {

@@ -20,7 +20,6 @@ package org.bedework.calsvci;
 
 import org.bedework.caldav.util.notifications.NotificationType;
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,10 +39,9 @@ public interface NotificationsI extends Serializable {
    * @param pr - target
    * @param val - the notification
    * @return false for unknown CU
-   * @throws CalFacadeException on fatal error
    */
   boolean send(BwPrincipal pr,
-               NotificationType val) throws CalFacadeException;
+               NotificationType val);
 
   /** Add the given notification to the notification collection for the
    * current principal. Caller should check for notifications enabled if
@@ -51,26 +49,23 @@ public interface NotificationsI extends Serializable {
    *
    * @param val - the notification
    * @return false for no notification or collection
-   * @throws CalFacadeException on fatal error
    */
-  boolean add(NotificationType val) throws CalFacadeException;
+  boolean add(NotificationType val);
 
   /** Update the given notification
    *
    * @param val - the notification
    * @return false for no notification or collection
-   * @throws CalFacadeException on fatal error
    */
-  boolean update(NotificationType val) throws CalFacadeException;
+  boolean update(NotificationType val);
 
   /** Find a notification in the notification collection for the
    * current principal with the given name.
    *
    * @param name - of the notification
    * @return null for no notification or the notification with that name
-   * @throws CalFacadeException on fatal error
    */
-  NotificationType find(String name) throws CalFacadeException;
+  NotificationType find(String name);
 
   /** Find a notification in the notification collection for the
    * given principal with the given name.
@@ -78,89 +73,78 @@ public interface NotificationsI extends Serializable {
    * @param principalHref - target
    * @param name - of the notification
    * @return null for no notification or the notification with that name
-   * @throws CalFacadeException on fatal error
    */
   NotificationType find(String principalHref,
-                        String name) throws CalFacadeException;
+                        String name);
 
   /** Remove a notification in the notification collection for the
    * given principal with the given name.
    *
    * @param principalHref - target
    * @param name - of the notification
-   * @throws CalFacadeException on fatal error
    */
   void remove(String principalHref,
-              String name) throws CalFacadeException;
+              String name);
 
   /** Remove the given notification from the notification collection for the
    * indicated calendar user. Must have access to the collection.
    *
    * @param principalHref - target
    * @param val - the notification
-   * @throws CalFacadeException on fatal error
    */
   void remove(String principalHref,
-              NotificationType val) throws CalFacadeException;
+              NotificationType val);
 
   /** Remove the given notification from the notification collection for the
    * current calendar user.
    *
    * @param val - the notification
-   * @throws CalFacadeException on fatal error
    */
-  void remove(NotificationType val) throws CalFacadeException;
+  void remove(NotificationType val);
 
   /** Remove all the notification from the notification collection for the
    * given calendar user.
    *
    * @param principalHref - the principal
-   * @throws CalFacadeException on fatal error
    */
-  void removeAll(String principalHref) throws CalFacadeException;
+  void removeAll(String principalHref);
 
   /**
    * @return all notifications for this user
-   * @throws CalFacadeException on fatal error
    */
-  List<NotificationType> getAll() throws CalFacadeException;
+  List<NotificationType> getAll();
 
   /**
    * @param type of notification (null for all)
    * @return matching notifications for this user - never null
-   * @throws CalFacadeException on fatal error
    */
-  List<NotificationType> getMatching(QName type) throws CalFacadeException;
+  List<NotificationType> getMatching(QName type);
 
   /**
    * @param pr principal
    * @param type of notification (null for all)
    * @return notifications for the given principal of the given type
-   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getMatching(BwPrincipal pr,
-                                     QName type) throws CalFacadeException;
+                                     QName type);
 
   /**
    * @param href principal href
    * @param type of notification (null for all)
    * @return notifications for the given principal of the given type
-   * @throws CalFacadeException on fatal error
    */
   List<NotificationType> getMatching(String href,
-                                     QName type) throws CalFacadeException;
+                                     QName type);
 
   /** Subscribe to a notification service.
    *
-   * @throws CalFacadeException on fatal error
    */
   void subscribe(String principalHref,
-                 List<String> emails) throws CalFacadeException;
+                 List<String> emails);
 
   /** Subscribe to a notification service.
    *
-   * @throws CalFacadeException on fatal error
    */
   void unsubscribe(String principalHref,
-                   List<String> emails) throws CalFacadeException;
+                   List<String> emails);
 }

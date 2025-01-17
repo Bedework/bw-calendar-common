@@ -24,6 +24,7 @@ import org.bedework.calfacade.annotations.ical.IcalProperties;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.DumpEntity;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.FieldSplitter;
@@ -55,7 +56,7 @@ import java.time.temporal.TemporalAmount;
 import java.util.Calendar;
 import java.util.Comparator;
 
-import static org.bedework.calfacade.exc.CalFacadeException.badDate;
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.badDate;
 
 /** Class to represent an RFC2445 date and datetime type. These are not stored
  * in separate tables but as components of the including class.
@@ -350,7 +351,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
                                    final String date,
                                    final String tzid) {
     if (!dateType && !date.endsWith("Z")) {
-      throw new RuntimeException(CalFacadeException.badDate);
+      throw new CalFacadeException(CalFacadeErrorCode.badDate);
     }
 
     try {
@@ -375,7 +376,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
 
       return bwd;
     } catch (final Throwable t) {
-      throw new RuntimeException(CalFacadeException.badDate);
+      throw new CalFacadeException(CalFacadeErrorCode.badDate);
     }
   }
 

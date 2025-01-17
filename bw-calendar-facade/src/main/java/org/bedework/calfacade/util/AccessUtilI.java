@@ -66,10 +66,8 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    *
    * @param val shareable contained entity - so parent can be located
    * @return parent calendar or null.
-   * @throws CalFacadeException for no access or other failure
    */
-  BwCalendar getParent(BwShareableContainedDbentity<?> val)
-        throws CalFacadeException;
+  BwCalendar getParent(BwShareableContainedDbentity<?> val);
 
   /* ====================================================================
    *                   Access control
@@ -95,20 +93,18 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @param ent        Shareable entity
    * @param aces       Collection of ace objects
    * @param replaceAll true to replace the entire access list.
-   * @throws CalFacadeException for no access or other failure
    */
   void changeAccess(ShareableEntity ent,
                            Collection<Ace> aces,
-                           boolean replaceAll) throws CalFacadeException;
+                           boolean replaceAll);
 
   /** Remove any explicit access for the given who to the given calendar entity.
   *
   * @param ent      Shareable entity
   * @param who      AceWho
-   * @throws CalFacadeException for no access or other failure
   */
  void defaultAccess(ShareableEntity ent,
-                           AceWho who) throws CalFacadeException;
+                           AceWho who);
 
   /** Return a Collection of the objects after checking access
    *
@@ -116,13 +112,11 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @param desiredAccess access we want
    * @param alwaysReturn boolean flag behaviour on no access
    * @return Collection   of checked objects
-   * @throws CalFacadeException for no access or other failure
    */
   Collection<? extends ShareableEntity>
                  checkAccess(Collection<? extends ShareableEntity> ents,
                                 int desiredAccess,
-                                boolean alwaysReturn)
-          throws CalFacadeException;
+                                boolean alwaysReturn);
 
   /** Check access for the given entity. Returns the current access
    *
@@ -143,9 +137,8 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @param desiredAccess access we want
    * @param alwaysReturnResult boolean flag behaviour on no access
    * @return  CurrentAccess
-   * @throws CalFacadeException for no access or other failure
    */
   CurrentAccess checkAccess(ShareableEntity ent,
                             int desiredAccess,
-                        boolean alwaysReturnResult) throws CalFacadeException;
+                        boolean alwaysReturnResult);
 }

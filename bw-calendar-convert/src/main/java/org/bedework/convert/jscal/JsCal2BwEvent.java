@@ -11,7 +11,7 @@ import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwString;
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.ChangeTable;
@@ -127,7 +127,7 @@ public class JsCal2BwEvent {
       /* XXX A guid is required - but are there devices out there without a
        *       guid - and if so how do we handle it?
        */
-      return Response.notOk(resp, failed, CalFacadeException.noGuid);
+      return Response.notOk(resp, failed, CalFacadeErrorCode.noGuid);
     }
 
     /* If we have a recurrence id then we assume this is a detached instance.
@@ -159,7 +159,7 @@ public class JsCal2BwEvent {
       icalEvstart = icalDate.format(dtOnlyP);
     } else if (ridObj == null) {
       // Invalid event - no start
-      return Response.notOk(resp, failed, CalFacadeException.invalidOverride);
+      return Response.notOk(resp, failed, CalFacadeErrorCode.invalidOverride);
     } else {
       icalEvstart = ridObj.getDtval();
     }

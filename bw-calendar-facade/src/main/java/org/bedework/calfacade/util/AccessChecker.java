@@ -39,32 +39,26 @@ public interface AccessChecker extends Serializable {
    * @param desiredAccess access we want
    * @param returnResult true for a result even if access denied
    * @return CurrentAccess
-   * @throws CalFacadeException if returnResult false and no access
    */
   CurrentAccess checkAccess(BwShareableDbentity<?> ent,
                             int desiredAccess,
-                            boolean returnResult)
-          throws CalFacadeException;
+                            boolean returnResult);
 
   /**
    * 
    * @param val to be checked
    * @return null if no access
-   * @throws CalFacadeException if returnResult false and no access
    */
-  CalendarWrapper checkAccess(final BwCalendar val)
-          throws CalFacadeException;
+  CalendarWrapper checkAccess(final BwCalendar val);
 
   /**
    *
    * @param val to be checked
    * @param desiredAccess access we want
    * @return null if no access
-   * @throws CalFacadeException if returnResult false and no access
    */
   CalendarWrapper checkAccess(final BwCalendar val,
-                              int desiredAccess)
-          throws CalFacadeException;
+                              int desiredAccess);
 
   AccessUtilI getAccessUtil();
 }

@@ -22,6 +22,7 @@ import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.base.BwCloneable;
 import org.bedework.calfacade.base.BwDbentity;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
@@ -1066,17 +1067,17 @@ public class BwXproperty extends BwDbentity<BwXproperty>
    * ==================================================================== */
 
   private static void parseParameter(final StreamTokenizer tokeniser,
-                                     final List<Xpar> pars) throws CalFacadeException {
+                                     final List<Xpar> pars) {
 
     try {
       if (tokeniser.nextToken() != StreamTokenizer.TT_WORD) {
-        throw new CalFacadeException(CalFacadeException.badRequest);
+        throw new CalFacadeException(CalFacadeErrorCode.badRequest);
       }
 
       final String paramName = tokeniser.sval;
 
       if (tokeniser.nextToken() != '=') {
-        throw new CalFacadeException(CalFacadeException.badRequest);
+        throw new CalFacadeException(CalFacadeErrorCode.badRequest);
       }
 
       final StringBuilder paramValue = new StringBuilder();

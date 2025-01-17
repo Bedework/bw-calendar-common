@@ -23,7 +23,6 @@ import org.bedework.caldav.util.sharing.InviteType;
 import org.bedework.caldav.util.sharing.ShareResultType;
 import org.bedework.caldav.util.sharing.ShareType;
 import org.bedework.calfacade.BwCalendar;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.SharingReplyResult;
 import org.bedework.calfacade.svc.SubscribeResult;
 
@@ -40,70 +39,62 @@ public interface SharingI extends Serializable {
    * @param col MUST be a sharable collection
    * @param share the request
    * @return list of ok and !ok sharees
-   * @throws CalFacadeException on fatal error
    */
   ShareResultType share(String principalHref,
                         BwCalendar col,
-                        ShareType share) throws CalFacadeException;
+                        ShareType share);
 
   /**
    * @param col MUST be a sharable collection
    * @param share the request
    * @return list of ok and !ok sharees
-   * @throws CalFacadeException on fatal error
    */
   ShareResultType share(BwCalendar col,
-                        ShareType share) throws CalFacadeException;
+                        ShareType share);
 
   /**
    * @param col MUST be current sharees home
    * @param reply the request
    * @return a ReplyResult object.
-   * @throws CalFacadeException on fatal error
    */
   SharingReplyResult reply(BwCalendar col,
-                           InviteReplyType reply) throws CalFacadeException;
+                           InviteReplyType reply);
 
   /**
    * @param col to check
    * @return current invitations
-   * @throws CalFacadeException on fatal error
    */
-  InviteType getInviteStatus(BwCalendar col) throws CalFacadeException;
+  InviteType getInviteStatus(BwCalendar col);
 
   /** Do any cleanup necessary for a collection delete.
    *
    * @param col to delete
    * @param sendNotifications true to notify sharees
-   * @throws CalFacadeException on fatal error
    */
   void delete(BwCalendar col,
-              boolean sendNotifications) throws CalFacadeException;
+              boolean sendNotifications);
 
   /** Publish the collection - that is make it available for subscriptions.
    *
    * @param col to publish
-   * @throws CalFacadeException on fatal error
    */
-  void publish(BwCalendar col) throws CalFacadeException;
+  void publish(BwCalendar col);
 
   /** Unpublish the collection - that is make it unavailable for subscriptions
    * and remove any existing subscriptions.
    *
    * @param col to unpublish
-   * @throws CalFacadeException on fatal error
    */
-  void unpublish(BwCalendar col) throws CalFacadeException;
+  void unpublish(BwCalendar col);
 
   /** Subscribe to the collection - must be a published collection.
    *
    * @param colPath of collection
    * @param subscribedName name for new alias
    * @return path of new alias and flag
-   * @throws CalFacadeException on fatal error
    */
   SubscribeResult subscribe(String colPath,
-                            String subscribedName) throws CalFacadeException;
+                            String subscribedName);
 
   /** Subscribe to an external url.
    *
@@ -113,20 +104,18 @@ public interface SharingI extends Serializable {
    * @param remoteId - may be null
    * @param remotePw  - may be null
    * @return path of new alias and flag
-   * @throws CalFacadeException on fatal error
    */
   SubscribeResult subscribeExternal(String extUrl,
                                     String subscribedName,
                                     int refresh,
                                     String remoteId,
-                                    String remotePw) throws CalFacadeException;
+                                    String remotePw);
 
   /** Unsubscribe the collection - that is col MUST be an alias to
    * another collection. Update any existing invite status for the
    * current principal.
    *
    * @param col alias to unsubscribe
-   * @throws CalFacadeException on fatal error
    */
-  void unsubscribe(BwCalendar col) throws CalFacadeException;
+  void unsubscribe(BwCalendar col);
 }

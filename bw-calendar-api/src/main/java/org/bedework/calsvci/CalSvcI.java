@@ -30,7 +30,6 @@ import org.bedework.calfacade.base.BwUnversionedDbentity;
 import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.base.UpdateFromTimeZonesInfo;
 import org.bedework.calfacade.configs.NotificationProperties;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ifs.Directories;
 import org.bedework.calfacade.indexing.BwIndexer;
 import org.bedework.calfacade.mail.MailerIntf;
@@ -92,17 +91,15 @@ public interface CalSvcI
    * @param domain e.g. example.org
    * @param service name
    * @return key, empty key object or null.
-   * @throws CalFacadeException on fatal error
    */
   byte[] getPublicKey(String domain,
-                      String service) throws CalFacadeException;
+                      String service);
 
   /** Enable/disable db statistics
    *
    * @param enable       boolean true to turn on db statistics collection
-   * @throws CalFacadeException if not admin
    */
-  void setDbStatsEnabled(boolean enable) throws CalFacadeException;
+  void setDbStatsEnabled(boolean enable);
 
   /**
    *
@@ -112,16 +109,14 @@ public interface CalSvcI
 
   /** Dump db statistics
    *
-   * @throws CalFacadeException if not admin
    */
-  void dumpDbStats() throws CalFacadeException;
+  void dumpDbStats();
 
   /** Get db statistics
    *
    * @return Collection of BwStats.StatsEntry objects
-   * @throws CalFacadeException if not admin
    */
-  Collection<StatsEntry> getDbStats() throws CalFacadeException;
+  Collection<StatsEntry> getDbStats();
 
   /** Send a notification event
    *
@@ -142,17 +137,15 @@ public interface CalSvcI
   /** Call to reassociate an entity with the current database session
    *
    * @param val to reattach
-   * @throws CalFacadeException on fatal error
    */
-  void reAttach(BwDbentity<?> val) throws CalFacadeException;
+  void reAttach(BwDbentity<?> val);
 
   /** Call to merge an entity with the current database session
    *
    * @param val to merge
    * @return - merged entity
-   * @throws CalFacadeException on fatal error
    */
-  BwUnversionedDbentity<?> merge(BwUnversionedDbentity<?> val) throws CalFacadeException;
+  BwUnversionedDbentity<?> merge(BwUnversionedDbentity<?> val);
 
   /* ====================================================================
    *                   Factory methods
@@ -161,16 +154,14 @@ public interface CalSvcI
   /** Obtain a dump handler
    *
    * @return DumpIntf handler
-   * @throws CalFacadeException on fatal error
    */
-  DumpIntf getDumpHandler() throws CalFacadeException;
+  DumpIntf getDumpHandler();
 
   /** Obtain a restore handler
    *
    * @return RestoreIntf handler
-   * @throws CalFacadeException on fatal error
    */
-  RestoreIntf getRestoreHandler() throws CalFacadeException;
+  RestoreIntf getRestoreHandler();
 
   /** Obtain an object which handles system parameters
    *
@@ -339,9 +330,8 @@ public interface CalSvcI
    *
    * @param principalHref href
    * @return the preferences for the principal
-   * @throws CalFacadeException on fatal error
    */
-  BwPreferences getPreferences(String principalHref) throws CalFacadeException;
+  BwPreferences getPreferences(String principalHref);
 
   /* ====================================================================
    *                       adminprefs
@@ -353,9 +343,8 @@ public interface CalSvcI
   /** Remove any refs to this object
    *
    * @param val shareable entity
-   * @throws CalFacadeException on fatal error
    */
-  void removeFromAllPrefs(BwShareableDbentity<?> val) throws CalFacadeException;
+  void removeFromAllPrefs(BwShareableDbentity<?> val);
 
   /* ====================================================================
    *                       groups
@@ -370,10 +359,9 @@ public interface CalSvcI
    * @param  account           String group name
    * @param admin          true for an admin group
    * @return BwGroup        group object
-   * @exception CalFacadeException If there's a problem
    */
   BwGroup findGroup(String account,
-                    boolean admin) throws CalFacadeException;
+                    boolean admin);
 
   /* ====================================================================
    *                   Access
@@ -384,20 +372,18 @@ public interface CalSvcI
    * @param ent      BwShareableDbentity
    * @param aces     Collection of ace
    * @param replaceAll true to replace the entire access list.
-   * @throws CalFacadeException on fatal error
    */
   void changeAccess(ShareableEntity ent,
                     Collection<Ace> aces,
-                    boolean replaceAll) throws CalFacadeException;
+                    boolean replaceAll);
 
   /** Remove any explicit access for the given who to the given calendar entity.
    *
    * @param ent      BwShareableDbentity
    * @param who      AceWho
-   * @throws CalFacadeException on fatal error
    */
   void defaultAccess(ShareableEntity ent,
-                     AceWho who) throws CalFacadeException;
+                     AceWho who);
 
   /* ====================================================================
    *                   Timezones
@@ -418,11 +404,9 @@ public interface CalSvcI
    * @param checkOnly  don't update if true.
    * @param info    null on first call, returned object from previous calls.
    * @return UpdateFromTimeZonesInfo staus of the update
-   * @throws CalFacadeException on fatal error
    */
   UpdateFromTimeZonesInfo updateFromTimeZones(String colHref,
                                               int limit,
                                               boolean checkOnly,
-                                              UpdateFromTimeZonesInfo info
-  ) throws CalFacadeException;
+                                              UpdateFromTimeZonesInfo info);
 }

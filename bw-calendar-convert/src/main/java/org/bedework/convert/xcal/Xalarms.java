@@ -182,10 +182,9 @@ public class Xalarms extends Xutil {
    * @param alarm
    * @param validate - true if alarm must be valid and complete
    * @return ValarmType
-   * @throws CalFacadeException
    */
   public static BwAlarm toBwAlarm(final ValarmType alarm,
-                                  final boolean validate) throws CalFacadeException {
+                                  final boolean validate) {
     BwAlarm ba = new BwAlarm();
 
     /* ============ Action =================== */

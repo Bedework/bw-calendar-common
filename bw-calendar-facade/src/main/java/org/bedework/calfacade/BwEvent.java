@@ -5051,7 +5051,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    * @return a version value in microsecords.
    */
   @NoDump
-  public long getMicrosecsVersion() throws CalFacadeException {
+  public long getMicrosecsVersion() {
     try {
       final String[] ct = getCtoken().split("-");
 

@@ -21,7 +21,6 @@ package org.bedework.calsvci;
 import org.bedework.calfacade.BwEventProperty;
 import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.EventPropertiesReference;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.indexing.BwIndexer;
 import org.bedework.calfacade.svc.EnsureEntityExistsResult;
 import org.bedework.util.misc.response.GetEntitiesResponse;
@@ -57,9 +56,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * <p>The returned objects will not be persistent objects.
    *
    * @return Collection     of objects
-   * @throws CalFacadeException on fatal error
    */
-  Collection<T> getPublic() throws CalFacadeException;
+  Collection<T> getPublic();
 
   /** Return all entities satisfying the conditions and to which the current
    * user has edit access.
@@ -70,9 +68,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * report query.
    *
    * @return Collection     of objects
-   * @throws CalFacadeException on fatal error
    */
-  Collection<T> getEditable() throws CalFacadeException;
+  Collection<T> getEditable();
 
   /** Return a cached version of the entity given the uid - if the user has access
    *
@@ -94,9 +91,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @param href       String href
    * @return BwEventProperty object representing the entity in question
    *                     null if it doesn't exist.
-   * @throws CalFacadeException on fatal error
    */
-  T get(String href) throws CalFacadeException;
+  T get(String href);
 
   /** Return all current user entities.
    *
@@ -106,18 +102,16 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * report query.
    *
    * @return Collection     of objects
-   * @throws CalFacadeException on fatal error
    */
-  Collection<T> get() throws CalFacadeException;
+  Collection<T> get();
 
   /** Return an entity given the uid if the user has access
    *
    * @param uid       String uid
    * @return BwEventProperty object representing the entity in question
    *                     null if it doesn't exist.
-   * @throws CalFacadeException on fatal error
    */
-  T getPersistent(String uid) throws CalFacadeException;
+  T getPersistent(String uid);
 
   /** Return cached versions of the entity given the uids - if the user has access
    *
@@ -154,9 +148,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    *
    * @param val          BwString value
    * @return matching BwEventProperty object
-   * @throws CalFacadeException on fatal error
    */
-  T find(BwString val) throws CalFacadeException;
+  T find(BwString val);
 
   /** Return all entities matching the given filter expression to which the
    * user has access.
@@ -179,9 +172,8 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
   /** Update an entity in the database.
    *
    * @param val   BwEventProperty object to be updated
-   * @throws CalFacadeException on fatal error
    */
-  void update(T val) throws CalFacadeException;
+  void update(T val);
 
   /** Delete an entity
    *
@@ -189,17 +181,15 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @return int     0 if it was deleted.
    *                 1 if it didn't exist
    *                 2 if in use
-   * @throws CalFacadeException on fatal error
    */
-  int delete(T val) throws CalFacadeException;
+  int delete(T val);
 
   /** Return references to the entity
    *
    * @param val an entity
    * @return a collection of references.
-   * @throws CalFacadeException on faltal error
    */
-  Collection<EventPropertiesReference> getRefs(T val) throws CalFacadeException;
+  Collection<EventPropertiesReference> getRefs(T val);
 
   /** Ensure an entity exists. If it already does returns the object.
    * If not creates the entity.
@@ -216,8 +206,7 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    *
    * @param indexer to use for this operation
    * @return number of entities reindexed
-   * @throws CalFacadeException on fatal error
    */
-  int reindex(BwIndexer indexer) throws CalFacadeException;
+  int reindex(BwIndexer indexer);
 }
 

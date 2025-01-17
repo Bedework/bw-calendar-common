@@ -246,7 +246,7 @@ public class FilterBuilder implements Logged {
   private CalFilter makeColFilter(final BwCalendar cal,
                                   final boolean applyFilter,
                                   final boolean explicitSelection,
-                                  final ArrayList<String> pathElements) throws CalFacadeException {
+                                  final ArrayList<String> pathElements) {
     /* Result of parsing any filter attached to this entity. */
     FilterBase fltr = null;
 
@@ -310,7 +310,7 @@ public class FilterBuilder implements Logged {
   }
 
   private CalFilter anded(final FilterBase fltr,
-                          final CalFilter calFilter) throws CalFacadeException {
+                          final CalFilter calFilter) {
     if (calFilter == null) {
       /* PRobably some sort of error */
       return null;
@@ -327,7 +327,7 @@ public class FilterBuilder implements Logged {
   }
 
   private CalFilter makeFolderFilter(final BwCalendar val,
-                                     final ArrayList<String> pathElements) throws CalFacadeException {
+                                     final ArrayList<String> pathElements) {
     Collection<BwCalendar> cols = parser.getChildren(val);
 
     OrCalFilter res = new OrCalFilter();
@@ -380,7 +380,7 @@ public class FilterBuilder implements Logged {
   @SuppressWarnings("unchecked")
   private void mergeFilter(final Collection<CalFilter> terms,
                            final CalFilter cf,
-                           final boolean conjunction) throws CalFacadeException {
+                           final boolean conjunction) {
     if (!(cf instanceof EntityCalFilter) ||
         (terms.size() == 0)) {
       terms.add(cf);
@@ -533,7 +533,7 @@ public class FilterBuilder implements Logged {
     }
   }
 
-  private FilterBase parseExpr(final BwCalendar col) throws CalFacadeException {
+  private FilterBase parseExpr(final BwCalendar col) {
     SimpleFilterParser sfp = parser.getParser();
 
     ParseResult pr = sfp.parse(col.getFilterExpr(),

@@ -3,6 +3,7 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.util.ChangeTableEntry;
 import org.bedework.util.calendar.PropertyIndex;
@@ -228,7 +229,7 @@ public class SchedulingInfo {
 
     if (recipients.size() != 1) {
       return Response.error(resp, new CalFacadeException(
-              CalFacadeException.schedulingExpectOneAttendee));
+              CalFacadeErrorCode.schedulingExpectOneAttendee));
     }
 
     resp.setEntity(recipients.values().iterator().next());

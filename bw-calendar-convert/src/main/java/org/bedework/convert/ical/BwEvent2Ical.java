@@ -126,12 +126,11 @@ public class BwEvent2Ical extends IcalUtil {
    * @param tzreg - timezone registry
    * @param currentPrincipal - href for current authenticated user
    * @return Component
-   * @throws CalFacadeException on fatal error
    */
   public static Component convert(final EventInfo ei,
                                   final boolean isOverride,
                                   final TimeZoneRegistry tzreg,
-                                  final String currentPrincipal) throws CalFacadeException {
+                                  final String currentPrincipal) {
     if ((ei == null) || (ei.getEvent() == null)) {
       return null;
     }

@@ -18,6 +18,8 @@
 */
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.badRequest;
+
 /** Exception that indicates we are violating some form of data constraint
  *
  * @author Mike Douglass

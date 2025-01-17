@@ -65,12 +65,11 @@ public class XmlTranslator extends IcalTranslator {
    * @param methodType icalendar method
    * @param pattern to control output
    * @return XML IcalendarType
-   * @throws CalFacadeException on fatal error
    */
   public IcalendarType toXMLIcalendar(final EventInfo val,
                                       final int methodType,
                                       final IcalendarType pattern,
-                                      final boolean wrapXprops) throws CalFacadeException {
+                                      final boolean wrapXprops) {
     final IcalendarType ical = Xutil.initCalendar(prodId, methodType);
     final VcalendarType vcal = ical.getVcalendar().get(0);
 
@@ -140,11 +139,10 @@ public class XmlTranslator extends IcalTranslator {
    * @param vals collection of calendar data
    * @param methodType    int value fromIcalendar
    * @param xml for output
-   * @throws CalFacadeException on fatal error
    */
   public void writeXmlCalendar(final Collection<EventInfo> vals,
                                final int methodType,
-                               final XmlEmit xml) throws CalFacadeException {
+                               final XmlEmit xml) {
     xml.addNs(new XmlEmit.NameSpace(XcalTags.namespace, "X"), false);
 
     xml.openTag(XcalTags.icalendar);
@@ -228,7 +226,7 @@ public class XmlTranslator extends IcalTranslator {
   }
 
   private BaseComponentType matches(final VcalendarType vc,
-                                    final int entityType) throws CalFacadeException {
+                                    final int entityType) {
     if ((vc == null) || (vc.getComponents() == null)) {
       return null;
     }

@@ -18,6 +18,7 @@ under the License.
  */
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.subscriptionLoopDetected;
 
 /** Something doesn't exist
  *

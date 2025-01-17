@@ -47,8 +47,6 @@ public interface AdminGroups extends Directories {
    *
    * @param  owner          BwUser event owner
    * @return BwAdminGroup   group object
-   * @exception CalFacadeException If there's a problem
    * UNUSED??
-  public BwAdminGroup findGroupByEventOwner(BwUser owner)
-      throws CalFacadeException; */
+  public BwAdminGroup findGroupByEventOwner(BwUser owner); */
 }

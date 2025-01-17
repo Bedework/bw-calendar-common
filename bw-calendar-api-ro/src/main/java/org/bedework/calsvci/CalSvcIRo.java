@@ -24,7 +24,6 @@ import org.bedework.calfacade.BwStats;
 import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.configs.AuthProperties;
 import org.bedework.calfacade.configs.SystemProperties;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.filter.SimpleFilterParser;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.ifs.IfInfo;
@@ -94,9 +93,8 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * unauthenticated user.
    *
    * @param name unique name for the suite
-   * @throws CalFacadeException on fatal error
    */
-  void setCalSuite(String name) throws CalFacadeException;
+  void setCalSuite(String name);
 
   /** This structure is set up early during init. Provides information about the
    * current principal.
@@ -113,9 +111,8 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
 
   /** Log the current stats
    *
-   * @throws CalFacadeException if not admin
    */
-  void logStats() throws CalFacadeException;
+  void logStats();
 
   /**
    *
@@ -147,9 +144,8 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * <p>This method should be called before calling open (or after calling
    * close).
    *
-   * @throws CalFacadeException on fatal error
    */
-  void flushAll() throws CalFacadeException;
+  void flushAll();
 
   /** Signal the start of a sequence of operations. These overlap transactions
    * in that there may be 0 to many transactions started and ended within an
@@ -161,9 +157,8 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * opportunity to reacquire (on open) and release (on close) any resources
    * such as connections.
    *
-   * @throws CalFacadeException on fatal error
    */
-  void open() throws CalFacadeException;
+  void open();
 
   /**
    * @return boolean true if open
@@ -172,32 +167,28 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
 
   /**
    * @return boolean true if open and rolled back
-   * @throws CalFacadeException on fatal error
    */
-  boolean isRolledback() throws CalFacadeException;
+  boolean isRolledback();
 
   /** Call on the way out after handling a request..
    *
-   * @throws CalFacadeException on fatal error
    */
-  void close() throws CalFacadeException;
+  void close();
 
   /** Start a (possibly long-running) transaction. In the web environment
    * this might do nothing. The endTransaction method should in some way
    * check version numbers to detect concurrent updates and fail with an
    * exception.
    *
-   * @throws CalFacadeException on fatal error
    */
-  void beginTransaction() throws CalFacadeException;
+  void beginTransaction();
 
   /** End a (possibly long-running) transaction. In the web environment
    * this should in some way check version numbers to detect concurrent updates
    * and fail with an exception.
    *
-   * @throws CalFacadeException on fatal error
    */
-  void endTransaction() throws CalFacadeException;
+  void endTransaction();
 
   /** Call if there has been an error during an update process.
    *
@@ -293,9 +284,8 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
   /** Get an initialised UserAuth object for the current user.
    *
    * @return UserAuth    implementation.
-   * @throws CalFacadeException on fatal error
    */
-  UserAuth getUserAuth() throws CalFacadeException;
+  UserAuth getUserAuth();
 
   /** Check the access for the given entity. Returns the current access
    * or optionally throws a no access exception.
@@ -304,12 +294,10 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * @param desiredAccess access we want
    * @param returnResult true to return a result even if no access
    * @return CurrentAccess never null on return
-   * @throws CalFacadeException if returnResult false and no access
    */
   CurrentAccess checkAccess(ShareableEntity ent,
                             int desiredAccess,
-                            boolean returnResult)
-          throws CalFacadeException;
+                            boolean returnResult);
 
   /* ====================================================================
    *                   Synch Reports
@@ -321,10 +309,9 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    * @param limit - negative for no limit on result set size
    * @param recurse true for effectively sync-level infinite
    * @return report
-   * @throws CalFacadeException on fatal error
    */
   SynchReport getSynchReport(String path,
                              String token,
                              int limit,
-                             boolean recurse) throws CalFacadeException;
+                             boolean recurse);
 }

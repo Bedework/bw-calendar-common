@@ -532,11 +532,9 @@ public class RecurUtil {
    * @param master event
    * @param recurrenceId for the instance.
    * @return instance object filled in.
-   * @throws CalFacadeException
    */
   public static Recurrence fromRecurrencId(final BwEvent master,
-                                           final String recurrenceId)
-          throws CalFacadeException {
+                                           final String recurrenceId) {
     final String stzid = master.getDtstart().getTzid();
     final boolean dateOnly = master.getDtstart().getDateType();
 

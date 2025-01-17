@@ -52,7 +52,7 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
   }
 
 
-  public static SystemProperties getSystemProperties() throws CalFacadeException {
+  public static SystemProperties getSystemProperties() {
     return CalSvcFactoryDefault.getSystemConfig()
                                .getSystemProperties();
   }

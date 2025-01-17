@@ -25,6 +25,7 @@ import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.configs.BasicSystemProperties;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
@@ -325,7 +326,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>>
         }
       }
 
-      throw new CalFacadeException(CalFacadeException.principalNotFound);
+      throw new CalFacadeException(CalFacadeErrorCode.principalNotFound);
     } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
@@ -340,7 +341,7 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>>
     final String root = fromWho.get(whoType);
 
     if (root == null) {
-      throw new AccessException(CalFacadeException.unknownPrincipalType);
+      throw new AccessException(CalFacadeErrorCode.unknownPrincipalType);
     }
 
     return Util.buildPath(true, root, "/", id);

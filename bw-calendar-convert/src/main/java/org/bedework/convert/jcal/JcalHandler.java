@@ -66,7 +66,7 @@ public class JcalHandler implements Serializable {
   public static String toJcal(final Collection<EventInfo> vals,
                               final int methodType,
                               final String currentPrincipal,
-                              final EventTimeZonesRegistry tzreg) throws CalFacadeException {
+                              final EventTimeZonesRegistry tzreg) {
     final StringWriter sw = new StringWriter();
 
     outJcal(sw, vals, methodType, currentPrincipal, tzreg);
@@ -74,7 +74,7 @@ public class JcalHandler implements Serializable {
     return sw.toString();
   }
 
-  public static String toJcal(final Calendar cal) throws CalFacadeException {
+  public static String toJcal(final Calendar cal) {
     final StringWriter sw = new StringWriter();
 
     outJcal(sw, cal);
@@ -83,7 +83,7 @@ public class JcalHandler implements Serializable {
   }
 
   public static void outJcal(final Writer wtr,
-                             final Calendar cal) throws CalFacadeException {
+                             final Calendar cal) {
     try {
       final JsonGenerator jgen = jsonFactory.createGenerator(wtr);
 
@@ -127,7 +127,7 @@ public class JcalHandler implements Serializable {
                              final Collection<EventInfo> vals,
                              final int methodType,
                              final String currentPrincipal,
-                             final EventTimeZonesRegistry tzreg) throws CalFacadeException {
+                             final EventTimeZonesRegistry tzreg) {
     try {
       final JsonGenerator jgen = jsonFactory.createGenerator(wtr);
 
@@ -177,7 +177,7 @@ public class JcalHandler implements Serializable {
   }
 
   private static void outComp(final JsonGenerator jgen,
-                              final Component comp) throws CalFacadeException {
+                              final Component comp) {
     try {
       jgen.writeStartArray();
 
@@ -213,7 +213,7 @@ public class JcalHandler implements Serializable {
   }
 
   private static void calendarProps(final JsonGenerator jgen,
-                                    final int methodType) throws CalFacadeException {
+                                    final int methodType) {
     try {
       jgen.writeString("vcalendar");
 

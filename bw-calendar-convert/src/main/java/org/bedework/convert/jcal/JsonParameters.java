@@ -51,7 +51,7 @@ public class JsonParameters implements Serializable {
   }
 
   public static void addFields(final JsonGenerator jgen,
-                               final Property prop) throws CalFacadeException {
+                               final Property prop) {
     try {
       jgen.writeStartObject();
 

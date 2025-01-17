@@ -117,9 +117,8 @@ public interface SchedulingI extends Serializable {
    *
    * @param ei - the incoming event in the inbox
    * @return ScheduleResult showing how things went.
-   * @throws CalFacadeException on fatal error
    * /
-  ScheduleResult processResponse(EventInfo ei) throws CalFacadeException;
+  ScheduleResult processResponse(EventInfo ei);
   */
 
   /* * The organizer has canceled the meeting - or taken us (the attendee) off
@@ -130,9 +129,8 @@ public interface SchedulingI extends Serializable {
    *
    * @param ei            EventInfo object with method=CANCEL
    * @return ScheduleResult
-   * @throws CalFacadeException on fatal error
    * /
-  ScheduleResult processCancel(EventInfo ei) throws CalFacadeException;
+  ScheduleResult processCancel(EventInfo ei);
   */
 
   /** Respond to a scheduling request. The event object must have the organizer

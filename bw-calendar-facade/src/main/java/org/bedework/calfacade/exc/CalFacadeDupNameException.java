@@ -19,6 +19,7 @@
 
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.duplicateName;
 
 /** Access exception somewhere in the calendar facade
  *

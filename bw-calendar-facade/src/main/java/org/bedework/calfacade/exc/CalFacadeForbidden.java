@@ -20,6 +20,8 @@ package org.bedework.calfacade.exc;
 
 import javax.xml.namespace.QName;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.forbidden;
+
 /** Exception that indicates someone tried a disallowed action
  *
  * @author Mike Douglass

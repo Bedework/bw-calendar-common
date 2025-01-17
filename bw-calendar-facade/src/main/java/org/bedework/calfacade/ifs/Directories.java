@@ -100,7 +100,7 @@ public interface Directories extends Serializable {
      * @exception CalFacadeException If there's a problem
      */
     public abstract void removeGroup(BwGroup<?> group,
-                                     boolean admin) throws CalFacadeException;
+                                     boolean admin);
 
     /** Add a member to a group
      *
@@ -111,7 +111,7 @@ public interface Directories extends Serializable {
      */
     public abstract void addMember(BwGroup<?> group,
                                    BwPrincipal<?> val,
-                                   boolean admin) throws CalFacadeException;
+                                   boolean admin);
 
     /** Remove a member from a group
      *
@@ -122,26 +122,24 @@ public interface Directories extends Serializable {
      */
     public abstract void removeMember(BwGroup<?> group,
                                       BwPrincipal<?> val,
-                                      boolean admin) throws CalFacadeException;
+                                      boolean admin);
 
     /** Get the direct members of the given group.
      *
      * @param  group           BwGroup group object to add
      * @param admin          true for an admin group
      * @return list of members
-     * @throws CalFacadeException
-     */
+       */
     public abstract Collection<BwPrincipal<?>> getMembers(
             BwGroup<?> group,
-            boolean admin) throws CalFacadeException;
+            boolean admin);
 
     /** Return all groups to which this user has some access. Never returns null.
      *
      * @param admin          true for an admin group
      * @return Collection    of BwGroup
-     * @throws CalFacadeException
-     */
-    public abstract Collection<BwGroup<?>> getAll(boolean admin) throws CalFacadeException;
+       */
+    public abstract Collection<BwGroup<?>> getAll(boolean admin);
 
     /** Return all groups of which the given principal is a member. Never returns null.
      *
@@ -150,11 +148,10 @@ public interface Directories extends Serializable {
      * @param val            a principal
      * @param admin          true for an admin group
      * @return Collection    of BwGroup
-     * @throws CalFacadeException
-     */
+       */
     public abstract Collection<BwGroup<?>> getGroups(
             BwPrincipal<?> val,
-            boolean admin) throws CalFacadeException;
+            boolean admin);
   }
 
   /** Provide the callback object
@@ -208,9 +205,8 @@ public interface Directories extends Serializable {
    *
    * @param href ofprincipal
    * @return Principal
-   * @throws CalFacadeException
    */
-  BwPrincipal<?> getPrincipal(String href) throws CalFacadeException;
+  BwPrincipal<?> getPrincipal(String href);
 
   /** Needed for the ischedule service
    *
@@ -228,10 +224,9 @@ public interface Directories extends Serializable {
    * @param rootUrl - url to base search on.
    * @param principalUrl - url of principal or null for current user
    * @return Collection of urls - always non-null
-   * @throws CalFacadeException
    */
   Collection<String>getGroups(String rootUrl,
-                              String principalUrl) throws CalFacadeException;
+                              String principalUrl);
 
   /**
    * @param id account
@@ -303,17 +298,15 @@ public interface Directories extends Serializable {
    *
    * @param val String potential calendar user address
    * @return String valid or null invalid.
-   * @throws CalFacadeException
    */
-  String normalizeCua(String val) throws CalFacadeException;
+  String normalizeCua(String val);
 
   /** Return some sort of directory information for the given principal.
    *
    * @param p                principal for which we want info
    * @return BwPrincipalInfo directory information.
-   * @throws CalFacadeException
    */
-  BwPrincipalInfo getDirInfo(BwPrincipal<?> p) throws CalFacadeException;
+  BwPrincipalInfo getDirInfo(BwPrincipal<?> p);
 
   /** Return matching principals.
    *
@@ -349,10 +342,9 @@ public interface Directories extends Serializable {
    * @param prefs
    * @param pinfo
    * @return boolean true if preferences updated
-   * @throws CalFacadeException
    */
   boolean mergePreferences(BwPreferences prefs,
-                           BwPrincipalInfo pinfo) throws CalFacadeException;
+                           BwPrincipalInfo pinfo);
 
   /** Return all groups of which the given principal is a member. Never returns null.
    *
@@ -360,10 +352,8 @@ public interface Directories extends Serializable {
    *
    * @param val            a principal
    * @return Collection    of BwGroup
-   * @throws CalFacadeException
    */
-  Collection<BwGroup<?>> getGroups(BwPrincipal<?> val)
-          throws CalFacadeException;
+  Collection<BwGroup<?>> getGroups(BwPrincipal<?> val);
 
   /** Return all groups of which the given principal is a member. Never returns null.
    *
@@ -373,10 +363,8 @@ public interface Directories extends Serializable {
    *
    * @param val            a principal
    * @return Collection    of BwGroup
-   * @throws CalFacadeException
    */
-  Collection<BwGroup<?>> getAllGroups(BwPrincipal<?> val)
-          throws CalFacadeException;
+  Collection<BwGroup<?>> getAllGroups(BwPrincipal<?> val);
 
   /** Show whether entries can be modified with this
    * class. Some sites may use other mechanisms.
@@ -389,17 +377,15 @@ public interface Directories extends Serializable {
    *
    * @param  populate      boolean populate with members
    * @return Collection    of BwGroup
-   * @throws CalFacadeException
    */
-  Collection<BwGroup<?>> getAll(boolean populate) throws CalFacadeException;
+  Collection<BwGroup<?>> getAll(boolean populate);
 
   /** Populate the group with a (possibly empty) Collection of members. Does not
    * populate groups which are members.
    *
    * @param  group           BwGroup group object to add
-   * @throws CalFacadeException
    */
-  void getMembers(BwGroup<?> group) throws CalFacadeException;
+  void getMembers(BwGroup<?> group);
 
   /* ====================================================================
    *  The following are available if group maintenance is on.
@@ -410,7 +396,7 @@ public interface Directories extends Serializable {
    * @param  group           BwGroup group object to add
    * @exception CalFacadeException If there's a problem
    */
-  void addGroup(BwGroup<?> group) throws CalFacadeException;
+  void addGroup(BwGroup<?> group);
 
   /** Find a group given its name
    *
@@ -427,7 +413,7 @@ public interface Directories extends Serializable {
    * @exception CalFacadeException   For invalid usertype values.
    */
   void addMember(BwGroup<?> group,
-                 BwPrincipal<?> val) throws CalFacadeException;
+                 BwPrincipal<?> val);
 
   /** Remove a member from a group
    *
@@ -436,28 +422,27 @@ public interface Directories extends Serializable {
    * @exception CalFacadeException   For invalid usertype values.
    */
   void removeMember(BwGroup<?> group,
-                    BwPrincipal<?> val) throws CalFacadeException;
+                    BwPrincipal<?> val);
 
   /** Delete a group
    *
    * @param  group           BwGroup group object to delete
    * @exception CalFacadeException If there's a problem
    */
-  void removeGroup(BwGroup<?> group) throws CalFacadeException;
+  void removeGroup(BwGroup<?> group);
 
   /** update a group. This may have no meaning in some directories.
    *
    * @param  group           BwGroup group object to update
    * @exception CalFacadeException If there's a problem
    */
-  void updateGroup(BwGroup<?> group) throws CalFacadeException;
+  void updateGroup(BwGroup<?> group);
 
   /**
    * @param group
    * @return Collection
-   * @throws CalFacadeException
    */
-  Collection<BwGroup<?>> findGroupParents(BwGroup<?> group) throws CalFacadeException;
+  Collection<BwGroup<?>> findGroupParents(BwGroup<?> group);
 
   /**
    * @return String used to prefix administrative group names to distinguish

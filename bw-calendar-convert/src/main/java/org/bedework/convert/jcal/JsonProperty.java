@@ -63,7 +63,7 @@ import static org.bedework.util.calendar.PropertyIndex.DataType;
 @SuppressWarnings("ConstantConditions")
 public class JsonProperty implements Serializable {
   public static void addFields(final JsonGenerator jgen,
-                               final Property prop) throws CalFacadeException {
+                               final Property prop) {
     try {
       jgen.writeStartArray();
 

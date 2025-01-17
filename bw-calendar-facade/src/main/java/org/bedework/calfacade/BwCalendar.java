@@ -1399,7 +1399,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    */
   @NoDump
   @JsonIgnore
-  public long getMicrosecsVersion() throws CalFacadeException {
+  public long getMicrosecsVersion() {
     try {
       final var lm = getLastmod();
       final var micros =

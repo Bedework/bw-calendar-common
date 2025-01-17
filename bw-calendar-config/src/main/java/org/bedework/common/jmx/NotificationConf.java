@@ -162,9 +162,8 @@ public class NotificationConf extends ConfBase<NotificationPropertiesImpl>
    *
    * @param account of user to run as
    * @return svci object
-   * @throws CalFacadeException on fatal error
    */
-  private CalSvcI getSvci(final String account) throws CalFacadeException {
+  private CalSvcI getSvci(final String account) {
     if ((svci != null) && svci.isOpen()) {
       return svci;
     }

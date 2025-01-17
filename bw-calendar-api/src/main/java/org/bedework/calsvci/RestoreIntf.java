@@ -28,7 +28,6 @@ import org.bedework.calfacade.BwLocation;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwResource;
 import org.bedework.calfacade.BwSystem;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwAuthUser;
 import org.bedework.calfacade.svc.BwCalSuite;
@@ -228,9 +227,8 @@ public interface RestoreIntf {
   /**
    * @param href of principal
    * @return BwPrincipal
-   * @throws CalFacadeException on fatal error
    */
-  BwPrincipal getPrincipal(String href) throws CalFacadeException;
+  BwPrincipal getPrincipal(String href);
 
   /** Save a single root calendar - no parent is set in the entity
    *
@@ -279,10 +277,9 @@ public interface RestoreIntf {
    * @param shareeHref - the sharee
    * @param a          - access
    * @return indication of how it went
-   * @throws CalFacadeException on fatal error
    */
   FixAliasResult fixSharee(BwCalendar col,
                            String shareeHref,
-                           AccessType a) throws CalFacadeException;
+                           AccessType a);
 }
 

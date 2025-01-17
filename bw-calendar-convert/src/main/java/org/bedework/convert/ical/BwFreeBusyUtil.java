@@ -54,10 +54,9 @@ public class BwFreeBusyUtil extends IcalUtil {
    * @param cb
    * @param val
    * @return BwFreeBusy
-   * @throws CalFacadeException
    */
   public static EventInfo toFreeBusy(final IcalCallback cb,
-                                     final VFreeBusy val) throws CalFacadeException {
+                                     final VFreeBusy val) {
     if (val == null) {
       return null;
     }

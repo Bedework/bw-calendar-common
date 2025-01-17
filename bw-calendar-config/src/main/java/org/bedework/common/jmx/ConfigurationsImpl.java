@@ -118,9 +118,8 @@ public final class ConfigurationsImpl
 
   /** This class acts as the mbean for the system properties
    *
-   * @throws CalFacadeException on error
    */
-  public ConfigurationsImpl() throws CalFacadeException {
+  public ConfigurationsImpl() {
     super("org.bedework.bwengine:service=system",
           confDirName,
           Configurations.systemPropsNamePart);
@@ -214,9 +213,8 @@ public final class ConfigurationsImpl
 
   /**
    * @return name for unauthenticated properties mbean
-   * @throws CalFacadeException on error
    */
-  public static ObjectName getUnauthpropsName() throws CalFacadeException {
+  public static ObjectName getUnauthpropsName() {
     try {
       return new ObjectName(getServiceName(
               Configurations.unauthPropsNamePart));
@@ -227,9 +225,8 @@ public final class ConfigurationsImpl
 
   /**
    * @return name for authenticated properties mbean
-   * @throws CalFacadeException on error
    */
-  public static ObjectName getAuthpropsName() throws CalFacadeException {
+  public static ObjectName getAuthpropsName() {
     try {
       return new ObjectName(getServiceName(
               Configurations.authPropsNamePart));
@@ -240,9 +237,8 @@ public final class ConfigurationsImpl
 
   /**
    * @return name for system properties mbean
-   * @throws CalFacadeException on error
    */
-  public static ObjectName getSyspropsName() throws CalFacadeException {
+  public static ObjectName getSyspropsName() {
     try {
       return new ObjectName(getServiceName(
               Configurations.systemPropsNamePart));
@@ -251,7 +247,7 @@ public final class ConfigurationsImpl
     }
   }
 
-  private synchronized void checkMbeansInstalled() throws CalFacadeException {
+  private synchronized void checkMbeansInstalled() {
     if (configured) {
       return;
     }
@@ -484,7 +480,7 @@ public final class ConfigurationsImpl
     }
   }
 
-  private AuthProperties getAuthProps(final boolean auth) throws CalFacadeException {
+  private AuthProperties getAuthProps(final boolean auth) {
     try {
       final ObjectName mbeanName;
 
@@ -1032,7 +1028,7 @@ public final class ConfigurationsImpl
 
   private CalSvcI svci;
 
-  private CalSvcI getSvci() throws CalFacadeException {
+  private CalSvcI getSvci() {
     if (getConfig() == null) {
       return null;
     }

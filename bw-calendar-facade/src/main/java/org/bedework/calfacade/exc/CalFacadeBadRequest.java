@@ -18,6 +18,8 @@
 */
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.badRequest;
+
 /** Exception that indicates someone sent a bad request
  *
  * @author Mike Douglass

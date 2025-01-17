@@ -130,7 +130,7 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
    *                   non-db methods
    * ==================================================================== */
 
-  public InputStream getBinaryStream() throws CalFacadeException {
+  public InputStream getBinaryStream() {
     if (getValue() != null) {
       try {
         return getValue().getBinaryStream();

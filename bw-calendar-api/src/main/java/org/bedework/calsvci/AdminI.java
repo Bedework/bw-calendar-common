@@ -20,7 +20,6 @@ package org.bedework.calsvci;
 
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwEvent;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -40,11 +39,10 @@ public interface AdminI extends Serializable {
    * @param start start index in the batch - 0 for the first
    * @param count count of results we want
    * @return collection of String paths or null for no more
-   * @throws CalFacadeException
    */
   public Collection<String> getChildCollections(String parentPath,
                                                 int start,
-                                                int count) throws CalFacadeException;
+                                                int count);
 
   /** Obtain the next batch of children names for the supplied path.
    *  A path of null will return the system roots. These are the names
@@ -54,11 +52,10 @@ public interface AdminI extends Serializable {
    * @param start start index in the batch - 0 for the first
    * @param count count of results we want
    * @return collection of String names or null for no more
-   * @throws CalFacadeException on fatal error
    */
   public Collection<String> getChildEntities(String parentPath,
                                              int start,
-                                             int count) throws CalFacadeException;
+                                             int count);
 
   /* ====================================================================
    *                   Alarms
@@ -74,18 +71,14 @@ public interface AdminI extends Serializable {
    *
    * @param triggerTime
    * @return Collection of unexpired alarms.
-   * @throws CalFacadeException
    */
-  public abstract Collection<BwAlarm> getUnexpiredAlarms(long triggerTime)
-          throws CalFacadeException;
+  public abstract Collection<BwAlarm> getUnexpiredAlarms(long triggerTime);
 
   /** Given an alarm return the associated event(s)
    *
    * @param alarm
    * @return an event.
-   * @throws CalFacadeException
    */
-  public abstract Collection<BwEvent> getEventsByAlarm(BwAlarm alarm)
-          throws CalFacadeException;
+  public abstract Collection<BwEvent> getEventsByAlarm(BwAlarm alarm);
 
 }

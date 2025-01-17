@@ -24,7 +24,6 @@ import org.bedework.access.PrivilegeSet;
 import org.bedework.access.WhoDefs;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.configs.BasicSystemProperties;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.misc.Util;
 
 import java.io.Serializable;
@@ -75,9 +74,8 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
   /**
    * @param href principal href
    * @return AccessPrincipal or null for not valid
-   * @throws CalFacadeException
    */
-  public abstract AccessPrincipal getPrincipal(String href) throws CalFacadeException;
+  public abstract AccessPrincipal getPrincipal(String href);
 
   /**
    * @return the path for calendar home for the current principal, e.g. /user/douglm

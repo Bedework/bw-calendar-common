@@ -78,9 +78,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
 
   /**
    * @return int
-   * @throws CalFacadeException
    */
-  public int next() throws CalFacadeException {
+  public int next() {
     try {
       return nextToken();
     } catch (IOException e) {
@@ -92,9 +91,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    * Asserts that the next token in the stream matches the specified token.
    *
    * @param token expected token
-   * @throws CalFacadeException
    */
-  public void assertToken(final int token) throws CalFacadeException {
+  public void assertToken(final int token) {
     try {
       if (nextToken() != token) {
         throw new CalFacadeBadRequest("Expected [" + token + "], read [" +
@@ -114,16 +112,14 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
   }
 
   /**
-   * @throws CalFacadeException
    */
-  public void assertWord() throws CalFacadeException {
+  public void assertWord() {
     assertToken(StreamTokenizer.TT_WORD);
   }
 
   /**
-   * @throws CalFacadeException
    */
-  public void assertString() throws CalFacadeException {
+  public void assertString() {
     if (testToken('"') || testToken('\'')) {
       return;
     }
@@ -134,9 +130,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
 
   /**
    * @return true if it's a quoted string
-   * @throws CalFacadeException
    */
-  public boolean testString() throws CalFacadeException {
+  public boolean testString() {
     return testToken('"') || testToken('\'');
   }
 
@@ -145,9 +140,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    * This method is case-sensitive.
    *
    * @param token
-   * @throws CalFacadeException
    */
-  public void assertToken(final String token) throws CalFacadeException {
+  public void assertToken(final String token) {
     assertToken(token, false);
   }
 
@@ -156,9 +150,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    *
    * @param token expected token
    * @param ignoreCase
-   * @throws CalFacadeException
    */
-  public void assertToken(final String token, final boolean ignoreCase) throws CalFacadeException {
+  public void assertToken(final String token, final boolean ignoreCase) {
     // ensure next token is a word token..
     assertWord();
 
@@ -190,9 +183,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    *
    * @param token
    * @return boolean
-   * @throws CalFacadeException
    */
-  public boolean testToken(final int token) throws CalFacadeException {
+  public boolean testToken(final int token) {
     try {
       boolean res = nextToken() == token;
 
@@ -212,9 +204,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    *
    * @param token expected token
    * @return int
-   * @throws CalFacadeException
    */
-  public boolean testToken(final String token) throws CalFacadeException {
+  public boolean testToken(final String token) {
     return testToken(token, true);
   }
 
@@ -224,9 +215,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
    * @param token expected token
    * @param ignoreCase
    * @return boolean
-   * @throws CalFacadeException
    */
-  public boolean testToken(final String token, final boolean ignoreCase) throws CalFacadeException {
+  public boolean testToken(final String token, final boolean ignoreCase) {
     // ensure next token is a word token..
     if (!testToken(StreamTokenizer.TT_WORD)) {
       return false;
@@ -247,9 +237,8 @@ public class SfpTokenizer extends StreamTokenizer implements Logged {
 
   /**
    * Absorbs extraneous newlines.
-   * @throws CalFacadeException
    */
-  public void skipWhitespace() throws CalFacadeException {
+  public void skipWhitespace() {
     while (true) {
       assertToken(StreamTokenizer.TT_EOL);
     }

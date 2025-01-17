@@ -20,7 +20,6 @@ package org.bedework.calsvci;
 
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwSystem;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -34,38 +33,33 @@ public interface SysparsI extends Serializable {
   /** Get the (possibly cached) system pars using name supplied at init
    *
    * @return BwSystem object
-   * @throws CalFacadeException if not admin
    */
-  BwSystem get() throws CalFacadeException;
+  BwSystem get();
 
   /** Get the system pars given name - will update cache object if the name is
    * the current system name.
    *
    * @param name
    * @return BwSystem object
-   * @throws CalFacadeException if not admin
    */
-  BwSystem get(String name) throws CalFacadeException;
+  BwSystem get(String name);
 
   /** Get the list of root accounts.
    *
    * @return Collection of String
-   * @throws CalFacadeException
    */
-  Collection<String> getRootUsers() throws CalFacadeException;
+  Collection<String> getRootUsers();
 
   /** See if this is a calendar super user
    *
    * @param val
    * @return boolean true for a super user
-   * @throws CalFacadeException
    */
-  boolean isRootUser(BwPrincipal val) throws CalFacadeException;
+  boolean isRootUser(BwPrincipal val);
 
   /** Test for the presence of syspars. Helps ensure an empty system.
    *
    * @return true if BwSystem object is present in db
-   * @throws CalFacadeException if not admin
    */
-  boolean present() throws CalFacadeException;
+  boolean present();
 }

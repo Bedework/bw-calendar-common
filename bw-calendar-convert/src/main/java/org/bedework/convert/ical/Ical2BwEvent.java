@@ -33,7 +33,7 @@ import org.bedework.calfacade.BwRelatedTo;
 import org.bedework.calfacade.BwRequestStatus;
 import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.BwXproperty;
-import org.bedework.calfacade.exc.CalFacadeException;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.util.ChangeTable;
@@ -249,7 +249,7 @@ public class Ical2BwEvent extends IcalUtil {
         /* XXX A guid is required - but are there devices out there without a
          *       guid - and if so how do we handle it?
          */
-        return Response.notOk(resp, failed, CalFacadeException.noGuid);
+        return Response.notOk(resp, failed, CalFacadeErrorCode.noGuid);
       }
 
       /* See if we have a recurrence id */
@@ -1253,7 +1253,7 @@ public class Ical2BwEvent extends IcalUtil {
     if (methodType == ScheduleMethods.methodTypePublish) {
       if (cb.getStrictness() == IcalCallback.conformanceStrict) {
         return Response.notOk(new Response(), failed,
-                              CalFacadeException.attendeesInPublish);
+                              CalFacadeErrorCode.attendeesInPublish);
       }
 
       //if (cb.getStrictness() == IcalCallback.conformanceWarn) {

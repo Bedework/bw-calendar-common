@@ -36,7 +36,7 @@ public class RetrieveList {
   private final static String etagName = WebdavTags.getetag.toString();
 
   public static List<BwIcalPropertyInfoEntry> getRetrieveList(
-          final List<String> retrieveList) throws CalFacadeException {
+          final List<String> retrieveList) {
 
     if (retrieveList == null) {
       return null;
@@ -57,7 +57,7 @@ public class RetrieveList {
         pi = PropertyInfoIndex.fromName(pname);
         if (pi == null) {
           continue;
-//          throw new CalFacadeException(CalFacadeException.unknownProperty,
+//          throw new CalFacadeException(CalFacadeErrorCode.unknownProperty,
 //                                       pname);
         }
       }

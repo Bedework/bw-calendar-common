@@ -19,6 +19,7 @@
 
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.badDate;
 
 /** Exception that indicates someone is using a bad date
  *

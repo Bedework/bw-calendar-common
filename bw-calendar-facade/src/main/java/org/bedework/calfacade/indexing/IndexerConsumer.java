@@ -15,7 +15,7 @@ public class IndexerConsumer {
     this.indexer = indexer;
   }
 
-  public void consume(final Object o) throws CalFacadeException {
+  public void consume(final Object o) {
     indexer.indexEntity(0);
   }
 }

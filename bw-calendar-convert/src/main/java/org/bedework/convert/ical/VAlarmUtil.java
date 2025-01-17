@@ -69,7 +69,6 @@ public class VAlarmUtil extends IcalUtil {
    * @param ev bedework event object
    * @param currentPrincipal - href for current authenticated user
    * @param chg change table
-   * @throws CalFacadeException on fatal error
    */
   public static Response processAlarm(final IcalCallback cb,
                                       final Component val,
@@ -237,11 +236,10 @@ public class VAlarmUtil extends IcalUtil {
    * @param ev the event
    * @param comp representing the event
    * @param currentPrincipal - href for current authenticated user
-   * @throws CalFacadeException on fatal error
    */
   public static void processEventAlarm(final BwEvent ev,
                                        final Component comp,
-                                       final String currentPrincipal) throws CalFacadeException {
+                                       final String currentPrincipal) {
     if (currentPrincipal == null) {
       // No alarms for unauthenticated users.
       return;
@@ -274,7 +272,7 @@ public class VAlarmUtil extends IcalUtil {
   }
 
   private static VAlarm setAlarm(final BwEvent ev,
-                                 final BwAlarm val) throws CalFacadeException {
+                                 final BwAlarm val) {
     try {
       final VAlarm alarm = new VAlarm();
 
@@ -368,7 +366,7 @@ public class VAlarmUtil extends IcalUtil {
   }
 
   private static void checkRequiredProperty(final String val,
-                                            final String name) throws CalFacadeException {
+                                            final String name) {
     if (val == null) {
       throw new CalFacadeException("org.bedework.icalendar.missing.required.property",
                                    name);

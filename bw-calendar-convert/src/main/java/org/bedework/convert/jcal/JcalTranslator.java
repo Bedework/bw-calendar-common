@@ -35,10 +35,9 @@ public class JcalTranslator extends IcalTranslator {
    * @param val event
    * @param methodType icalendar method
    * @return JSON jcal
-   * @throws CalFacadeException on fatal error
    */
   public String toJcal(final EventInfo val,
-                       final int methodType) throws CalFacadeException {
+                       final int methodType) {
     String currentPrincipal = null;
     final BwPrincipal principal = cb.getPrincipal();
 
@@ -57,9 +56,8 @@ public class JcalTranslator extends IcalTranslator {
   /**
    * @param val calendar object
    * @return JSON jcal
-   * @throws CalFacadeException on fatal error
    */
-  public static String toJcal(final Calendar val) throws CalFacadeException {
+  public static String toJcal(final Calendar val) {
     return JcalHandler.toJcal(val);
   }
 
@@ -68,11 +66,10 @@ public class JcalTranslator extends IcalTranslator {
    * @param vals collection of calendar data
    * @param methodType    int value fromIcalendar
    * @param wtr for output
-   * @throws CalFacadeException on fatal error
    */
   public void writeJcal(final Collection<EventInfo> vals,
                         final int methodType,
-                        final Writer wtr) throws CalFacadeException {
+                        final Writer wtr) {
 
     String currentPrincipal = null;
     final BwPrincipal principal = cb.getPrincipal();

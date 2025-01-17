@@ -830,11 +830,10 @@ public class BwAlarm extends BwOwnedDbentity<BwAlarm>
    * @param start for instance to base this on 
    * @param previousTrigger null for first 
    *  @return Date   next trigger time as a date object
-   *  @throws CalFacadeException on error
    */
   @NoDump
   public Date getNextTriggerDate(final BwDateTime start,
-                                 final Date previousTrigger) throws CalFacadeException {
+                                 final Date previousTrigger) {
     if (previousTrigger == null) {
       // First time
       triggerDate = null;
@@ -862,10 +861,9 @@ public class BwAlarm extends BwOwnedDbentity<BwAlarm>
    * alarm.
    *
    *  @return Date   trigger time as a date object
-   *  @throws CalFacadeException on error
    */
   @NoDump
-  public Date getTriggerDate(final BwDateTime start) throws CalFacadeException {
+  public Date getTriggerDate(final BwDateTime start) {
     try {
       if (triggerDate != null) {
         return triggerDate;

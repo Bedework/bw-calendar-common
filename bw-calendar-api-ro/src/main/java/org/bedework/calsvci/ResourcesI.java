@@ -19,7 +19,6 @@
 package org.bedework.calsvci;
 
 import org.bedework.calfacade.BwResource;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.indexing.BwIndexer;
 
 import java.io.Serializable;
@@ -43,71 +42,63 @@ public interface ResourcesI extends Serializable {
    *
    * @param  val       resource with attached content
    * @param returnIfExists  false to throw an exception
-   * @throws CalFacadeException for errors including duplicate name
    * @return true if created, false if already exists
    */
   boolean save(BwResource val,
-               boolean returnIfExists) throws CalFacadeException;
+               boolean returnIfExists);
 
   /** Save a notification resource.
    * The collection MUST exist and MUST be a notification collection.
    * The named resource MUST NOT exist
    *
    * @param  val       resource with attached content
-   * @throws CalFacadeException for errors including duplicate name
    * @return true if created, false if already exists
    */
-  boolean saveNotification(BwResource val) throws CalFacadeException;
+  boolean saveNotification(BwResource val);
 
   /** Get a resource given the path - does not get content
    *
    * @param  path     String path to resource
    * @return BwResource null for unknown resource
-   * @throws CalFacadeException on fatal error
    */
-  BwResource get(String path) throws CalFacadeException;
+  BwResource get(String path);
 
   /** Retrieve resource content given the resource. It will be set in the resource
    * object
    *
    * @param  val BwResource
-   * @throws CalFacadeException on fatal error
    */
-  void getContent(BwResource val) throws CalFacadeException;
+  void getContent(BwResource val);
 
   /** Get resources to which this user has access - content is not fetched.
    *
    * @param  path           String path to containing collection
    * @return List     of BwResource
-   * @throws CalFacadeException on fatal error
    */
-  List<BwResource> getAll(String path) throws CalFacadeException;
+  List<BwResource> getAll(String path);
 
   /** Get resources to which this user has access - content is not fetched.
    *
    * @param  path           String path to containing collection
    * @param count this many
    * @return List     of BwResource
-   * @throws CalFacadeException on fatal error
    */
   List<BwResource> get(String path,
-                       int count) throws CalFacadeException;
+                       int count);
 
   /** Update a resource.
    *
    * @param  val          resource
    * @param updateContent if true we also update the content
-   * @throws CalFacadeException for errors including duplicate name
    */
   void update(BwResource val,
-              boolean updateContent) throws CalFacadeException;
+              boolean updateContent);
 
   /** Delete a resource and content given the path
    *
    * @param  path     String path to resource
-   * @throws CalFacadeException on fatal error
    */
-  void delete(String path) throws CalFacadeException;
+  void delete(String path);
 
   /** Move or copy the given resource to the destination collection.
    *
@@ -117,13 +108,12 @@ public interface ResourcesI extends Serializable {
    * @param copy      true for copying
    * @param overwrite destination exists
    * @return true if destination created (i.e. not updated)
-   * @throws CalFacadeException on fatal error
    */
   boolean copyMove(BwResource val,
                    String to,
                    String name,
                    boolean copy,
-                   boolean overwrite) throws CalFacadeException;
+                   boolean overwrite);
 
   class ReindexCounts {
     public long resources;
@@ -138,9 +128,8 @@ public interface ResourcesI extends Serializable {
    * @param contentIndexer to use for this operation
    * @param collectionIndexer to use for this operation
    * @return number of resources and resourcecontents reindexed
-   * @throws CalFacadeException on fatal error
    */
   ReindexCounts reindex(BwIndexer indexer,
                 BwIndexer contentIndexer,
-                BwIndexer collectionIndexer) throws CalFacadeException;
+                BwIndexer collectionIndexer);
 }

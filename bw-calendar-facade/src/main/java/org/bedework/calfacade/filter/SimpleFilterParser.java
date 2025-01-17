@@ -28,6 +28,7 @@ import org.bedework.caldav.util.filter.PresenceFilter;
 import org.bedework.caldav.util.filter.parse.Filters;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwCategory;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo.BwIcalPropertyInfoEntry;
@@ -221,9 +222,8 @@ public abstract class SimpleFilterParser implements Logged {
    *
    * @param path of collection
    * @return collection object or null.
-   * @throws CalFacadeException on error
    */
-  public abstract BwCalendar getCollection(String path) throws CalFacadeException;
+  public abstract BwCalendar getCollection(String path);
 
   /** Attempt to get collection referenced by the alias. For an internal alias
    * the result will also be set in the aliasTarget property of the parameter.
@@ -232,20 +232,17 @@ public abstract class SimpleFilterParser implements Logged {
    * @param resolveSubAlias - if true and the alias points to an alias, resolve
    *                  down to a non-alias.
    * @return BwCalendar
-   * @throws CalFacadeException on error
    */
   public abstract BwCalendar resolveAlias(BwCalendar val,
-                                          boolean resolveSubAlias) throws CalFacadeException;
+                                          boolean resolveSubAlias);
 
   /** Returns children of the given collection to which the current user has
    * some access.
    *
    * @param  col          parent collection
    * @return Collection   of BwCalendar
-   * @throws CalFacadeException on error
    */
-  public abstract Collection<BwCalendar> getChildren(BwCalendar col)
-          throws CalFacadeException;
+  public abstract Collection<BwCalendar> getChildren(BwCalendar col);
 
   /** An unsatisfactory approach - we'll special case categories for the moment
    * to see if this works. When using these filters we need to search for a
@@ -256,9 +253,8 @@ public abstract class SimpleFilterParser implements Logged {
    *
    * @param name of category
    * @return category entity or null.
-   * @throws CalFacadeException on error
    */
-  public abstract BwCategory getCategoryByName(String name) throws CalFacadeException;
+  public abstract BwCategory getCategoryByName(String name);
 
   /** A slightly better approach - we'll special case categories for the moment
    * to see if this works. When using these filters we need to search for a
@@ -279,9 +275,8 @@ public abstract class SimpleFilterParser implements Logged {
    *
    * @param path for view
    * @return view or null
-   * @throws CalFacadeException on error
    */
-  public abstract BwView getView(String path) throws CalFacadeException;
+  public abstract BwView getView(String path);
 
   /** A virtual path might be for example "/user/adgrp_Eng/Lectures/Lectures"
    * which has two two components<ul>
@@ -295,10 +290,8 @@ public abstract class SimpleFilterParser implements Logged {
    *
    * @param vpath the virtual path
    * @return collection of collection objects - null for bad vpath
-   * @throws CalFacadeException on error
    */
-  public abstract Collection<BwCalendar> decomposeVirtualPath(final String vpath)
-          throws CalFacadeException;
+  public abstract Collection<BwCalendar> decomposeVirtualPath(final String vpath);
 
   /**
    *
@@ -701,7 +694,7 @@ public abstract class SimpleFilterParser implements Logged {
     final FilterBase pfilter = makePropFilter(pis, oper.op);
 
     if (pfilter == null) {
-      error(new CalFacadeException(CalFacadeException.filterBadProperty,
+      error(new CalFacadeException(CalFacadeErrorCode.filterBadProperty,
                                    listProps(pis) +
                                            " source: " + source));
       throw parseResult.fail("Bad property: " + listProps(pis) +

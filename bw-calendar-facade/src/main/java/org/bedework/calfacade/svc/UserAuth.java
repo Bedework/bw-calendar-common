@@ -19,7 +19,6 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -74,43 +73,37 @@ public interface UserAuth extends Serializable {
     /** Allows this class to be passed to other admin classes
      *
      * @return UserAuth
-     * @throws CalFacadeException
-     */
-    public abstract UserAuth getUserAuth() throws CalFacadeException;
+       */
+    public abstract UserAuth getUserAuth();
 
     /** Delete the entry
      *
      * @param val the authuser object
-     * @throws CalFacadeException
-     */
-    public abstract void delete(final BwAuthUser val) throws CalFacadeException;
+       */
+    public abstract void delete(final BwAuthUser val);
 
     /** Save a new entry
      *
      * @param val the authuser object
-     * @throws CalFacadeException
-     */
-    public abstract void add(final BwAuthUser val) throws CalFacadeException;
+       */
+    public abstract void add(final BwAuthUser val);
 
     /** Update an existing entry
      *
      * @param val the authuser object
-     * @throws CalFacadeException
-     */
-    public abstract void update(final BwAuthUser val) throws CalFacadeException;
+       */
+    public abstract void update(final BwAuthUser val);
 
     /**
      * @param href - principal href for the entry
      * @return auth user with preferences or null
-     * @throws CalFacadeException
-     */
-    public abstract BwAuthUser getAuthUser(final String href) throws CalFacadeException;
+       */
+    public abstract BwAuthUser getAuthUser(final String href);
 
     /**
      * @return list of all auth user entries
-     * @throws CalFacadeException
-     */
-    public abstract List<BwAuthUser> getAll() throws CalFacadeException;
+       */
+    public abstract List<BwAuthUser> getAll();
   }
 
   /* ====================================================================
@@ -128,9 +121,8 @@ public interface UserAuth extends Serializable {
    * altogether.
    *
    * @param  cb        CallBack object
-   * @exception CalFacadeException If there's a problem
    */
-  void initialise(CallBack cb) throws CalFacadeException;
+  void initialise(CallBack cb);
 
   /* ===================================================================
    *  The following should not change the state of the current users
@@ -151,16 +143,14 @@ public interface UserAuth extends Serializable {
   /** Add the user entry
    *
    * @param  val      users entry
-   * @throws CalFacadeException
    */
-  void addUser(BwAuthUser val) throws CalFacadeException;
+  void addUser(BwAuthUser val);
 
   /** Update the user entry
    *
    * @param  val      users entry
-   * @throws CalFacadeException
    */
-  void updateUser(BwAuthUser val) throws CalFacadeException;
+  void updateUser(BwAuthUser val);
 
   /** Return the given authorised user. Will always return an entry (except for
    * exceptional conditions.) An unauthorised user will have a usertype of
@@ -168,14 +158,12 @@ public interface UserAuth extends Serializable {
    *
    * @param  userid        String user id
    * @return BwAuthUser    users entry
-   * @throws CalFacadeException
    */
-  BwAuthUser getUser(String userid) throws CalFacadeException;
+  BwAuthUser getUser(String userid);
 
   /** Return a collection of all authorised users
    *
    * @return Collection      of BwAuthUser for users with any special authorisation.
-   * @throws CalFacadeException
    */
-  Collection<BwAuthUser> getAll() throws CalFacadeException;
+  Collection<BwAuthUser> getAll();
 }

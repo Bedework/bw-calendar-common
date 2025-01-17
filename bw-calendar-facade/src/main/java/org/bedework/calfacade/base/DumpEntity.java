@@ -22,6 +22,7 @@ import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.Dump.DumpFormat;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.NoWrap;
+import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
@@ -533,7 +534,7 @@ public class DumpEntity<T> implements Logged {
     if (dt == DumpType.reference) {
       if ((d == null) || (d.keyFields().length == 0)) {
         error("No key fields defined for class " + getClass().getCanonicalName());
-        throw new RuntimeException(CalFacadeException.noKeyFields);
+        throw new CalFacadeException(CalFacadeErrorCode.noKeyFields);
       }
       keyMethods = new ArrayList<>();
       for (final String f: d.keyFields()) {

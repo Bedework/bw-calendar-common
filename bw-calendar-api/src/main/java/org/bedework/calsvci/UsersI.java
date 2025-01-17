@@ -19,7 +19,6 @@
 package org.bedework.calsvci;
 
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,9 +40,8 @@ public interface UsersI extends Serializable {
    *
    * @param val           String user id
    * @return BwUser       representing the user
-   * @throws CalFacadeException
    */
-  public BwPrincipal<?> getAlways(String val) throws CalFacadeException;
+  public BwPrincipal<?> getAlways(String val);
 
   /** Find the principal with the given account path.
    *
@@ -55,30 +53,26 @@ public interface UsersI extends Serializable {
   /** Add an entry for the user.
    *
    * @param account
-   * @throws CalFacadeException
    */
-  public void add(String account) throws CalFacadeException;
+  public void add(String account);
 
   /** Update a principal.
    *
    * @param principal
-   * @throws CalFacadeException
    */
-  public void update(BwPrincipal<?> principal) throws CalFacadeException;
+  public void update(BwPrincipal<?> principal);
 
   /** Remove a principal. This will delete all traces of the principal from the system.
    *
    * @param pr
-   * @throws CalFacadeException
    */
-  public void remove(BwPrincipal<?> pr) throws CalFacadeException;
+  public void remove(BwPrincipal<?> pr);
 
   /** Can be called after init to flag the arrival of a user.
    *
    * @param val       principal logging on
-   * @throws CalFacadeException
    */
-  public void logon(BwPrincipal<?> val) throws CalFacadeException;
+  public void logon(BwPrincipal<?> val);
 
   /** Set up collections and principal home.
    *
@@ -97,8 +91,7 @@ public interface UsersI extends Serializable {
    * @param start         Position to start
    * @param count         Number we want
    * @return list of hrefs - null for no more
-   * @throws CalFacadeException
    */
   List<String> getPrincipalHrefs(int start,
-                                 int count) throws CalFacadeException;
+                                 int count);
 }

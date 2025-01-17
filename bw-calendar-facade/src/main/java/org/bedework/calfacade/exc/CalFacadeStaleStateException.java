@@ -19,6 +19,7 @@
 
 package org.bedework.calfacade.exc;
 
+import static org.bedework.calfacade.exc.CalFacadeErrorCode.staleState;
 
 /** Exception that indicates somethign changed in the db while we were away.
  *

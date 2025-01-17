@@ -128,13 +128,12 @@ public class ToXEvent extends Xutil {
    * @param pattern - if non-null limit returned components and values to those
    *                  supplied in the pattern.
    * @return converted to a JAXBElement
-   * @throws CalFacadeException on fatal error
    */
   public static JAXBElement<? extends BaseComponentType>
                     toComponent(final BwEvent val,
                                 final boolean isOverride,
                                 final boolean wrapXprops,
-                                final BaseComponentType pattern) throws CalFacadeException {
+                                final BaseComponentType pattern) {
     if (val == null) {
       return null;
     }
@@ -665,12 +664,11 @@ public class ToXEvent extends Xutil {
    * @param compCl - component class for pattern matching
    * @param val BwEvent
    * @param pl property list
-   * @throws CalFacadeException on fatal error
    */
   public static void doRecurring(final BaseComponentType pattern,
                                  final Class<?> compCl,
                                  final BwEvent val,
-                                 final List<JAXBElement<? extends BasePropertyType>> pl) throws CalFacadeException {
+                                 final List<JAXBElement<? extends BasePropertyType>> pl) {
     try {
       if (emit(pattern, compCl, RrulePropType.class) &&
           val.hasRrules()) {

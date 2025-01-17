@@ -19,7 +19,6 @@
 package org.bedework.calsvci;
 
 import org.bedework.calfacade.base.UpdateFromTimeZonesInfo;
-import org.bedework.calfacade.exc.CalFacadeException;
 
 import java.io.Serializable;
 
@@ -45,11 +44,9 @@ public interface TimeZonesStoreI extends Serializable {
    * @param checkOnly  don't update if true.
    * @param info    null on first call, returned object from previous calls.
    * @return UpdateFromTimeZonesInfo staus of the update
-   * @throws CalFacadeException on error
    */
   UpdateFromTimeZonesInfo updateFromTimeZones(String colHref,
                                               int limit,
                                               boolean checkOnly,
-                                              UpdateFromTimeZonesInfo info
-  ) throws CalFacadeException;
+                                              UpdateFromTimeZonesInfo info);
 }

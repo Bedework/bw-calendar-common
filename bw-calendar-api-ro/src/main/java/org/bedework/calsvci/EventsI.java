@@ -25,7 +25,6 @@ import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.RecurringRetrievalMode;
 import org.bedework.calfacade.base.CategorisedEntity;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo.BwIcalPropertyInfoEntry;
 import org.bedework.calfacade.indexing.BwIndexer.DeletedState;
 import org.bedework.calfacade.requests.GetInstancesRequest;
@@ -65,13 +64,12 @@ public interface EventsI extends Serializable {
    * @param   recurrenceId String recurrence id or null
    * @param recurRetrieval How recurring event is returned.
    * @return  Collection of EventInfo objects representing event(s).
-   * @throws CalFacadeException on error
+
    */
   Collection<EventInfo> getByUid(String colPath,
                                  String guid,
                                  String recurrenceId,
-                                 RecurringRetrievalMode recurRetrieval)
-        throws CalFacadeException;
+                                 RecurringRetrievalMode recurRetrieval);
 
   /** Get events given the calendar and String name. Return null for not
    * found. There should be only one event or none. For recurring, the
@@ -82,10 +80,9 @@ public interface EventsI extends Serializable {
    * @param  colPath   String collection path fully resolved to target
    * @param name       String possible name
    * @return EventInfo or null
-   * @throws CalFacadeException on error
    */
   EventInfo get(String colPath,
-                       String name) throws CalFacadeException;
+                       String name);
 
   /** Get events given the calendar and String name. Return null for not
    * found. There should be only one event or none.
@@ -102,12 +99,10 @@ public interface EventsI extends Serializable {
    * @param name       String possible name
    * @param recurrenceId non-null for single instance
    * @return EventInfo or null
-   * @throws CalFacadeException on error
    */
   EventInfo get(String colPath,
                        String name,
-                       String recurrenceId)
-          throws CalFacadeException;
+                       String recurrenceId);
 
   /** Get events given the calendar and String name. Return null for not
    * found. There should be only one event or none. For recurring, the
@@ -120,13 +115,11 @@ public interface EventsI extends Serializable {
    * @param recurrenceId non-null for single instance
    * @param retrieveList List of properties to retrieve or null for a full event.
    * @return EventInfo or null
-   * @throws CalFacadeException on error
    */
   EventInfo get(BwCalendar col,
                        String name,
                        String recurrenceId,
-                       List<String> retrieveList)
-          throws CalFacadeException;
+                       List<String> retrieveList);
 
   /** Return the events for the current user within the given date and time
    * range. If retrieveList is supplied only those fields (and a few required
@@ -140,7 +133,6 @@ public interface EventsI extends Serializable {
    * @param retrieveList List of properties to retrieve or null for a full event.
    * @param recurRetrieval How recurring event is returned.
    * @return Collection  populated event value objects
-   * @throws CalFacadeException on error
    */
   Collection<EventInfo> getEvents(BwCalendar cal,
                                   FilterBase filter,
@@ -148,8 +140,7 @@ public interface EventsI extends Serializable {
                                   BwDateTime endDate,
                                   List<BwIcalPropertyInfoEntry> retrieveList,
                                   DeletedState delState,
-                                  RecurringRetrievalMode recurRetrieval)
-          throws CalFacadeException;
+                                  RecurringRetrievalMode recurRetrieval);
 
   /** Delete an event.
    *
@@ -265,9 +256,8 @@ public interface EventsI extends Serializable {
    * <p>Otherwise we add an annotation maarking the event as deleted.
    *
    * @param event the event
-   * @throws CalFacadeException on error
    */
-  void markDeleted(BwEvent event) throws CalFacadeException;
+  void markDeleted(BwEvent event);
 
   /** Copy or move the given named entity to the destination calendar and give it
    * the supplied name.
@@ -362,12 +352,11 @@ public interface EventsI extends Serializable {
    * @param strCatUids Categories to add from request
    * @param changes a change table
    * @return setEventCategoriesResult
-   * @throws CalFacadeException on error
    */
   SetEntityCategoriesResult setEntityCategories(CategorisedEntity ent,
                                                 Set<BwCategory> extraCats,
                                                 Set<String> defCatUids,
                                                 Set<String> allDefCatUids,
                                                 Collection<String> strCatUids,
-                                                ChangeTable changes) throws CalFacadeException;
+                                                ChangeTable changes);
 }

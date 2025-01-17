@@ -27,7 +27,6 @@ import org.bedework.calfacade.BwFilterDef;
 import org.bedework.calfacade.BwLocation;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwResource;
-import org.bedework.calfacade.exc.CalFacadeException;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwAuthUser;
 import org.bedework.calfacade.svc.BwCalSuite;
@@ -79,54 +78,47 @@ public interface DumpIntf {
   /** Will return an Iterator returning AdminGroup objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwAdminGroup> getAdminGroups() throws CalFacadeException;
+  Iterator<BwAdminGroup> getAdminGroups();
 
   /** Will return an Iterator returning AuthUser objects. Preferences will
    * be attached - user objects will also be attached.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwAuthUser> getAuthUsers() throws CalFacadeException;
+  Iterator<BwAuthUser> getAuthUsers();
 
   /** Will return an Iterator returning the top level BwCalendar objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwCalendar> getCalendars() throws CalFacadeException;
+  Iterator<BwCalendar> getCalendars();
 
   /**
    * @param val - the collection
    * @return Children of val
-   * @throws CalFacadeException on error
    */
-  Collection<BwCalendar> getChildren(BwCalendar val) throws CalFacadeException;
+  Collection<BwCalendar> getChildren(BwCalendar val);
 
   /** Will return an Iterator returning BwCalSuite objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwCalSuite> getCalSuites() throws CalFacadeException;
+  Iterator<BwCalSuite> getCalSuites();
 
   /** Will return an Iterator returning Category objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwCategory> getCategories() throws CalFacadeException;
+  Iterator<BwCategory> getCategories();
 
   /** Will return an Iterator returning BwEvent objects.
    * All relevent objects, categories, locations, sponsors, creators will
    * be attached.
    *
    * @return Iterator - events may have overrides attached.
-   * @throws CalFacadeException on error
    */
-  Iterator<BwEvent> getEvents() throws CalFacadeException;
+  Iterator<BwEvent> getEvents();
 
   /** Will return an Iterable object returning EventInfo objects.
    * All relevent objects, categories, locations, sponsors, creators will
@@ -134,25 +126,22 @@ public interface DumpIntf {
    *
    * @param colPath for events
    * @return Iterable - events may have overrides attached.
-   * @throws CalFacadeException on error
    */
-  Iterable<EventInfo> getEventInfos(String colPath) throws CalFacadeException;
+  Iterable<EventInfo> getEventInfos(String colPath);
 
   /** Will return an Iterator returning resource objects.
    *
    * @param colPath for resources
    * @return Iterable - resources with content.
-   * @throws CalFacadeException on error
    */
-  Iterable<BwResource> getResources(String colPath) throws CalFacadeException;
+  Iterable<BwResource> getResources(String colPath);
 
   /** Will return an Iterator over event hrefs.
    *
    * @param start - position.
    * @return Iterator over hrefs.
-   * @throws CalFacadeException on error
    */
-  Iterator<String> getEventHrefs(int start) throws CalFacadeException;
+  Iterator<String> getEventHrefs(int start);
 
   /** Will return an Iterator returning BwEvent objects.
    * All relevent objects, categories, locations, sponsors, creators will
@@ -161,81 +150,70 @@ public interface DumpIntf {
    * <p>Overrides are not included
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwEventAnnotation> getEventAnnotations() throws CalFacadeException;
+  Iterator<BwEventAnnotation> getEventAnnotations();
 
   /** Will return an Iterator returning Filter objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwFilterDef> getFilters() throws CalFacadeException;
+  Iterator<BwFilterDef> getFilters();
 
   /** Will return an Iterator returning Location objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwLocation> getLocations() throws CalFacadeException;
+  Iterator<BwLocation> getLocations();
 
   /** Will return an Iterator returning BwPreferences objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwPreferences> getPreferences() throws CalFacadeException;
+  Iterator<BwPreferences> getPreferences();
 
   /** Will return an Iterator returning BwContact objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwContact> getContacts() throws CalFacadeException;
+  Iterator<BwContact> getContacts();
 
   /** Will return an Iterator returning principal objects.
    * Subscriptions will be included
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwPrincipal<?>> getAllPrincipals() throws CalFacadeException;
+  Iterator<BwPrincipal<?>> getAllPrincipals();
 
   /** Will return an Iterator returning User resources.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<BwResource> getResources() throws CalFacadeException;
+  Iterator<BwResource> getResources();
 
   /** Will return the resource content for the given resource.
    *
    * @param res on return resource content object will be implanted
-   * @throws CalFacadeException on error
    */
-  void getResourceContent(BwResource res) throws CalFacadeException;
+  void getResourceContent(BwResource res);
 
   /** Will return an Iterator returning view objects.
    *
    * @return Iterator over entities
-   * @throws CalFacadeException on error
    */
-  Iterator<?> getViews() throws CalFacadeException;
+  Iterator<?> getViews();
 
   /** Prepare for dumping of the given principal - used by the 
    * file dump
    * 
    * @param val the principal
-   * @throws CalFacadeException on error
    */
-  void startPrincipal(BwPrincipal val) throws CalFacadeException;
+  void startPrincipal(BwPrincipal val);
 
   /** End dumping of the given principal - used by the 
    * file dump
    *
    * @param val the principal
-   * @throws CalFacadeException on error
    */
-  void endPrincipal(BwPrincipal val) throws CalFacadeException;
+  void endPrincipal(BwPrincipal val);
 }
 

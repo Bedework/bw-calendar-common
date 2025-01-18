@@ -22,7 +22,7 @@ import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Uid;
 
 /** Base for those classes that can be a property of an event and are all

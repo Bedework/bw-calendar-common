@@ -19,7 +19,7 @@
 package org.bedework.calfacade.indexing;
 
 import org.bedework.calfacade.indexing.BwIndexer.IndexedType;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.HashMap;
 import java.util.Map;

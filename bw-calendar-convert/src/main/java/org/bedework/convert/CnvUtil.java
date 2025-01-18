@@ -14,14 +14,14 @@ import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntitiesResponse;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.property.DtStart;
 
-import static org.bedework.util.misc.response.Response.Status.failed;
+import static org.bedework.base.response.Response.Status.failed;
 
 /**
  * User: mike Date: 7/31/20 Time: 22:42

@@ -2,7 +2,7 @@ package org.bedework.calfacade;
 
 import org.bedework.calfacade.base.Differable;
 import org.bedework.util.calendar.PropertyIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import net.fortuna.ical4j.model.component.Vote;

@@ -19,12 +19,12 @@
 package org.bedework.calfacade.requests;
 
 import org.bedework.calfacade.BwDateTime;
-import org.bedework.util.misc.ToString;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.ToString;
+import org.bedework.base.response.Response;
 
 import java.util.Collection;
 
-import static org.bedework.util.misc.response.Response.invalid;
+import static org.bedework.base.response.Response.invalid;
 
 /** Request instances for a given recurrence rule and start date.
  * Exdates, Rdates may be provided. Additionally the result may be

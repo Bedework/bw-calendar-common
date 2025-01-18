@@ -21,7 +21,7 @@ package org.bedework.calfacade.synch;
 import org.bedework.synch.wsmessages.ArrayOfSynchPropertyInfo;
 import org.bedework.synch.wsmessages.SynchConnectorInfoType;
 import org.bedework.synch.wsmessages.SynchPropertyInfoType;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.ArrayList;
 import java.util.List;

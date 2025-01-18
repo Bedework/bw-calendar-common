@@ -25,7 +25,7 @@ import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.calfacade.base.DescriptionEntity;
 import org.bedework.calfacade.base.DisplayNameEntity;
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import java.util.Collection;

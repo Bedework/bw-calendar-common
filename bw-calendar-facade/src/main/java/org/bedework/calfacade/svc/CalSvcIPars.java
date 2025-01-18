@@ -19,7 +19,7 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.util.Sysprop;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.io.Serializable;
 

@@ -22,7 +22,7 @@ import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.synch.BwSynchInfo;
 import org.bedework.calsvci.CalendarsI.CheckSubscriptionResult;
 import org.bedework.calsvci.CalendarsI.SynchStatusResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.Response;
 
 import java.io.Serializable;
 

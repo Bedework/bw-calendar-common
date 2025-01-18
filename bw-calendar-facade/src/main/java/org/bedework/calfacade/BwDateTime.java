@@ -30,7 +30,7 @@ import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.timezones.Timezones;
 

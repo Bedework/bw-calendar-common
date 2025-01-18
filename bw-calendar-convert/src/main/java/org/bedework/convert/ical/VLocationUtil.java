@@ -27,9 +27,9 @@ import org.bedework.schemaorg.model.values.SOGeoCoordinates;
 import org.bedework.schemaorg.model.values.SOPlace;
 import org.bedework.schemaorg.model.values.SOPostalAddress;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntitiesResponse;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;

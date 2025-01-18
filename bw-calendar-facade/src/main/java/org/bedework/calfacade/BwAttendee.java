@@ -23,7 +23,7 @@ import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.base.Differable;
 import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.calendar.IcalDefs;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 /** Represent an attendee. An attendee entry is associated with a single event

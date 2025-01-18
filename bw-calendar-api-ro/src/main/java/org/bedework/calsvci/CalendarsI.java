@@ -24,8 +24,8 @@ import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.CollectionAliases;
 import org.bedework.synch.wsmessages.SubscriptionStatusResponseType;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;

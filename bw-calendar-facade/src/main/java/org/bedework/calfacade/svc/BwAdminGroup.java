@@ -21,7 +21,7 @@ package org.bedework.calfacade.svc;
 import org.bedework.calfacade.BwGroup;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

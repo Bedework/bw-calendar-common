@@ -39,8 +39,8 @@ import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 import org.bedework.util.timezones.Timezones;
 
 import net.fortuna.ical4j.model.TimeZone;
@@ -66,7 +66,7 @@ import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CREATED
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.DESCRIPTION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ESTIMATED_DURATION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.SUMMARY;
-import static org.bedework.util.misc.response.Response.Status.failed;
+import static org.bedework.base.response.Response.Status.failed;
 
 /**
  * User: mike Date: 3/30/20 Time: 23:11

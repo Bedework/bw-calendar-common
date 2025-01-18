@@ -21,7 +21,7 @@ package org.bedework.calfacade.mail;
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.ConfigBase;
 import org.bedework.util.jmx.MBeanInfo;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Properties for mailers.
  *

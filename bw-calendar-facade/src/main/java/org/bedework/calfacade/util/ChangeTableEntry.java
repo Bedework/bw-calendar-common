@@ -22,7 +22,7 @@ import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.base.Differable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import java.util.ArrayList;

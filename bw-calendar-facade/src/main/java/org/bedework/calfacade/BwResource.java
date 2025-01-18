@@ -23,7 +23,7 @@ import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.NoWrap;
 import org.bedework.calfacade.annotations.ical.NoProxy;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.util.timezones.DateTimeUtil;
 

@@ -20,7 +20,7 @@ package org.bedework.calfacade.base;
 
 import org.bedework.calfacade.CalFacadeDefs;
 import org.bedework.calfacade.annotations.NoWrap;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -23,9 +23,9 @@ import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.EventPropertiesReference;
 import org.bedework.calfacade.indexing.BwIndexer;
 import org.bedework.calfacade.svc.EnsureEntityExistsResult;
-import org.bedework.util.misc.response.GetEntitiesResponse;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;

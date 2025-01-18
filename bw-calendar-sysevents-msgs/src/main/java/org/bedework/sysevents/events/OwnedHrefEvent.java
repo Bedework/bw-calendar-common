@@ -18,7 +18,7 @@
 */
 package org.bedework.sysevents.events;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Signal an event concerning an entity
  * @author douglm

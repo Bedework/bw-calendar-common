@@ -33,7 +33,7 @@ import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.calfacade.svc.EventInfo.UpdateResult;
 import org.bedework.calfacade.svc.RealiasResult;
 import org.bedework.calfacade.util.ChangeTable;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.Response;
 
 import java.io.Serializable;
 import java.util.Collection;

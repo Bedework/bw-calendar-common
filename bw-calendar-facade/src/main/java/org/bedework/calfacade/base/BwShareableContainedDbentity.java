@@ -23,7 +23,7 @@ import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.calfacade.configs.BasicSystemProperties;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 /** Base class for shareable database entities that live within a container,

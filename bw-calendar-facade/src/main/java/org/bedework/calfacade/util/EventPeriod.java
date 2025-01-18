@@ -18,7 +18,7 @@
 */
 package org.bedework.calfacade.util;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import net.fortuna.ical4j.model.DateTime;
 

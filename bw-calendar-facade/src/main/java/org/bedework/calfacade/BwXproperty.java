@@ -26,7 +26,7 @@ import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import java.io.Serializable;

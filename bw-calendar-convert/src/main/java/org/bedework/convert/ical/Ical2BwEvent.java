@@ -47,9 +47,9 @@ import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntitiesResponse;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 import org.bedework.util.timezones.Timezones;
 import org.bedework.util.xml.tagdefs.XcalTags;
 
@@ -116,8 +116,8 @@ import javax.xml.ws.Holder;
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
-import static org.bedework.util.misc.response.Response.Status.failed;
-import static org.bedework.util.misc.response.Response.Status.ok;
+import static org.bedework.base.response.Response.Status.failed;
+import static org.bedework.base.response.Response.Status.ok;
 
 /** Class to provide utility methods for translating to BwEvent from ical4j classes
  *

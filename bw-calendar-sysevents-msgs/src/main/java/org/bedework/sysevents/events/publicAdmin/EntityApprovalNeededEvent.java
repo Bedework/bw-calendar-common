@@ -19,7 +19,7 @@
 package org.bedework.sysevents.events.publicAdmin;
 
 import org.bedework.sysevents.events.OwnedHrefEvent;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Signal the approval status of an event.
  *

@@ -20,7 +20,7 @@ package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.base.BwDbentity;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 /** Messages relating to automatic and implicit scheduling. Each message refers

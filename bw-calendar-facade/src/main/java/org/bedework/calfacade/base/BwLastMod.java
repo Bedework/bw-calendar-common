@@ -22,7 +22,7 @@ import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.CalFacadeDefs;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.NoWrap;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

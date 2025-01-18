@@ -20,7 +20,7 @@ package org.bedework.calfacade.filter;
 
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import java.util.List;

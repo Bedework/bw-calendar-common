@@ -24,10 +24,10 @@ import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwOwnedDbentity;
 import org.bedework.calfacade.base.PropertiesEntity;
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 import org.bedework.util.xml.FromXmlCallback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

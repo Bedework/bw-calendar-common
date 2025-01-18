@@ -19,7 +19,7 @@
 package org.bedework.calfacade.responses;
 
 import org.bedework.calfacade.BwLocation;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.Collection;
 

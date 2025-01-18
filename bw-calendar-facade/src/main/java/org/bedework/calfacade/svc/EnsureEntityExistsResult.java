@@ -3,7 +3,7 @@
 */
 package org.bedework.calfacade.svc;
 
-import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.base.response.GetEntityResponse;
 
 /** Returned to show if an entity was added. entity is set to retrieved entity
  *

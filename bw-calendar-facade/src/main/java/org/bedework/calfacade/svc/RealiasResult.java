@@ -4,7 +4,7 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.calfacade.BwCategory;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.Response;
 
 import java.util.Set;
 

@@ -30,7 +30,7 @@ import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 import org.bedework.util.xml.FromXmlCallback;
 

@@ -24,7 +24,7 @@ import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.IcalDefs.IcalComponentType;
 import org.bedework.util.calendar.ScheduleMethods;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.timezones.Timezones;
 
 import net.fortuna.ical4j.model.TimeZone;

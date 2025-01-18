@@ -19,7 +19,7 @@
 package org.bedework.calfacade.annotations.process;
 
 import org.bedework.calfacade.annotations.NoQuota;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;

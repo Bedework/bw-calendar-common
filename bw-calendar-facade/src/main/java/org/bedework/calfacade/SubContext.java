@@ -19,7 +19,7 @@
 package org.bedework.calfacade;
 
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Provide information about a sub-context of the public calendar.
  *

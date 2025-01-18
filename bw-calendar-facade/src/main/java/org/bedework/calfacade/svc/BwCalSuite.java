@@ -25,7 +25,7 @@ import org.bedework.calfacade.BwShareablePrincipal;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.util.FieldSplitter;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 /** This object represents a calendar suite in bedework. The calendar suites all

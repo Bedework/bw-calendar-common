@@ -24,7 +24,7 @@ import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
 import org.bedework.calfacade.wrappers.EntityWrapper;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

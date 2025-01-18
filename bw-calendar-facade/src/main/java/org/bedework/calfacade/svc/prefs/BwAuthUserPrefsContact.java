@@ -18,7 +18,7 @@
 */
 package org.bedework.calfacade.svc.prefs;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.io.Serializable;
 /** A class just to allow me to delete all entries referring to a given entity

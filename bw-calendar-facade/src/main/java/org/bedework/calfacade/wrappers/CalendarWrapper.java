@@ -28,7 +28,7 @@ import org.bedework.calfacade.CalFacadeDefs;
 import org.bedework.calfacade.CollectionInfo;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.util.AccessUtilI;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -18,7 +18,7 @@
 */
 package org.bedework.sysevents.events;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** An event caused by the change in state of some principal, e.g new user,
  * login, logout etc.

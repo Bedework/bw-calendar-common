@@ -19,7 +19,7 @@
 package org.bedework.calfacade;
 
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import net.fortuna.ical4j.model.property.RequestStatus;
 

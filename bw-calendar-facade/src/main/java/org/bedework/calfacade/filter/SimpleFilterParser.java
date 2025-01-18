@@ -36,8 +36,8 @@ import org.bedework.calfacade.svc.BwView;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
-import org.bedework.util.misc.ToString;
-import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.base.ToString;
+import org.bedework.base.response.GetEntityResponse;
 
 import ietf.params.xml.ns.caldav.TextMatchType;
 import net.fortuna.ical4j.model.DateTime;

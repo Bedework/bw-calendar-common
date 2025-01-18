@@ -6,7 +6,7 @@ package org.bedework.calfacade.indexing;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwLocation;
-import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.base.response.GetEntityResponse;
 
 /** Allow one indexer to fetch resources from other indexes
  * User: mike Date: 9/5/18 Time: 09:51

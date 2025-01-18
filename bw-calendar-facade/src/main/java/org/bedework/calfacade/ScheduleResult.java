@@ -19,8 +19,8 @@
 package org.bedework.calfacade;
 
 import org.bedework.util.calendar.ScheduleStates;
-import org.bedework.util.misc.ToString;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.ToString;
+import org.bedework.base.response.Response;
 
 import java.util.HashMap;
 import java.util.Map;

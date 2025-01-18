@@ -20,7 +20,7 @@ package org.bedework.calfacade.svc.prefs;
 
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.base.DumpEntity;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Value object to represent authorized calendar user preferences.
  * These should really be in the same table.

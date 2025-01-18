@@ -39,7 +39,7 @@ import org.bedework.util.calendar.XmlCalendarBuilder;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.logging.Logged;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.util.timezones.Timezones;
 
 import ietf.params.xml.ns.icalendar_2.BaseComponentType;

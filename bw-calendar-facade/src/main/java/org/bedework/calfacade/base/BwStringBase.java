@@ -23,7 +23,7 @@ import org.bedework.calfacade.locale.BwLocale;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.calfacade.util.QuotaUtil;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

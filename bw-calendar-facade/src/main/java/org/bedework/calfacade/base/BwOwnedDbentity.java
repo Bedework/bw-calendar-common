@@ -21,7 +21,7 @@ package org.bedework.calfacade.base;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Base class for database entities with an owner.
  *

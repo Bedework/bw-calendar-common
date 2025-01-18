@@ -21,7 +21,7 @@ package org.bedework.common.jmx;
 import org.bedework.calfacade.configs.SystemProperties;
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.ConfigBase;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.List;
 

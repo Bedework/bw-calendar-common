@@ -18,7 +18,7 @@
 */
 package org.bedework.sysevents.events;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** A calendar (collection) delete event. <ul>
  * <li>href defines the collection</li>

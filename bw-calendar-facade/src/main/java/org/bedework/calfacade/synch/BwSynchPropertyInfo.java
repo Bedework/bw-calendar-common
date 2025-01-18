@@ -19,7 +19,7 @@
 package org.bedework.calfacade.synch;
 
 import org.bedework.synch.wsmessages.SynchPropertyInfoType;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Information about connector properties
  *

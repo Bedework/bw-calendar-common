@@ -35,7 +35,7 @@ import org.bedework.calfacade.util.BwDateTimeUtil;
 import org.bedework.calfacade.util.CalFacadeUtil;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import net.fortuna.ical4j.model.TemporalAmountAdapter;
 import net.fortuna.ical4j.model.property.Duration;

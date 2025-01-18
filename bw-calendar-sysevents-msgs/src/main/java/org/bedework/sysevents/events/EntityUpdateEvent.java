@@ -18,7 +18,7 @@
 */
 package org.bedework.sysevents.events;
 
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** Signal an update to an entity. The changes provided are an XML string which
  * follows the Apple spec for notifications adn may be null.

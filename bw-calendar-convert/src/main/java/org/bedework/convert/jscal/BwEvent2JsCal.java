@@ -72,8 +72,8 @@ import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -94,7 +94,7 @@ import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternateDescription;
 import static org.bedework.jsforj.model.values.JSRoles.roleContact;
 import static org.bedework.util.calendar.ScheduleMethods.methodTypeReply;
-import static org.bedework.util.misc.response.Response.Status.failed;
+import static org.bedework.base.response.Response.Status.failed;
 
 /** Class to provide utility methods for translating to VEvent ical4j classes
  *

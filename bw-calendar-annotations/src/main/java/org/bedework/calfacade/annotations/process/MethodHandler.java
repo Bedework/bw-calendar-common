@@ -20,7 +20,7 @@ package org.bedework.calfacade.annotations.process;
 
 import org.bedework.calfacade.annotations.CloneForOverride;
 import org.bedework.calfacade.annotations.ical.Immutable;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 import java.util.List;
 import java.util.Set;

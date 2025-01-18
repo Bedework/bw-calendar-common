@@ -19,8 +19,8 @@
 package org.bedework.convert;
 
 import org.bedework.calfacade.BwEvent;
-import org.bedework.util.misc.response.GetEntitiesResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.NumberList;

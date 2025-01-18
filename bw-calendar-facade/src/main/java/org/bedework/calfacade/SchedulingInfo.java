@@ -8,8 +8,8 @@ import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.util.ChangeTableEntry;
 import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.misc.Util;
-import org.bedework.util.misc.response.GetEntityResponse;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;

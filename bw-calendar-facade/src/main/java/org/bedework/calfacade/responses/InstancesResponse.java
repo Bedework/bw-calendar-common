@@ -18,8 +18,8 @@
 */
 package org.bedework.calfacade.responses;
 
-import org.bedework.util.misc.ToString;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.ToString;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Period;
 

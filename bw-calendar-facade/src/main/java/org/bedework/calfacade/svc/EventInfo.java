@@ -32,7 +32,7 @@ import org.bedework.calfacade.SchedulingOwner;
 import org.bedework.calfacade.base.BwUnversionedDbentity;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

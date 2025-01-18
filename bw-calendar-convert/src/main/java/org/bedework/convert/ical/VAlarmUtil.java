@@ -27,7 +27,7 @@ import org.bedework.calfacade.BwXproperty;
 import org.bedework.calfacade.ifs.IcalCallback;
 import org.bedework.calfacade.util.ChangeTable;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
-import org.bedework.util.misc.response.Response;
+import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentList;

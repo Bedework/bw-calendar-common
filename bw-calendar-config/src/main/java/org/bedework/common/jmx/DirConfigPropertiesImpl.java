@@ -22,7 +22,7 @@ import org.bedework.calfacade.configs.CalAddrPrefixes;
 import org.bedework.calfacade.configs.DirConfigProperties;
 import org.bedework.util.config.ConfInfo;
 import org.bedework.util.config.ConfigBase;
-import org.bedework.util.misc.ToString;
+import org.bedework.base.ToString;
 
 /** This interface defines the various common directory interface properties.
  * and retrieve a group and user information via ldap.

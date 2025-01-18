@@ -21,7 +21,7 @@ import org.bedework.jsforj.model.JSPropertyNames;
 import org.bedework.jsforj.model.JSTask;
 import org.bedework.jsforj.model.JSTypes;
 import org.bedework.util.calendar.ScheduleMethods;
-import org.bedework.util.misc.response.GetEntityResponse;
+import org.bedework.base.response.GetEntityResponse;
 
 import java.io.Reader;
 import java.io.Writer;

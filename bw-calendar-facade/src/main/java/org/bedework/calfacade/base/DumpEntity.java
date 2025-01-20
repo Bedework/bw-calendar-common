@@ -19,6 +19,7 @@
 package org.bedework.calfacade.base;
 
 import org.bedework.base.exc.BedeworkException;
+import org.bedework.base.exc.persist.BedeworkDatabaseException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.Dump.DumpFormat;
 import org.bedework.calfacade.annotations.NoDump;
@@ -94,13 +95,13 @@ public class DumpEntity<T> implements Logged {
         xml.flush();
         return;
       } catch (final IOException e) {
-        throw new RuntimeException(e);
+        throw new BedeworkDatabaseException(e);
       } finally {
         if (wtr != null) {
           try {
             wtr.close();
           } catch (final Throwable t) {
-            throw new RuntimeException(t);
+            throw new BedeworkDatabaseException(t);
           }
         }
       }
@@ -119,19 +120,19 @@ public class DumpEntity<T> implements Logged {
         wtr.append(vcStr);
         return;
       } catch (final Throwable t) {
-        throw new RuntimeException(t);
+        throw new BedeworkDatabaseException(t);
       } finally {
         if (wtr != null) {
           try {
             wtr.close();
           } catch (final Throwable t) {
-            throw new RuntimeException(t);
+            throw new BedeworkDatabaseException(t);
           }
         }
       }
     }
 
-    throw new RuntimeException("Unsupported dump format " + dCl.format());
+    throw new BedeworkDatabaseException("Unsupported dump format " + dCl.format());
   }
 
 
@@ -170,83 +171,83 @@ public class DumpEntity<T> implements Logged {
     ArrayList<String> noDumpMethods = null;
     ArrayList<String> firstMethods = null;
 
-      if (ndCl != null) {
-        if (ndCl.value().length == 0) {
-          return;
-        }
-
-        noDumpMethods = new ArrayList<>();
-        Collections.addAll(noDumpMethods, ndCl.value());
+    if (ndCl != null) {
+      if (ndCl.value().length == 0) {
+        return;
       }
 
-      if (!dumpKeyFields && (dCl != null) && (dCl.firstFields().length != 0)) {
-        firstMethods = new ArrayList<>();
-        for (final String f: dCl.firstFields()) {
-          firstMethods.add(methodName(f));
-        }
+      noDumpMethods = new ArrayList<>();
+      Collections.addAll(noDumpMethods, ndCl.value());
+    }
+
+    if (!dumpKeyFields && (dCl != null) && (dCl.firstFields().length != 0)) {
+      firstMethods = new ArrayList<>();
+      for (final String f: dCl.firstFields()) {
+        firstMethods.add(methodName(f));
       }
+    }
 
-      QName qn = null;
+    QName qn = null;
 
-      if (fromCollection || (dtype != DumpType.compound)) {
-        qn = startElement(xml, getClass(), dCl);
-      }
+    if (fromCollection || (dtype != DumpType.compound)) {
+      qn = startElement(xml, getClass(), dCl);
+    }
 
-      final Collection<ComparableMethod> ms = findGetters(dCl, dtype);
+    final Collection<ComparableMethod> ms = findGetters(dCl, dtype);
 
-      if (firstMethods != null) {
-        doFirstMethods:
-        for (final String methodName: firstMethods) {
-          for (final ComparableMethod cm: ms) {
-            final Method m = cm.m;
+    if (firstMethods != null) {
+      doFirstMethods:
+      for (final String methodName: firstMethods) {
+        for (final ComparableMethod cm: ms) {
+          final Method m = cm.m;
 
-            if (methodName.equals(m.getName())) {
-              final Dump d = m.getAnnotation(Dump.class);
+          if (methodName.equals(m.getName())) {
+            final Dump d = m.getAnnotation(Dump.class);
 
-              try {
-                dumpValue(xml, m, d,
-                          m.invoke(this, (Object[])null), fromCollection);
-              } catch (final  IllegalAccessException
-                      | InvocationTargetException e) {
-                throw new RuntimeException(e);
-              }
-
-              continue doFirstMethods;
+            try {
+              dumpValue(xml, m, d,
+                        m.invoke(this, (Object[])null), fromCollection);
+            } catch (final  IllegalAccessException
+                            | InvocationTargetException e) {
+              throw new BedeworkDatabaseException(e);
             }
+
+            continue doFirstMethods;
           }
-
-          error("Listed first field has no corresponding getter: " +
-                        methodName);
         }
+
+        error("Listed first field has no corresponding getter: " +
+                      methodName);
+      }
+    }
+
+    for (final ComparableMethod cm: ms) {
+      final Method m = cm.m;
+
+      if ((noDumpMethods != null) &&
+              noDumpMethods.contains(fieldName(m.getName()))) {
+        continue;
       }
 
-      for (final ComparableMethod cm: ms) {
-        final Method m = cm.m;
-
-        if ((noDumpMethods != null) &&
-            noDumpMethods.contains(fieldName(m.getName()))) {
-          continue;
-        }
-
-        if ((firstMethods != null) &&
-            firstMethods.contains(m.getName())) {
-          continue;
-        }
-
-        final Dump d = m.getAnnotation(Dump.class);
-
-        try {
-          dumpValue(xml, m, d,
-                    m.invoke(this, (Object[])null), fromCollection);
-        } catch (final  IllegalAccessException
-                | InvocationTargetException e) {
-          throw new RuntimeException(e);
-        }
+      if ((firstMethods != null) &&
+              firstMethods.contains(m.getName())) {
+        continue;
       }
 
-      if (qn != null) {
-        closeElement(xml, qn);
+      final Dump d = m.getAnnotation(Dump.class);
+
+      try {
+        dumpValue(xml, m, d,
+                  m.invoke(this, (Object[])null), fromCollection);
+      } catch (final  IllegalAccessException
+                      | InvocationTargetException e) {
+        throw new BedeworkDatabaseException(e);
       }
+    }
+
+    if (qn != null) {
+      closeElement(xml, qn);
+    }
   }
 
   /* ====================================================================
@@ -254,7 +255,8 @@ public class DumpEntity<T> implements Logged {
    * ==================================================================== */
 
   private boolean dumpValue(final XmlEmit xml,
-                            final Method m, final Dump d,
+                            final Method m,
+                            final Dump d,
                             final Object methVal,
                             final boolean fromCollection) {
     /* We always open the methodName or elementName tag if this is the method
@@ -264,9 +266,7 @@ public class DumpEntity<T> implements Logged {
      *
      * We do open a tag if the annotation specifies a collectionElementName
      */
-    if (methVal instanceof DumpEntity) {
-      final DumpEntity<?> de = (DumpEntity<?>)methVal;
-
+    if (methVal instanceof final DumpEntity<?> de) {
       if (!de.hasDumpValue()) {
         return false;
       }
@@ -291,9 +291,7 @@ public class DumpEntity<T> implements Logged {
       return true;
     }
 
-    if (methVal instanceof Collection) {
-      final Collection<?> c = (Collection<?>)methVal;
-
+    if (methVal instanceof final Collection<?> c) {
       if (c.isEmpty()) {
         return false;
       }
@@ -301,8 +299,8 @@ public class DumpEntity<T> implements Logged {
       QName mqn = null;
 
       for (final Object o: c) {
-        if ((o instanceof DumpEntity) &&
-            (!((DumpEntity<?>)o).hasDumpValue())) {
+        if ((o instanceof final DumpEntity<?> de) &&
+            (!de.hasDumpValue())) {
           continue;
         }
 
@@ -359,10 +357,10 @@ public class DumpEntity<T> implements Logged {
 
     if (d != null) {
       if (!fromCollection) {
-        if (d.elementName().length() > 0) {
+        if (!d.elementName().isEmpty()) {
           tagName = d.elementName();
         }
-      } else if (d.collectionElementName().length() > 0) {
+      } else if (!d.collectionElementName().isEmpty()) {
         tagName = d.collectionElementName();
       }
     }
@@ -385,26 +383,26 @@ public class DumpEntity<T> implements Logged {
       return;
     }
 
-      QName qn = getTag(m, d, fromCollection);
+    QName qn = getTag(m, d, fromCollection);
 
-      if (qn == null) {
-        /* Collection and no collection element name specified */
-        qn = new QName(p.getClass().getName());
-      }
+    if (qn == null) {
+      /* Collection and no collection element name specified */
+      qn = new QName(p.getClass().getName());
+    }
 
-      final String sval;
+    final String sval;
 
-      if (p instanceof char[]) {
-        sval = new String((char[])p);
-      } else {
-        sval = String.valueOf(p);
-      }
+    if (p instanceof char[]) {
+      sval = new String((char[])p);
+    } else {
+      sval = String.valueOf(p);
+    }
 
-      if ((sval.indexOf('&') < 0) && (sval.indexOf('<') < 0)) {
-        xml.property(qn, sval);
-      } else {
-        xml.cdataProperty(qn, sval);
-      }
+    if ((sval.indexOf('&') < 0) && (sval.indexOf('<') < 0)) {
+      xml.property(qn, sval);
+    } else {
+      xml.cdataProperty(qn, sval);
+    }
   }
 
   private void closeElement(final XmlEmit xml,
@@ -534,7 +532,7 @@ public class DumpEntity<T> implements Logged {
     if (dt == DumpType.reference) {
       if ((d == null) || (d.keyFields().length == 0)) {
         error("No key fields defined for class " + getClass().getCanonicalName());
-        throw new BedeworkException(CalFacadeErrorCode.noKeyFields);
+        throw new BedeworkDatabaseException(CalFacadeErrorCode.noKeyFields);
       }
       keyMethods = new ArrayList<>();
       for (final String f: d.keyFields()) {

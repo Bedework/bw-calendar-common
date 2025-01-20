@@ -23,7 +23,6 @@ import org.bedework.access.AceWho;
 import org.bedework.calfacade.BwGroup;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwStats.StatsEntry;
-import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.base.BwOwnedDbentity;
 import org.bedework.calfacade.base.BwShareableDbentity;
 import org.bedework.calfacade.base.BwUnversionedDbentity;
@@ -36,7 +35,6 @@ import org.bedework.calfacade.mail.MailerIntf;
 import org.bedework.calfacade.svc.BwPreferences;
 import org.bedework.sysevents.events.SysEventBase;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Collection;
@@ -128,17 +126,6 @@ public interface CalSvcI
    * @return a blob
    */
   Blob getBlob(byte[] val);
-
-  /**
-   * @return a blob
-   */
-  Blob getBlob(InputStream val, long length);
-
-  /** Call to reassociate an entity with the current database session
-   *
-   * @param val to reattach
-   */
-  void reAttach(BwDbentity<?> val);
 
   /** Call to merge an entity with the current database session
    *

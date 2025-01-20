@@ -114,10 +114,6 @@ public class CalSvcIPars implements Serializable {
 
   private boolean readonly;
 
-  /** True if this is a web application
-   */
-  private boolean webMode;
-
   /** Constructor for this object.
    *
    * @param authUser    String authenticated user of the application
@@ -533,13 +529,6 @@ public class CalSvcIPars implements Serializable {
    */
   public boolean getDontKill() {
     return dontKill;
-  }
-
-  /**
-   * @return boolean true if this is a web client..
-   */
-  public boolean getWebMode() {
-    return webMode;
   }
 
   /**

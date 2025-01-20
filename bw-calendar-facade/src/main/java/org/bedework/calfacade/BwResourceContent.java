@@ -51,6 +51,9 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
 
   private byte[] byteValue;
 
+  private int hash;
+  private boolean hashZero;
+
   /** Constructor
    *
    */
@@ -99,6 +102,8 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
    */
   public void setValue(final Blob val) {
     value = val;
+    hashZero = false;
+    hash = 0;
   }
 
   /** Get the value
@@ -110,9 +115,9 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
     return value;
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   db entity methods
-   * ==================================================================== */
+   * ============================================================== */
 
   /** Set the href - ignored
    *
@@ -126,9 +131,9 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
                           getName());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   non-db methods
-   * ==================================================================== */
+   * ============================================================== */
 
   public InputStream getBinaryStream() {
     if (getValue() != null) {
@@ -152,6 +157,8 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
    */
   public void setByteValue(final byte[] val) {
     byteValue = val;
+    hashZero = false;
+    hash = 0;
   }
 
   /** Get the byte array value
@@ -169,8 +176,8 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
     final Base64OutputStream b64out;
 
     try {
-      final Blob b = getValue();
-      if (b == null) {
+      final InputStream str = getBinaryStream();
+      if (str == null) {
         return null;
       }
 
@@ -181,14 +188,13 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
 
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
       b64out = new Base64OutputStream(baos);
-      final InputStream str = b.getBinaryStream();
 
       while ((len = str.read(buffer)) != -1) {
         b64out.write(buffer, 0, len);
       }
       b64out.close();
 
-      return new String(baos.toByteArray());
+      return baos.toString();
     } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
@@ -200,8 +206,8 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
   @NoDump
   public String getStringContent() {
     try {
-      final Blob b = getValue();
-      if (b == null) {
+      final InputStream str = getBinaryStream();
+      if (str == null) {
         return null;
       }
 
@@ -211,15 +217,14 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
       final byte[] buffer = new byte[chunkSize];
 
       final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      final InputStream str = b.getBinaryStream();
 
       while ((len = str.read(buffer)) != -1) {
         baos.write(buffer, 0, len);
       }
 
-      return new String(baos.toByteArray());
+      return baos.toString();
     } catch (final Throwable t) {
-      throw new RuntimeException(t);
+      throw new BedeworkException(t);
     }
   }
 
@@ -233,13 +238,29 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
     val.setValue(getValue());
   }
 
-  /* ====================================================================
+  /* ==============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================== */
 
   @Override
   public int hashCode() {
-    return getValue().hashCode();
+    final var strVal = getStringContent();
+    if (strVal == null) {
+      return 0;
+    }
+
+    int h = hash;
+    if ((h == 0) && !hashZero) {
+      // Not calculated
+      h = strVal.hashCode();
+      if (h == 0) {
+        hashZero = true;
+      }
+
+      hash = h;
+    }
+
+    return h;
   }
 
   @Override

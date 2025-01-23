@@ -18,12 +18,12 @@
 */
 package org.bedework.calfacade;
 
+import org.bedework.base.ToString;
 import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
 
 import org.apache.commons.codec.binary.Base64OutputStream;
@@ -31,7 +31,6 @@ import org.apache.commons.codec.binary.Base64OutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.sql.Blob;
 
 /** Represent the content for a resource stored within the system, e.g an attachment or an
  * image. The actual content is stored in a BwResourceContent object to allow us
@@ -46,8 +45,6 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
   private String colPath;
 
   private String name;
-
-  private Blob value;
 
   private byte[] byteValue;
 
@@ -96,23 +93,22 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
     return name;
   }
 
-  /** Set the value
+  /** Set the byte array value
    *
-   *  @param  val   byte[]
+   * @param val    byte array value
    */
-  public void setValue(final Blob val) {
-    value = val;
+  public void setByteValue(final byte[] val) {
+    byteValue = val;
     hashZero = false;
     hash = 0;
   }
 
-  /** Get the value
+  /** Get the byte array value
    *
-   *  @return Blob
+   * @return byte array or null
    */
-  @NoDump
-  public Blob getValue() {
-    return value;
+  public byte[] getByteValue() {
+    return byteValue;
   }
 
   /* ==============================================================
@@ -136,37 +132,11 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
    * ============================================================== */
 
   public InputStream getBinaryStream() {
-    if (getValue() != null) {
-      try {
-        return getValue().getBinaryStream();
-      } catch (final Throwable t) {
-        throw new BedeworkException(t);
-      }
-    }
-
     if (byteValue != null) {
       return new ByteArrayInputStream(byteValue);
     }
 
     return null;
-  }
-
-  /** Set the byte array value
-   *
-   * @param val    byte array value
-   */
-  public void setByteValue(final byte[] val) {
-    byteValue = val;
-    hashZero = false;
-    hash = 0;
-  }
-
-  /** Get the byte array value
-   *
-   * @return byte array or null
-   */
-  public byte[] getByteValue() {
-    return byteValue;
   }
 
   /**
@@ -235,7 +205,7 @@ public class BwResourceContent extends BwDbentity<BwResourceContent> {
   public void copyTo(final BwResourceContent val) {
     val.setColPath(getColPath());
     val.setName(getName());
-    val.setValue(getValue());
+    val.setByteValue(getByteValue());
   }
 
   /* ==============================================================

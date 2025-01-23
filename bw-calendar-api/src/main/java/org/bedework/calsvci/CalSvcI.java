@@ -36,7 +36,6 @@ import org.bedework.calfacade.svc.BwPreferences;
 import org.bedework.sysevents.events.SysEventBase;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -121,11 +120,6 @@ public interface CalSvcI
    * @param ev - system event
    */
   void postNotification(SysEventBase ev);
-
-  /**
-   * @return a blob
-   */
-  Blob getBlob(byte[] val);
 
   /** Call to merge an entity with the current database session
    *

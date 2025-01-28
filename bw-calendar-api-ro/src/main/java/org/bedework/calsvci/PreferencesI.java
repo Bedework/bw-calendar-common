@@ -42,6 +42,12 @@ public interface PreferencesI extends Serializable {
    */
   BwPreferences get(BwPrincipal<?> principal);
 
+  /** Add the new user preferences.
+   *
+   * @param  val     BwPreferences prefs for the current user
+   */
+  void add(BwPreferences val);
+
   /** Update the current user preferences.
    *
    * @param  val     BwPreferences prefs for the current user

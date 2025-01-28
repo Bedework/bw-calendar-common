@@ -56,73 +56,63 @@ public interface RestoreIntf {
 
   /** Call to end a transaction - even if batched
    *
-   * @throws Throwable on fatal error
    */
-  void endTransactionNow() throws Throwable;
+  void endTransactionNow();
 
   /** Call to end a transaction - may be ignored if batching
    *
-   * @throws Throwable on fatal error
    */
-  void endTransaction() throws Throwable;
+  void endTransaction();
 
   /** Check for an empty system first
    *
-   * @throws Throwable on fatal error
    */
-  void checkEmptySystem() throws Throwable;
+  void checkEmptySystem();
 
   /** Restore system pars
    *
    * @param o pars object
-   * @throws Throwable on fatal error
    */
-  void restoreSyspars(BwSystem o) throws Throwable;
+  void restoreSyspars(BwSystem o);
 
   /** Restore principal
    *
    * @param o principal object
-   * @throws Throwable on fatal error
    */
-  void restorePrincipal(BwPrincipal<?> o) throws Throwable;
+  void restorePrincipal(BwPrincipal<?> o);
 
   /** Restore an admin group - though not the user entries nor
    * the authuser entries.
    *
    * @param o   Object to restore
-   * @throws Throwable on fatal error
    */
-  void restoreAdminGroup(BwAdminGroup o) throws Throwable;
+  void restoreAdminGroup(BwAdminGroup o);
 
   /**
    * @param o admin group
    * @param pr principal
-   * @throws Throwable on fatal error
    */
   void addAdminGroupMember(BwAdminGroup o,
-                           BwPrincipal<?> pr) throws Throwable;
+                           BwPrincipal<?> pr);
 
   /** Get an admin group given it's name.
    *
    * @param name     String name of the group
    * @return BwAdminGroup
-   * @throws Throwable on fatal error
    */
-  BwAdminGroup getAdminGroup(String name) throws Throwable;
+  BwAdminGroup getAdminGroup(String name);
 
   /** Restore an auth user and preferences
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreAuthUser(BwAuthUser o) throws Throwable;
+  void restoreAuthUser(BwAuthUser o);
 
   /** Restore an event and associated entries
    *
    * @param ei   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreEvent(EventInfo ei) throws Throwable;
+  void restoreEvent(EventInfo ei);
 
   /** Get an event
    *
@@ -132,97 +122,85 @@ public interface RestoreIntf {
    * @param recurrenceId id
    * @param uid uid of event
    * @return BwEvent
-   * @throws Throwable on fatal error
    */
   BwEvent getEvent(BwPrincipal<?> owner,
                    String colPath,
                    String recurrenceId,
-                   String uid) throws Throwable;
+                   String uid);
 
   /** Restore category
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreCategory(BwCategory o) throws Throwable;
+  void restoreCategory(BwCategory o);
 
   /** Restore calendar suite
    *
    * @param o   Object to restore
-   * @throws Throwable on fatal error
    */
-  void restoreCalSuite(BwCalSuite o) throws Throwable;
+  void restoreCalSuite(BwCalSuite o);
 
   /** Restore location
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreLocation(BwLocation o) throws Throwable;
+  void restoreLocation(BwLocation o);
 
   /** Restore contact
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreContact(BwContact o) throws Throwable;
+  void restoreContact(BwContact o);
 
   /** Restore filter
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreFilter(BwFilterDef o) throws Throwable;
+  void restoreFilter(BwFilterDef o);
 
   /** Restore resource
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreResource(BwResource o) throws Throwable;
+  void restoreResource(BwResource o);
 
   /** Restore user prefs
    *
    * @param o   Object to restore with id set
-   * @throws Throwable on fatal error
    */
-  void restoreUserPrefs(BwPreferences o) throws Throwable;
+  void restoreUserPrefs(BwPreferences o);
 
   /* * Restore alarm - not needed - restored as part of event
    *
    * @param o   Object to restore with id set
    * @throws Throwable on fatal error
    * /
-  void restoreAlarm(BwAlarm o) throws Throwable;
+  void restoreAlarm(BwAlarm o);
   */
 
   /**
    * @param path of collection
    * @return BwCalendar
-   * @throws Throwable on fatal error
    */
-  BwCalendar getCalendar(String path) throws Throwable;
+  BwCalendar getCalendar(String path);
 
   /**
    * @param uid of entity
    * @return BwCategory
-   * @throws Throwable on fatal error
    */
-  BwCategory getCategory(String uid) throws Throwable;
+  BwCategory getCategory(String uid);
 
   /**
    * @param uid of entity
    * @return BwContact
-   * @throws Throwable on fatal error
    */
-  BwContact getContact(String uid) throws Throwable;
+  BwContact getContact(String uid);
 
   /**
    * @param uid of entity
    * @return BwLocation
-   * @throws Throwable on fatal error
    */
-  BwLocation getLocation(String uid) throws Throwable;
+  BwLocation getLocation(String uid);
 
   /**
    * @param href of principal
@@ -233,16 +211,14 @@ public interface RestoreIntf {
   /** Save a single root calendar - no parent is set in the entity
    *
    * @param val root collection
-   * @throws Throwable on fatal error
    */
-  void saveRootCalendar(BwCalendar val) throws Throwable;
+  void saveRootCalendar(BwCalendar val);
 
   /** Restore a single calendar - parent is set in the entity
    *
    * @param val collection to add
-   * @throws Throwable on fatal error
    */
-  void addCalendar(BwCalendar val) throws Throwable;
+  void addCalendar(BwCalendar val);
 
   /** */
   enum FixAliasResult {

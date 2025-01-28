@@ -58,7 +58,7 @@ public interface FiltersI extends Serializable {
    *
    * @param  val       filter definition
    */
-  void save(BwFilterDef val);
+  void add(BwFilterDef val);
 
   /** Get a filter given the name
    *

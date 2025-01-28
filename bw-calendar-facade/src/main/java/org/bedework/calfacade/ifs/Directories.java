@@ -86,6 +86,13 @@ public interface Directories extends Serializable {
             boolean admin);
 
     /**
+     * @param  group           BwGroup group object to add
+     * @param admin          true for an admin group
+     */
+    public abstract void addGroup(BwGroup<?> group,
+                                  boolean admin);
+
+    /**
      * @param  group           BwGroup group object to update
      * @param admin          true for an admin group
      */

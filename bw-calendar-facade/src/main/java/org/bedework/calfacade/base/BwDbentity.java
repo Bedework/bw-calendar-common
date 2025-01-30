@@ -19,6 +19,7 @@
 package org.bedework.calfacade.base;
 
 import org.bedework.calfacade.annotations.NoDump;
+import org.bedework.database.db.InterceptorDbEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,7 +34,9 @@ import java.util.Collection;
  *
  * @param <T>
  */
-public abstract class BwDbentity<T> extends BwUnversionedDbentity<T> {
+public abstract class BwDbentity<T>
+        extends BwUnversionedDbentity<T>
+        implements InterceptorDbEntity {
   /* Hibernate does not implicitly delete db entities during update or
    * save, except for those referenced as part of a Collection.
    *
@@ -90,9 +93,9 @@ public abstract class BwDbentity<T> extends BwUnversionedDbentity<T> {
     return seq;
   }
 
-  /* ====================================================================
+  /* ==========================================================
    *                   Action methods
-   * ==================================================================== */
+   * ========================================================== */
 
   /** Add a deleted entity - these may appear as a result of updates.
    * A null parameter is a noop.
@@ -117,32 +120,6 @@ public abstract class BwDbentity<T> extends BwUnversionedDbentity<T> {
   @NoDump
   public Collection<BwDbentity<?>> getDeletedEntities() {
     return deletedEntities;
-  }
-
-  /** Called when we are about to delete from the db
-   *
-   */
-  public void beforeDeletion() {
-  }
-
-  /** Called after delete from the db
-   *
-   */
-  public void afterDeletion() {
-  }
-
-  /** Called when we are about to update the object.
-   *
-   */
-  public void beforeUpdate() {
-  }
-
-  /** Called when we are about to save the object. Default to calling before
-   * update
-   *
-   */
-  public void beforeSave() {
-    beforeUpdate();
   }
 
   /** Size to use for quotas.

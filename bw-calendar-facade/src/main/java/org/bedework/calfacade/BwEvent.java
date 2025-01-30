@@ -736,13 +736,9 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
   }
 
-  @NoProxy
-  public void onSave() {
-  }
-
-  /* ==============================================================
+  /* ======================================================
    *                      Bean methods
-   * ============================================================== */
+   * ====================================================== */
 
   /** Set entity type defined in IcalDefs
    * @param val entity type

@@ -55,6 +55,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.bedework.database</groupId>
+      <artifactId>bw-db</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.bedework</groupId>
       <artifactId>bw-util2-calendar</artifactId>
     </dependency>

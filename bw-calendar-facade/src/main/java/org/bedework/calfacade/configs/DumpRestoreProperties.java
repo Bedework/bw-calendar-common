@@ -32,7 +32,7 @@ import org.bedework.util.jmx.MBeanInfo;
 public interface DumpRestoreProperties {
   /** Account we run under
    *
-   * @param val
+   * @param val account id
    */
   void setAccount(String val);
 
@@ -42,9 +42,9 @@ public interface DumpRestoreProperties {
   @MBeanInfo("account indexer runs as")
   String getAccount();
 
-  /** XML data input file name - full path. Used for data restore
+  /** Used for data restore
    *
-   * @param val
+   * @param val XML data input file name - full path.
    */
   void setDataIn(String val);
 
@@ -56,7 +56,7 @@ public interface DumpRestoreProperties {
 
   /** XML data output directory name - full path. Used for data restore
    *
-   * @param val
+   * @param val XML data output directory name - full path
    */
   void setDataOut(String val);
 
@@ -68,7 +68,7 @@ public interface DumpRestoreProperties {
 
   /** XML data output file prefix - for data dump
    *
-   * @param val
+   * @param val XML data output file prefix - for data dump
    */
   void setDataOutPrefix(String val);
 

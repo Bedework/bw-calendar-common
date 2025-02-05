@@ -31,8 +31,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.ws.Holder;
-
 /** An interface to handle directory information and groups.
  *
  * <p>Groups may be stored in a site specific manner so the actual
@@ -311,18 +309,24 @@ public interface Directories extends Serializable {
    */
   BwPrincipalInfo getDirInfo(BwPrincipal<?> p);
 
+  /**
+   *
+   * @param principals BwPrincipalInfo objects that match.
+   * @param truncated value is true if result is incomplete
+   */
+  record FindPrincipalsResult(List<BwPrincipalInfo> principals,
+                              boolean truncated) {}
+
   /** Return matching principals.
    *
    * @param props     to match
    * @param returnProps  used to configure returned data
    * @param cutype    null - or type
-   * @param truncated value is true if result is incomplete
    * @return BwPrincipalInfo objects that match.
    */
-  List<BwPrincipalInfo> find(List<WebdavProperty> props,
-                             List<WebdavProperty> returnProps,
-                             String cutype,
-                             Holder<Boolean> truncated);
+  FindPrincipalsResult find(List<WebdavProperty> props,
+                            List<WebdavProperty> returnProps,
+                            String cutype);
 
   /** Return principals tha match the CUA.
    *
@@ -331,10 +335,9 @@ public interface Directories extends Serializable {
    * @param expand if true expand any groups so that the info contains group member info.
    * @return BwPrincipalInfo objects that match.
    */
-  List<BwPrincipalInfo> find(String cua,
-                             String cutype,
-                             boolean expand,
-                             Holder<Boolean> truncated);
+  FindPrincipalsResult find(String cua,
+                            String cutype,
+                            boolean expand);
 
   /** Uses the values in pinfo to update the supplied preferences. This may be a
    * site specific operation. It allows bedework to use directory information

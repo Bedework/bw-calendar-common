@@ -1,4 +1,4 @@
-# bw-calendar-common
+# bw-calendar-common [![Build Status](https://travis-ci.org/Bedework/bw-util2.svg)](https://travis-ci.org/Bedework/bw-util2)
 Common classes for bedework calendar client and engine modules. 
 
 ## Requirements
@@ -49,3 +49,49 @@ For full details, see [Sonatype's documentation for using Maven to publish relea
 * Remove some throws clauses. Don't wrap exceptions in RunTimeException.
 * Try not invalidating the session. There are multiple requests and this may cause errors in the one that got through
 * Removed bw-xml module
+
+### 4.1.1
+* Update library versions
+
+### 4.1.2
+* Update library versions
+* Add dependencies to the project parent to ensure all transitive dependencies during builds of this project resolve to project.version and NOT the version set in bedework-parent
+
+### 4.1.3
+* Update library versions
+* Fix bad gtext for vpoll sub-component
+* Fix handling of UNTIL element in recurrences when converting to/from xml
+* Changes for vpoll participant use
+* Changes needed for immutable code in ical4j
+* Xutil treated NumberList as a String list - fix that.
+* Missing checks for absent values
+* Added a refresh operation to the synch engine and added associated code to the client side.
+* Remove (nearly) all old references to recurrence instances in db. Some comments need updating.
+* Fix content type
+* Check for null collection. Can happen if we do propfind and get non-existant special collection.
+* New class to handle event participants.
+* Small fix - call getParticipantsSet()
+* Add an attendee object we will use to handle attendee represented as either ical ATTENDEE and/OR PARTICIPANT.
+* Make webdavexception subclass of runtimeexception and tidy up a bit. Should be no noticable changes.
+* Redo set/getSupportedComponents in BwCalendar and remove explicit setting in other code.
+* Add, but don't process, participants with no calendar address.
+* Improve owner check.
+* Mostly switch to using BwParticipants and Attendee objects to manipulate event attendees and participants.
+* Get rid of SchedulingInfo.
+* Add a class to represent votes. Remove unused and incorrect poll item id class.
+* Mostly add code to correctly save and restore participants in the indexer.
+* Use getParticpantAddrs for BwCalDAVEvent.getAttendeeUris
+* Update mailer to send correctly formed messages.
+* Split jdkim into api and library. Use api only as a dependency. Obtain library by dynamic loading.
+
+### 4.1.4
+* Update library versions
+* dd url for new event reg web service to configs. Use it in client to post notifications.
+* Complete the unspringing of event reg.
+* Remove all unnecessary refs to CalFacadeException.
+  Move error codes out of CalFacadeException into CalFacadeErrorCode.
+* Move most of the exceptions into the new bw-base module.
+* Move response classes and ToString into bw-base module.
+* Many bw-database related changes
+* Remove ref to javax.xml
+* Pre-jakarta release

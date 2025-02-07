@@ -23,7 +23,7 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
+import jakarta.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;

@@ -41,7 +41,7 @@ import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
 
 import java.util.Collection;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import static org.bedework.calfacade.BwVersion.prodId;

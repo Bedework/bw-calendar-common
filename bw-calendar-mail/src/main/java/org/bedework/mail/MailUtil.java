@@ -39,15 +39,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
 
-import javax.activation.CommandMap;
-import javax.activation.MailcapCommandMap;
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.activation.CommandMap;
+import jakarta.activation.MailcapCommandMap;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Multipart;
+import jakarta.mail.Session;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 /** Some useful methods used when mailing calendar objects..
  *
@@ -221,7 +221,7 @@ public class MailUtil {
 
       msg.setFrom(new InternetAddress(originator));
 
-      msg.setRecipients(javax.mail.Message.RecipientType.TO, toList);
+      msg.setRecipients(jakarta.mail.Message.RecipientType.TO, toList);
 
       msg.setSubject(subject);
       msg.setSentDate(new Date());

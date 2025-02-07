@@ -111,7 +111,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.xml.ws.Holder;
+import jakarta.xml.ws.Holder;
 
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;

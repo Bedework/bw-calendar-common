@@ -60,7 +60,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 /** Class to provide utility methods for translating  between XML and Bedework
  * alarm representations

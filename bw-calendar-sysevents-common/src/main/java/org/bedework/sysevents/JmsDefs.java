@@ -20,7 +20,7 @@ package org.bedework.sysevents;
 
 import java.io.Serializable;
 
-import javax.jms.Session;
+import jakarta.jms.Session;
 
 /** Definitionsrelating to bedework use of jms.
  *

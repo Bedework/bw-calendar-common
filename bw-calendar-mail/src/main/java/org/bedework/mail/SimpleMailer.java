@@ -34,11 +34,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.mail.Message.RecipientType;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Message.RecipientType;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 /** A mailer which provides some minimal functionality.
  * We do not consider many issues such as spam prevention, efficiency in

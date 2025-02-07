@@ -110,7 +110,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 /** Class to provide utility methods for translating to XML icalendar classes
  *

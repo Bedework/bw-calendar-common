@@ -70,7 +70,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 
 import static org.bedework.calfacade.BwVersion.prodId;
 import static org.bedework.util.calendar.IcalendarUtil.addIcalTimezone;

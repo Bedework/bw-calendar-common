@@ -1,7 +1,7 @@
 package org.bedework.mail;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 
 public class MailerAuthenticator extends Authenticator {
   private final PasswordAuthentication authentication;

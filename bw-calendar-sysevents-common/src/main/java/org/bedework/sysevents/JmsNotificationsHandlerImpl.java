@@ -27,11 +27,11 @@ import org.bedework.sysevents.events.SysEventBase.Attribute;
 import org.bedework.sysevents.events.TimedEvent;
 import org.bedework.sysevents.listeners.SysEventListener;
 
-import javax.jms.CompletionListener;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
+import jakarta.jms.CompletionListener;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.ObjectMessage;
 
 /**
  * This is the implementation of a notifications handler which sends jms

@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import javax.mail.Session;
+import jakarta.mail.Session;
 
 /** A dummy mailer which just writes to the log.
  *

@@ -22,7 +22,6 @@ import org.bedework.access.Ace;
 import org.bedework.access.AceWho;
 import org.bedework.calfacade.BwGroup;
 import org.bedework.calfacade.BwPrincipal;
-import org.bedework.calfacade.BwStats.StatsEntry;
 import org.bedework.calfacade.base.BwOwnedDbentity;
 import org.bedework.calfacade.base.BwShareableDbentity;
 import org.bedework.calfacade.base.BwUnversionedDbentity;
@@ -33,6 +32,7 @@ import org.bedework.calfacade.ifs.Directories;
 import org.bedework.calfacade.indexing.BwIndexer;
 import org.bedework.calfacade.mail.MailerIntf;
 import org.bedework.calfacade.svc.BwPreferences;
+import org.bedework.database.db.StatsEntry;
 import org.bedework.sysevents.events.SysEventBase;
 
 import java.io.Serializable;

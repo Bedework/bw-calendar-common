@@ -20,8 +20,8 @@ package org.bedework.calfacade.annotations.process;
 
 import java.util.List;
 
-import jakarta.annotation.processing.Messager;
-import jakarta.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;

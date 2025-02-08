@@ -20,7 +20,7 @@ package org.bedework.calsvci;
 
 import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.configs.Configurations;
-import org.bedework.calfacade.configs.SchemaBuilder;
+import org.bedework.database.db.SchemaBuilder;
 import org.bedework.calfacade.configs.SystemProperties;
 import org.bedework.calfacade.svc.CalSvcIPars;
 import org.bedework.util.misc.Util;
@@ -39,7 +39,7 @@ public class CalSvcFactoryDefault implements CalSvcFactory {
   private static final String defaultSvciClass = "org.bedework.calsvc.CalSvc";
 
   private static final String schemaBuilderClass =
-      "org.bedework.calcore.hibernate.SchemaBuilderImpl";
+      "org.bedework.database.db.SchemaBuilderImpl";
 
   private static final String systemConfigClass =
       "org.bedework.common.jmx.ConfigurationsImpl";

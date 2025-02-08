@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jakarta.annotation.processing.Messager;
-import jakarta.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;

@@ -20,7 +20,7 @@ package org.bedework.calfacade.annotations.process;
 
 import org.bedework.calfacade.annotations.Wrapper;
 
-import jakarta.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 

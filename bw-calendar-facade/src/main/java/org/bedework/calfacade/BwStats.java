@@ -20,6 +20,7 @@
 package org.bedework.calfacade;
 
 import org.bedework.access.Access.AccessStatsEntry;
+import org.bedework.database.db.StatsEntry;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,123 +33,6 @@ import java.util.Collection;
  * @author Mike Douglass       douglm@bedework.edu
  */
 public class BwStats implements Serializable {
-  /** Class to hold a statistics. We build a collection of these.
-   * We use Strings for values as these are going to be dumped as xml.
-   */
-  public static class StatsEntry {
-    // ENUM
-    /** */
-    public final static int statKindHeader = 0;
-    /** */
-    public final static int statKindStat = 1;
-
-    private final int statKind;
-
-    private final String statLabel;
-
-    // ENUM
-    /** */
-    public final static int statTypeString = 0;
-    /** */
-    public final static int statTypeInt = 1;
-    /** */
-    public final static int statTypeLong = 2;
-    /** */
-    public final static int statTypeDouble = 3;
-    private int statType;
-
-    private String statVal;
-
-    /** Constructor for an int val
-     *
-     * @param label of val
-     * @param val value
-     */
-    public StatsEntry(final String label,
-                      final int val) {
-      statKind = statKindStat;
-      statLabel = label;
-      statType = statTypeInt;
-      statVal = String.valueOf(val);
-    }
-
-    /** Constructor for a long val
-     *
-     * @param label of val
-     * @param val value
-     */
-    public StatsEntry(final String label,
-                      final long val) {
-      statKind = statKindStat;
-      statLabel = label;
-      statType = statTypeLong;
-      statVal = String.valueOf(val);
-    }
-
-    /** Constructor for a double val
-     *
-     * @param label of val
-     * @param val value
-     */
-    public StatsEntry(final String label,
-                      final double val) {
-      statKind = statKindStat;
-      statLabel = label;
-      statType = statTypeDouble;
-      statVal = String.valueOf(val);
-    }
-
-    /** Constructor for a String val
-     *
-     * @param label of val
-     * @param val value
-     */
-    public StatsEntry(final String label,
-                      final String val) {
-      statKind = statKindStat;
-      statLabel = label;
-      statType = statTypeString;
-      statVal = val;
-    }
-
-    /** Constructor for a header
-     *
-     * @param header for output
-     */
-    public StatsEntry(final String header) {
-      statKind = statKindHeader;
-      statLabel = header;
-    }
-
-    /**
-     * @return int kind of stat
-     */
-    public int getStatKind() {
-      return statKind;
-    }
-
-    /**
-     * @return String label
-     */
-    public String getStatLabel() {
-      return statLabel;
-    }
-
-    /**
-     * @return int type
-     */
-    public int getStatType() {
-      return statType;
-    }
-
-    /**
-     * @return String value
-     */
-    public String getStatVal() {
-      return statVal;
-    }
-  }
-
   /**
    */
   public static class CacheStats {
@@ -436,64 +320,7 @@ public class BwStats implements Serializable {
     al.add(new StatsEntry(name + " refetches", cs.getRefetches()));
   }
 
-  /** Turn the Collection of StatsEntry into a String for dumps.
-   *
-   * @param c  Collection of StatsEntry
-   * @return String formatted result.
-   */
-  public static String toString(final Collection<StatsEntry> c) {
-    final StringBuilder sb = new StringBuilder();
-
-    for (final StatsEntry se: c) {
-      final int k = se.getStatKind();
-
-      if (k == StatsEntry.statKindHeader) {
-        header(sb, se.getStatLabel());
-      } else {
-        format(sb, se.getStatLabel(), se.getStatVal());
-      }
-    }
-
-    return sb.toString();
-  }
-
   public String toString() {
-    return toString(getStats());
-  }
-
-  private final static String padder = "                    " +
-                                       "                    " +
-                                       "                    " +
-                                       "                    ";
-
-  private final static int padderLen = padder.length();
-
-  private static final int maxvalpad = 10;
-
-  private static void pad(final StringBuilder sb,
-                          final String val, final int padlen) {
-    final int len = padlen - val.length();
-
-    if (len > 0) {
-      sb.append(padder, 0, len);
-    }
-
-    sb.append(val);
-  }
-
-  private static void header(final StringBuilder sb,
-                             final String h) {
-    sb.append("\n");
-    pad(sb, h, padderLen);
-    sb.append("\n");
-  }
-
-  private static void format(final StringBuilder sb,
-                             final String name,
-                             final String val) {
-    pad(sb, name, padderLen);
-    sb.append(": ");
-    pad(sb, val, maxvalpad);
-    sb.append("\n");
+    return StatsEntry.toString(getStats());
   }
 }

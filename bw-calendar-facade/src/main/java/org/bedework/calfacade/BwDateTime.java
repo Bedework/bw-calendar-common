@@ -448,7 +448,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
    */
   @IcalProperty(pindex = PropertyInfoIndex.UTC,
                 jname = "utc")
-  private void setDate(final String val) {
+  protected void setDate(final String val) {
     date = val;
   }
 
@@ -483,7 +483,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
    */
   @IcalProperty(pindex = PropertyInfoIndex.FLOATING,
                 jname = "floating")
-  private void setFloatFlag(final Boolean val) {
+  protected void setFloatFlag(final Boolean val) {
     floatFlag = val;
   }
 
@@ -718,7 +718,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
    *
    * @param val   boolean dateType
    */
-  private void setDateType(final boolean val) {
+  protected void setDateType(final boolean val) {
     dateType = val;
   }
 
@@ -727,7 +727,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
    *
    * @param val    String tzid
    */
-  private void setTzid(final String val) {
+  protected void setTzid(final String val) {
     tzid = val;
   }
 
@@ -743,7 +743,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
    *
    * @param val    String dtval
    */
-  private void setDtval(final String val) {
+  protected void setDtval(final String val) {
     dtval = val;
     if (val == null) {
       setDate(null);

@@ -2285,7 +2285,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     if (!c.contains(val)) {
-      c.add(val);
+      c.add(BwDateTimeRdate.make(val));
       setRecurring(true);
     }
   }
@@ -2306,7 +2306,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
       setExdates(c);
     }
 
-    c.add(val);
+    c.add(BwDateTimeExdate.make(val));
   }
 
   /* ====================================================================
@@ -2338,7 +2338,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
   )
   @NoProxy
   public void setDtstart(final BwDateTime val) {
-    dtstart = val;
+    dtstart = BwDateTimeDtStart.make(val);
   }
 
   @Override
@@ -2368,7 +2368,7 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     )
   @NoProxy
   public void setDtend(final BwDateTime val) {
-    dtend = val;
+    dtend = BwDateTimeDtEnd.make(val);
   }
 
   @Override

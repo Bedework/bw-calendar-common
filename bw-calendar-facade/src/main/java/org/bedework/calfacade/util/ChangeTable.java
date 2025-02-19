@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /** Class to track changes to calendar entities. CalDAV (and file uploads)
  * present a new copy of the event. From this we have to figure out what the
@@ -706,7 +707,11 @@ public class ChangeTable implements Logged, Serializable {
         if (ev.getRecurrenceId() == null) {
           originalVals = ev.getExdates();
           if (checkMulti(ent, originalVals, update)) {
-            ev.setExdates((Set<BwDateTime>)ent.getAddedValues());
+            ev.setExdates(new TreeSet<>());
+            for (final var dt: (Set<BwDateTime>)ent.getAddedValues()) {
+              ev.addExdate(dt);
+            }
+            //ev.setExdates((Set<BwDateTime>)ent.getAddedValues());
           }
         }
         break;
@@ -724,7 +729,10 @@ public class ChangeTable implements Logged, Serializable {
         if (ev.getRecurrenceId() == null) {
           originalVals = ev.getRdates();
           if (checkMulti(ent, originalVals, update)) {
-            ev.setRdates((Set<BwDateTime>)ent.getAddedValues());
+            for (final var dt: (Set<BwDateTime>)ent.getAddedValues()) {
+              ev.addRdate(dt);
+            }
+            //ev.setRdates((Set<BwDateTime>)ent.getAddedValues());
           }
         }
         break;

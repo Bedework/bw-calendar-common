@@ -54,6 +54,7 @@ import ietf.params.xml.ns.icalendar_2.CompletedPropType;
 import ietf.params.xml.ns.icalendar_2.ContactPropType;
 import ietf.params.xml.ns.icalendar_2.CreatedPropType;
 import ietf.params.xml.ns.icalendar_2.CutypeParamType;
+import ietf.params.xml.ns.icalendar_2.DateDatetimePropertyType;
 import ietf.params.xml.ns.icalendar_2.DelegatedFromParamType;
 import ietf.params.xml.ns.icalendar_2.DelegatedToParamType;
 import ietf.params.xml.ns.icalendar_2.DescriptionPropType;
@@ -63,6 +64,8 @@ import ietf.params.xml.ns.icalendar_2.DtstampPropType;
 import ietf.params.xml.ns.icalendar_2.DtstartPropType;
 import ietf.params.xml.ns.icalendar_2.DuePropType;
 import ietf.params.xml.ns.icalendar_2.DurationPropType;
+import ietf.params.xml.ns.icalendar_2.ExdatePropType;
+import ietf.params.xml.ns.icalendar_2.ExrulePropType;
 import ietf.params.xml.ns.icalendar_2.FbtypeParamType;
 import ietf.params.xml.ns.icalendar_2.FreebusyPropType;
 import ietf.params.xml.ns.icalendar_2.FreqRecurType;
@@ -76,6 +79,7 @@ import ietf.params.xml.ns.icalendar_2.PartstatParamType;
 import ietf.params.xml.ns.icalendar_2.PercentCompletePropType;
 import ietf.params.xml.ns.icalendar_2.PeriodType;
 import ietf.params.xml.ns.icalendar_2.PriorityPropType;
+import ietf.params.xml.ns.icalendar_2.RdatePropType;
 import ietf.params.xml.ns.icalendar_2.RecurType;
 import ietf.params.xml.ns.icalendar_2.RecurrenceIdPropType;
 import ietf.params.xml.ns.icalendar_2.RelatedToPropType;
@@ -99,18 +103,19 @@ import ietf.params.xml.ns.icalendar_2.VfreebusyType;
 import ietf.params.xml.ns.icalendar_2.VjournalType;
 import ietf.params.xml.ns.icalendar_2.VtodoType;
 import ietf.params.xml.ns.icalendar_2.XBedeworkCostPropType;
+import jakarta.xml.bind.JAXBElement;
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.Period;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.property.ExRule;
 import net.fortuna.ical4j.model.property.RRule;
 
 import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import jakarta.xml.bind.JAXBElement;
 
 /** Class to provide utility methods for translating to XML icalendar classes
  *
@@ -178,7 +183,7 @@ public class ToXEvent extends Xutil {
 
       if (emit(pattern, masterClass, RecurrenceIdPropType.class)) {
         String strval = val.getRecurrenceId();
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           isInstance = true;
           // DORECUR - we should be restoring to original form.
 
@@ -328,20 +333,24 @@ public class ToXEvent extends Xutil {
       /* ------------------- Due/DtEnd/Duration --------------------
       */
 
-      if ((todo && emit(pattern, masterClass, DuePropType.class)) ||
-          (!todo && emit(pattern, masterClass, DtendPropType.class))) {
+      if ((todo && emit(pattern, masterClass,
+                        DuePropType.class)) ||
+          (!todo && emit(pattern, masterClass,
+                         DtendPropType.class))) {
         if (val.getEndType() == BwEvent.endTypeDate) {
           if (todo) {
-            final DuePropType due =
-                    (DuePropType)makeDateDatetime(new DuePropType(),
-                                                  val.getDtend(),
-                                                  freeBusy | val.getForceUTC());
+            final var due =
+                    (DuePropType)makeDateDatetime(
+                            new DuePropType(),
+                            val.getDtend(),
+                            freeBusy | val.getForceUTC());
             pl.add(of.createDue(due));
           } else {
-            final DtendPropType dtend =
-                    (DtendPropType)makeDateDatetime(new DtendPropType(),
-                                                    val.getDtend(),
-                                                    freeBusy | val.getForceUTC());
+            final var dtend =
+                    (DtendPropType)makeDateDatetime(
+                            new DtendPropType(),
+                            val.getDtend(),
+                            freeBusy | val.getForceUTC());
             pl.add(of.createDtend(dtend));
           }
         } else if (val.getEndType() == BwEvent.endTypeDuration) {
@@ -365,9 +374,10 @@ public class ToXEvent extends Xutil {
       if (emit(pattern, masterClass, DtstartPropType.class)) {
         if ((val.getNoStart() == null) || !val.getNoStart()) {
           final DtstartPropType dtstart =
-                  (DtstartPropType)makeDateDatetime(new DtstartPropType(),
-                                                    val.getDtstart(),
-                                                    freeBusy | val.getForceUTC());
+                  (DtstartPropType)makeDateDatetime(
+                          new DtstartPropType(),
+                          val.getDtstart(),
+                          freeBusy | val.getForceUTC());
           pl.add(of.createDtstart(dtstart));
         }
       }
@@ -584,7 +594,7 @@ public class ToXEvent extends Xutil {
 
       if (emit(pattern, masterClass, TranspPropType.class)) {
         final String strval = val.getTransparency();
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           final TranspPropType t = new TranspPropType();
           t.setText(strval);
           pl.add(of.createTransp(t));
@@ -609,7 +619,7 @@ public class ToXEvent extends Xutil {
           strval = strval.trim();
         }
 
-        if ((strval != null) && (strval.length() > 0)) {
+        if ((strval != null) && (!strval.isEmpty())) {
           final UrlPropType u = new UrlPropType();
 
           u.setUri(strval);
@@ -669,24 +679,76 @@ public class ToXEvent extends Xutil {
                                  final Class<?> compCl,
                                  final BwEvent val,
                                  final List<JAXBElement<? extends BasePropertyType>> pl) {
-    try {
+     try {
       if (emit(pattern, compCl, RrulePropType.class) &&
           val.hasRrules()) {
-        for (final String s: val.getRrules()) {
-          final RRule rule = new RRule();
+        for (final var s: val.getRrules()) {
+          final var rule = new RRule();
           rule.setValue(s);
 
-          final Recur r = rule.getRecur();
-          final RecurType rt = new RecurType();
+          final var rrp = new RrulePropType();
+          rrp.setRecur(doRecur(rule.getRecur()));
+          pl.add(of.createRrule(rrp));
+        }
+      }
 
-          rt.setFreq(FreqRecurType.fromValue(r.getFrequency().name()));
-          if (r.getCount() > 0) {
-            rt.setCount(BigInteger.valueOf(r.getCount()));
-          }
+      if (emit(pattern, compCl, ExrulePropType.class) &&
+          val.hasExrules()) {
+        for(final var s: val.getExrules()) {
+          final ExRule rule = new ExRule();
+          rule.setValue(s);
 
-          final Date until = r.getUntil();
-          if (until != null) {
-            final UntilRecurType u = new UntilRecurType();
+          final var rrp = new ExrulePropType();
+          rrp.setRecur(doRecur(rule.getRecur()));
+          pl.add(of.createExrule(rrp));
+        }
+      }
+
+      if (emit(pattern, compCl, RdatePropType.class)
+              && val.hasRdates()) {
+        for (final var dt: val.getRdates()) {
+          final var rdate =
+                  (RdatePropType)makeDlp(dt,
+                                         new RdatePropType());
+          pl.add(of.createRdate(rdate));
+        }
+      }
+
+      if (emit(pattern, compCl, ExdatePropType.class)
+              && val.hasExdates()) {
+        for (final var dt: val.getExdates()) {
+          final var exdate =
+                  (ExdatePropType)makeDlp(dt,
+                                         new ExdatePropType());
+          pl.add(of.createExdate(exdate));
+        }
+      }
+    } catch (final ParseException pe) {
+      throw new BedeworkException(pe);
+    }
+  }
+
+  /* ====================================================
+                      Private methods
+     ==================================================== */
+
+  private static DateDatetimePropertyType makeDlp(
+          final BwDateTime val,
+          final DateDatetimePropertyType prop) {
+    return Xutil.makeDateDatetime(prop, val, false);
+  }
+
+  private static RecurType doRecur(final Recur r) {
+    final RecurType rt = new RecurType();
+
+    rt.setFreq(FreqRecurType.fromValue(r.getFrequency().name()));
+    if (r.getCount() > 0) {
+      rt.setCount(BigInteger.valueOf(r.getCount()));
+    }
+
+    final Date until = r.getUntil();
+    if (until != null) {
+      final UntilRecurType u = new UntilRecurType();
             /*
             if (until instanceof DateTime) {
               u.setDateTime(until.toString());
@@ -694,81 +756,48 @@ public class ToXEvent extends Xutil {
               u.setDate(until.toString());
             }
             */
-            XcalUtil.initUntilRecur(u, until.toString());
-            rt.setUntil(u);
-          }
-
-          if (r.getInterval() > 0) {
-            rt.setInterval(String.valueOf(r.getInterval()));
-          }
-
-          listFromNumberList(rt.getBysecond(),
-                             r.getSecondList());
-
-          listFromNumberList(rt.getByminute(),
-                             r.getMinuteList());
-
-          listFromNumberList(rt.getByhour(),
-                             r.getHourList());
-
-          if (r.getDayList() != null) {
-            final List<String> l = rt.getByday();
-
-            for (final WeekDay wd: r.getDayList()) {
-              l.add(wd.getDay().name());
-            }
-          }
-
-          listFromNumberList(rt.getByyearday(),
-                             r.getYearDayList());
-
-          intlistFromNumberList(rt.getBymonthday(),
-                                r.getMonthDayList());
-
-          listFromNumberList(rt.getByweekno(),
-                             r.getWeekNoList());
-
-          intlistFromNumberList(rt.getBymonth(),
-                                r.getMonthList());
-
-          bigintlistFromNumberList(rt.getBysetpos(),
-                                r.getSetPosList());
-
-          final RrulePropType rrp = new RrulePropType();
-          rrp.setRecur(rt);
-          pl.add(of.createRrule(rrp));
-        }
-      }
-
-      /*
-      if (emit(pattern, compCl, ExrulePropType.class) &&
-          val.hasExrules()) {
-        for(String s: val.getExrules()) {
-          ExRule rule = new ExRule();
-          rule.setValue(s);
-
-          pl.add(rule);
-        }
-      }
-
-      if (emit(pattern, compCl, RdatePropType.class) {
-        makeDlp(false, val.getRdates(), pl);
-      }
-
-      if (emit(pattern, compCl, ExdatePropType.class) {
-        makeDlp(true, val.getExdates(), pl);
-      }
-      */
-//    } catch (BedeworkException be) {
-  //    throw be;
-    } catch (final Throwable t) {
-      throw new BedeworkException(t);
+      XcalUtil.initUntilRecur(u, until.toString());
+      rt.setUntil(u);
     }
-  }
 
-  /* ====================================================================
-                      Private methods
-     ==================================================================== */
+    if (r.getInterval() > 0) {
+      rt.setInterval(String.valueOf(r.getInterval()));
+    }
+
+    listFromNumberList(rt.getBysecond(),
+                       r.getSecondList());
+
+    listFromNumberList(rt.getByminute(),
+                       r.getMinuteList());
+
+    listFromNumberList(rt.getByhour(),
+                       r.getHourList());
+
+    if (r.getDayList() != null) {
+      final List<String> l = rt.getByday();
+
+      for (final WeekDay wd: r.getDayList()) {
+        l.add(wd.getDay().name());
+      }
+    }
+
+    listFromNumberList(rt.getByyearday(),
+                       r.getYearDayList());
+
+    intlistFromNumberList(rt.getBymonthday(),
+                          r.getMonthDayList());
+
+    listFromNumberList(rt.getByweekno(),
+                       r.getWeekNoList());
+
+    intlistFromNumberList(rt.getBymonth(),
+                          r.getMonthList());
+
+    bigintlistFromNumberList(rt.getBysetpos(),
+                             r.getSetPosList());
+
+    return rt;
+  }
 
   /** make an attendee
    *

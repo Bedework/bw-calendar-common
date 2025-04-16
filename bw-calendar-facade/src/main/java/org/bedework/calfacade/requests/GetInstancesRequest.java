@@ -18,13 +18,11 @@
 */
 package org.bedework.calfacade.requests;
 
-import org.bedework.calfacade.BwDateTime;
 import org.bedework.base.ToString;
 import org.bedework.base.response.Response;
+import org.bedework.calfacade.BwDateTime;
 
 import java.util.Collection;
-
-import static org.bedework.base.response.Response.invalid;
 
 /** Request instances for a given recurrence rule and start date.
  * Exdates, Rdates may be provided. Additionally the result may be
@@ -150,9 +148,9 @@ public class GetInstancesRequest extends RequestBase {
   }
 
   @Override
-  public boolean validate(final Response resp) {
+  public boolean validate(final Response<?> resp) {
     if (getStartDt() == null) {
-      invalid(resp, "Missing start date/time");
+      resp.invalid("Missing start date/time");
       return false;
     }
 
@@ -161,7 +159,7 @@ public class GetInstancesRequest extends RequestBase {
     }
 
     if (getRdates() == null) {
-      invalid(resp, "Missing rdates when no rrule");
+      resp.invalid("Missing rdates when no rrule");
       return false;
     }
 

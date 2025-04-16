@@ -3,6 +3,7 @@
 */
 package org.bedework.convert.jscal;
 
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCalendar;
@@ -39,8 +40,6 @@ import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 import org.bedework.util.timezones.Timezones;
 
 import net.fortuna.ical4j.model.TimeZone;
@@ -51,6 +50,7 @@ import net.fortuna.ical4j.model.property.Duration;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.bedework.base.response.Response.Status.failed;
 import static org.bedework.calfacade.BwAlarm.TriggerVal;
 import static org.bedework.jsforj.model.JSTypes.typeEvent;
 import static org.bedework.jsforj.model.JSTypes.typeTask;
@@ -66,7 +66,6 @@ import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.CREATED
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.DESCRIPTION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ESTIMATED_DURATION;
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.SUMMARY;
-import static org.bedework.base.response.Response.Status.failed;
 
 /**
  * User: mike Date: 3/30/20 Time: 23:11
@@ -92,7 +91,7 @@ public class JsCal2BwEvent {
     final var resp = new GetEntityResponse<EventInfo>();
 
     if (val == null) {
-      return Response.notOk(resp, failed, "No entity supplied");
+      return resp.notOk(failed, "No entity supplied");
     }
 
     final var jstype = val.getType();
@@ -109,8 +108,7 @@ public class JsCal2BwEvent {
         break;
 
       default:
-        return Response
-                .error(resp, "org.bedework.invalid.component.type: " +
+        return resp.error("org.bedework.invalid.component.type: " +
                         jstype);
     }
 
@@ -127,7 +125,7 @@ public class JsCal2BwEvent {
       /* XXX A guid is required - but are there devices out there without a
        *       guid - and if so how do we handle it?
        */
-      return Response.notOk(resp, failed, CalFacadeErrorCode.noGuid);
+      return resp.notOk(failed, CalFacadeErrorCode.noGuid);
     }
 
     /* If we have a recurrence id then we assume this is a detached instance.
@@ -159,7 +157,8 @@ public class JsCal2BwEvent {
       icalEvstart = icalDate.format(dtOnlyP);
     } else if (ridObj == null) {
       // Invalid event - no start
-      return Response.notOk(resp, failed, CalFacadeErrorCode.invalidOverride);
+      return resp.notOk(failed,
+                        CalFacadeErrorCode.invalidOverride);
     } else {
       icalEvstart = ridObj.getDtval();
     }
@@ -173,7 +172,7 @@ public class JsCal2BwEvent {
             logger);
 
     if (!ger.isOk()) {
-      return Response.fromResponse(resp, ger);
+      return resp.fromResponse(ger);
     }
 
     final var masterEI = ger.getEntity().masterEI;
@@ -205,8 +204,7 @@ public class JsCal2BwEvent {
 
     chg.processChanges(ev, true, false);
 
-    resp.setEntity(evinfo);
-    return Response.ok(resp);
+    return resp.setEntity(evinfo).ok();
   }
 
   private static void setValues(
@@ -455,11 +453,10 @@ public class JsCal2BwEvent {
       return tr;
     }
 
-    if (!(val instanceof JSOffsetTrigger)) {
+    if (!(val instanceof final JSOffsetTrigger offsetTrigger)) {
       return tr;
     }
 
-    final var offsetTrigger = (JSOffsetTrigger)val;
     final var rel = offsetTrigger.getRelativeTo();
 
     tr.triggerStart = (rel == null) ||
@@ -505,7 +502,7 @@ public class JsCal2BwEvent {
       final BwCategory cat;
 
       if (fcResp.isError()) {
-        Response.fromResponse(resp, fcResp);
+        resp.fromResponse(fcResp);
         return false;
       }
 
@@ -594,7 +591,7 @@ public class JsCal2BwEvent {
     final BwContact contact;
 
     if (cResp.isError()) {
-      Response.fromResponse(resp, cResp);
+      resp.fromResponse(cResp);
       return false;
     }
 

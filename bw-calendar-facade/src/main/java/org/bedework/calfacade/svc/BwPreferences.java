@@ -18,16 +18,15 @@
 */
 package org.bedework.calfacade.svc;
 
+import org.bedework.base.ToString;
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwProperty;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwOwnedDbentity;
 import org.bedework.calfacade.base.PropertiesEntity;
 import org.bedework.calfacade.util.CalFacadeUtil;
-import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 import org.bedework.util.xml.FromXmlCallback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -682,7 +681,7 @@ public class BwPreferences extends BwOwnedDbentity<BwPreferences>
       ger.setEntity(mapper.readValue(mappings, CategoryMappings.class));
       return ger;
     } catch (final Throwable t) {
-      return Response.error(ger, t);
+      return ger.error(t);
     }
   }
 

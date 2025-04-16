@@ -55,7 +55,7 @@ public class EventInfo extends BwUnversionedDbentity<EventInfo>
   /** This class allows add and update event to signal changes back to the
    * caller.
    */
-  public static class UpdateResult extends ScheduleResult {
+  public static class UpdateResult extends ScheduleResult<UpdateResult> {
     /** False if the update method(s) could find no changes */
     public boolean hasChanged;
 

@@ -70,17 +70,17 @@ public class VAlarmUtil extends IcalUtil {
    * @param currentPrincipal - href for current authenticated user
    * @param chg change table
    */
-  public static Response processAlarm(final IcalCallback cb,
-                                      final Component val,
-                                      final VAlarm va,
-                                      final BwEvent ev,
-                                      final String currentPrincipal,
-                                      final ChangeTable chg) {
+  public static Response<?> processAlarm(final IcalCallback cb,
+                                         final Component val,
+                                         final VAlarm va,
+                                         final BwEvent ev,
+                                         final String currentPrincipal,
+                                         final ChangeTable chg) {
     final PropertyList<Property> pl = va.getProperties();
 
     if (pl == null) {
       // Empty VAlarm
-      return Response.error(new Response(), "Invalid alarm list");
+      return new Response<>().error("Invalid alarm list");
     }
 
     Property prop;
@@ -99,7 +99,7 @@ public class VAlarmUtil extends IcalUtil {
 
       if (prop == null) {
         // lastack and no snooze - presume dismiss so delete alarm
-        return Response.ok();
+        return new Response<>().ok();
       }
 
       mozSnoozeTime = prop.getValue(); // UTC time
@@ -109,8 +109,7 @@ public class VAlarmUtil extends IcalUtil {
 
     prop = pl.getProperty(Property.ACTION);
     if (prop == null) {
-      return Response.error(new Response(),
-                            "Invalid alarm");
+      return new Response<>().error("Invalid alarm");
     }
 
     final String actionStr = prop.getValue();
@@ -125,47 +124,51 @@ public class VAlarmUtil extends IcalUtil {
 
     final DurationRepeat dr = getDurationRepeat(pl);
 
-    if ("EMAIL".equals(actionStr)) {
-      al = BwAlarm.emailAlarm(ev.getCreatorHref(),
-                              tr,
-                              dr.duration, dr.repeat,
-                              getOptStr(pl, "ATTACH"),
-                              getReqStr(pl, "DESCRIPTION"),
-                              getReqStr(pl, "SUMMARY"),
-                              null);
-
-      final Iterator<?> atts = getReqStrs(pl, "ATTENDEE");
-
-      while (atts.hasNext()) {
-        al.addAttendee(getAttendee(cb, (Attendee)atts.next()));
-      }
-    } else if ("AUDIO".equals(actionStr)) {
-      al = BwAlarm.audioAlarm(ev.getCreatorHref(),
-                              tr,
-                              dr.duration, dr.repeat,
-                              getOptStr(pl, "ATTACH"));
-    } else if ("DISPLAY".equals(actionStr)) {
-      al = BwAlarm.displayAlarm(ev.getCreatorHref(),
+    switch (actionStr) {
+      case "EMAIL" -> {
+        al = BwAlarm.emailAlarm(ev.getCreatorHref(),
                                 tr,
                                 dr.duration, dr.repeat,
-                                getReqStr(pl, "DESCRIPTION"));
-    } else if ("PROCEDURE".equals(actionStr)) {
-      al = BwAlarm.procedureAlarm(ev.getCreatorHref(),
-                                  tr,
-                                  dr.duration, dr.repeat,
-                                  getReqStr(pl, "ATTACH"),
-                                  getOptStr(pl, "DESCRIPTION"));
-    } else if ("NONE".equals(actionStr)) {
-      al = BwAlarm.noneAlarm(ev.getCreatorHref(),
-                             tr,
-                             dr.duration, dr.repeat,
-                             getOptStr(pl, "DESCRIPTION"));
-    } else {
-      al = BwAlarm.otherAlarm(ev.getCreatorHref(),
-                              actionStr,
-                              tr,
-                              dr.duration, dr.repeat,
-                              getOptStr(pl, "DESCRIPTION"));
+                                getOptStr(pl, "ATTACH"),
+                                getReqStr(pl, "DESCRIPTION"),
+                                getReqStr(pl, "SUMMARY"),
+                                null);
+
+        final Iterator<?> atts = getReqStrs(pl, "ATTENDEE");
+
+        while (atts.hasNext()) {
+          al.addAttendee(getAttendee(cb, (Attendee)atts.next()));
+        }
+      }
+      case "AUDIO" -> al = BwAlarm.audioAlarm(ev.getCreatorHref(),
+                                              tr,
+                                              dr.duration, dr.repeat,
+                                              getOptStr(pl,
+                                                        "ATTACH"));
+      case "DISPLAY" -> al = BwAlarm.displayAlarm(ev.getCreatorHref(),
+                                                  tr,
+                                                  dr.duration,
+                                                  dr.repeat,
+                                                  getReqStr(pl,
+                                                            "DESCRIPTION"));
+      case "PROCEDURE" ->
+              al = BwAlarm.procedureAlarm(ev.getCreatorHref(),
+                                          tr,
+                                          dr.duration, dr.repeat,
+                                          getReqStr(pl, "ATTACH"),
+                                          getOptStr(pl,
+                                                    "DESCRIPTION"));
+      case "NONE" -> al = BwAlarm.noneAlarm(ev.getCreatorHref(),
+                                            tr,
+                                            dr.duration, dr.repeat,
+                                            getOptStr(pl,
+                                                      "DESCRIPTION"));
+      case null, default ->
+              al = BwAlarm.otherAlarm(ev.getCreatorHref(),
+                                      actionStr,
+                                      tr,
+                                      dr.duration, dr.repeat,
+                                      getOptStr(pl, "DESCRIPTION"));
     }
 
     /* Mozilla is add xprops to the containing event to set the snooze time.
@@ -202,10 +205,8 @@ public class VAlarmUtil extends IcalUtil {
     for (final Property property: pl) {
       prop = property;
 
-      if (prop instanceof XProperty) {
+      if (prop instanceof final XProperty xp) {
         /* ------------------------- x-property --------------------------- */
-
-        final XProperty xp = (XProperty)prop;
 
         al.addXproperty(new BwXproperty(xp.getName(),
                                         xp.getParameters()
@@ -214,9 +215,7 @@ public class VAlarmUtil extends IcalUtil {
         continue;
       }
 
-      if (prop instanceof Uid) {
-        final Uid p = (Uid)prop;
-
+      if (prop instanceof final Uid p) {
         al.addXproperty(BwXproperty.makeIcalProperty(p.getName(),
                                                      p.getParameters()
                                                       .toString(),
@@ -228,7 +227,7 @@ public class VAlarmUtil extends IcalUtil {
     al.setOwnerHref(currentPrincipal);
     chg.addValue(PropertyInfoIndex.VALARM, al);
 
-    return Response.ok();
+    return new Response<>().ok();
   }
 
   /** Process any alarms.
@@ -284,7 +283,7 @@ public class VAlarmUtil extends IcalUtil {
       } else {
         final List<BwXproperty> xps = val.getXicalProperties("ACTION");
 
-        action = xps.get(0).getValue();
+        action = xps.getFirst().getValue();
       }
 
       addProperty(alarm, new Action(action));

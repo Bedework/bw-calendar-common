@@ -77,7 +77,7 @@ public class RequestBase {
    * @param resp for failed status and message
    * @return true for ok request
    */
-  public boolean validate(final Response resp) {
+  public boolean validate(final Response<?> resp) {
     return true;
   }
 

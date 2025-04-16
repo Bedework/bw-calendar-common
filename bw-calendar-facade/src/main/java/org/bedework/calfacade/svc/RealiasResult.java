@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * User: mike Date: 3/9/21 Time: 11:27
  */
-public class RealiasResult  extends Response {
+public class RealiasResult  extends Response<RealiasResult> {
   private final Set<BwCategory> cats;
 
   public RealiasResult(final Set<BwCategory> cats) {

@@ -34,8 +34,9 @@ public class LocationsResponse extends EventPropertiesResponse {
    *
    * @param val collection of locations
    */
-  public void setLocations(final Collection<BwLocation> val) {
+  public LocationsResponse setLocations(final Collection<BwLocation> val) {
     locations = val;
+    return this;
   }
 
   /**
@@ -46,9 +47,8 @@ public class LocationsResponse extends EventPropertiesResponse {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("locations", getLocations());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("locations", getLocations());
   }
 }

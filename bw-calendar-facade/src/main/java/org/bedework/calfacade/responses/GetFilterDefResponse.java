@@ -45,9 +45,8 @@ public class GetFilterDefResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("filterDef", getFilterDef());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("filterDef", getFilterDef());
   }
 }

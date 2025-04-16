@@ -77,11 +77,10 @@ public class CollectionsResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("collections", getCollections())
-      .append("publicCollections", getPublicCollections())
-      .append("userCollections", getUserCollections());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("collections", getCollections())
+                .append("publicCollections", getPublicCollections())
+                .append("userCollections", getUserCollections());
   }
 }

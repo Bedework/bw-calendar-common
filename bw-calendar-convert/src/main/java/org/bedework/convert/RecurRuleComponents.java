@@ -18,9 +18,8 @@
 */
 package org.bedework.convert;
 
-import org.bedework.calfacade.BwEvent;
 import org.bedework.base.response.GetEntitiesResponse;
-import org.bedework.base.response.Response;
+import org.bedework.calfacade.BwEvent;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.NumberList;
@@ -36,8 +35,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 /** Broken out recurrence rule.
-*
-   *          recur      = "FREQ"=freq *(
+ *<br/>
+ *          recur      = "FREQ"=freq *(
 
                     ; either UNTIL or COUNT may appear in a 'recur',
                     ; but UNTIL and COUNT MUST NOT occur in the same 'recur'
@@ -402,13 +401,13 @@ public class RecurRuleComponents {
     final GetEntitiesResponse<RecurRuleComponents> resp =
             new GetEntitiesResponse<>();
     if (!ev.isRecurringEntity()) {
-      return Response.notFound(resp);
+      return resp.notFound();
     }
 
     final var rules = ev.getRrules();
 
     if (rules == null) {
-      return Response.notFound(resp);
+      return resp.notFound();
     }
 
     for (final String rule: rules) {
@@ -418,7 +417,7 @@ public class RecurRuleComponents {
       try {
         recur = new Recur(rule);
       } catch (final ParseException e) {
-        return Response.error(resp, "Invalid RRULE: " + rule);
+        return resp.error("Invalid RRULE: " + rule);
       }
 
       rrc.setRule(rule);
@@ -472,7 +471,7 @@ public class RecurRuleComponents {
       resp.addEntity(rrc);
     }
 
-    return Response.ok(resp);
+    return resp.ok();
   }
 
   private static Collection<Integer> checkNumList(final NumberList val) {

@@ -65,11 +65,11 @@ public interface SchedulingI extends Serializable {
    * @param iSchedule  true if it's an iSchedule request.
    * @return ScheduleResult
    */
-  ScheduleResult schedule(EventInfo ei,
-                          String recipient,
-                          String fromAttUri,
-                          boolean iSchedule,
-                          ScheduleResult res);
+  ScheduleResult<?> schedule(EventInfo ei,
+                             String recipient,
+                             String fromAttUri,
+                             boolean iSchedule,
+                             ScheduleResult<?> res);
 
   /**
    * @param ei event
@@ -77,9 +77,9 @@ public interface SchedulingI extends Serializable {
    * @param fromAtt attendee
    * @return ScheduleResult
    */
-  ScheduleResult declineCounter(EventInfo ei,
-                                String comment,
-                                BwAttendee fromAtt);
+  ScheduleResult<?> declineCounter(EventInfo ei,
+                                   String comment,
+                                   BwAttendee fromAtt);
 
   /** Attendee wants a refresh
    *
@@ -87,8 +87,8 @@ public interface SchedulingI extends Serializable {
    * @param comment - optional comment
    * @return   ScheduleResult
    */
-  ScheduleResult requestRefresh(EventInfo ei,
-                                String comment);
+  ScheduleResult<?> requestRefresh(EventInfo ei,
+                                   String comment);
 
   /** Attendee wants to send a reply
    *
@@ -97,9 +97,9 @@ public interface SchedulingI extends Serializable {
    * @param comment - optional comment
    * @return   ScheduleResult
    */
-  ScheduleResult sendReply(EventInfo ei,
-                           int partstat,
-                           String comment);
+  ScheduleResult<?> sendReply(EventInfo ei,
+                              int partstat,
+                              String comment);
 
   /** An attendee responds to a request.
    *
@@ -107,9 +107,9 @@ public interface SchedulingI extends Serializable {
    * @param method - the scheduling method
    * @return   ScheduleResult
    */
-  ScheduleResult attendeeRespond(EventInfo ei,
-                                 int method,
-                                 ScheduleResult res);
+  ScheduleResult<?> attendeeRespond(EventInfo ei,
+                                    int method,
+                                    ScheduleResult<?> res);
 
   /* * Handle replies to scheduling requests - that is the schedule
    * method was REPLY. We, as an organizer (or their delegate) are going to
@@ -145,8 +145,8 @@ public interface SchedulingI extends Serializable {
    *                    REFRESH
    * @return ScheduleResult
    */
-  ScheduleResult scheduleResponse(EventInfo ei,
-                                  ScheduleResult res);
+  ScheduleResult<?> scheduleResponse(EventInfo ei,
+                                     ScheduleResult<?> res);
 
   /** Get the free busy for the given principal as a list of busy periods.
    *
@@ -340,7 +340,7 @@ public interface SchedulingI extends Serializable {
    * @param granularity as a duration
    * @return FbResponses
    */
-  FbResponses aggregateFreeBusy(ScheduleResult sr,
+  FbResponses aggregateFreeBusy(ScheduleResult<?> sr,
                                 BwDateTime start, BwDateTime end,
                                 BwDuration granularity);
 

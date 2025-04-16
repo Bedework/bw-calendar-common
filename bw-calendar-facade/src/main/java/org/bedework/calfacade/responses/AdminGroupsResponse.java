@@ -28,15 +28,17 @@ import java.util.Collection;
  *
  * @author Mike Douglass douglm - spherical cow
  */
-public class AdminGroupsResponse extends Response {
+public class AdminGroupsResponse
+        extends Response<AdminGroupsResponse> {
   private Collection<BwGroup<?>> groups;
 
   /**
    *
    * @param val collection of groups
    */
-  public void setGroups(final Collection<BwGroup<?>> val) {
+  public AdminGroupsResponse setGroups(final Collection<BwGroup<?>> val) {
     groups = val;
+    return this;
   }
 
   /**
@@ -47,9 +49,8 @@ public class AdminGroupsResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("groups", getGroups());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("groups", getGroups());
   }
 }

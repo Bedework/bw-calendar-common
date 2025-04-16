@@ -167,7 +167,7 @@ public interface EventProperties <T extends BwEventProperty> extends Serializabl
    * @param val   BwEventProperty object to be added
    * @return boolean true for added, false for already exists
    */
-  Response add(T val);
+  Response<?> add(T val);
 
   /** Update an entity in the database.
    *

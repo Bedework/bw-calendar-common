@@ -47,9 +47,8 @@ public class CalSuitesResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("calSuites", getCalSuites());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("calSuites", getCalSuites());
   }
 }

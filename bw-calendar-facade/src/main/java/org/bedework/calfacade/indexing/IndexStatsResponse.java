@@ -9,7 +9,8 @@ import org.bedework.base.response.Response;
 /**
  * User: mike Date: 10/7/17 Time: 13:27
  */
-public class IndexStatsResponse extends Response {
+public class IndexStatsResponse
+        extends Response<IndexStatsResponse> {
   private final String name;
 
   private long processed;
@@ -106,16 +107,15 @@ public class IndexStatsResponse extends Response {
     return stats;
   }
 
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("name", getName());
-    ts.append("processed", getProcessed());
-    ts.append("masters", getMasters());
-    ts.append("recurring", getRecurring());
-    ts.append("overrides", getOverrides());
-    ts.append("instances", getInstances());
-    ts.append("totalFailed", getTotalFailed());
-    ts.append("stats", getStats());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("name", getName())
+                .append("processed", getProcessed())
+                .append("masters", getMasters())
+                .append("recurring", getRecurring())
+                .append("overrides", getOverrides())
+                .append("instances", getInstances())
+                .append("totalFailed", getTotalFailed())
+                .append("stats", getStats());
   }
 }

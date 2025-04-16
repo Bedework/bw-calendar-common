@@ -55,7 +55,7 @@ public interface EventsI extends Serializable {
    * <p>For non-recurring events, in special calendar collections, more than
    * one event might be returned if the guid uniqueness requirement is relaxed,
    * for example, in the inbox.
-   *
+   * <br/>
    * For recurring events, the 'master' event defining the rules together
    * with any exceptions should be returned.
    *
@@ -74,7 +74,7 @@ public interface EventsI extends Serializable {
   /** Get events given the calendar and String name. Return null for not
    * found. There should be only one event or none. For recurring, the
    * overrides and possibly the instances will be attached.
-   * 
+   * <br/>
    * NOTE: this does not provide alias filtering. 
    *
    * @param  colPath   String collection path fully resolved to target
@@ -92,7 +92,7 @@ public interface EventsI extends Serializable {
    *
    * <p>For a recurring event and a supplied recurrence id the
    * expanded instance only will be returned.
-   *
+   * <br/>
    * NOTE: this does not provide alias filtering. 
    *
    * @param  colPath   String collection path
@@ -107,7 +107,7 @@ public interface EventsI extends Serializable {
   /** Get events given the calendar and String name. Return null for not
    * found. There should be only one event or none. For recurring, the
    * overrides and possibly the instances will be attached.
-   *
+   * <br/>
    * This does provide alias filtering. 
    *
    * @param col   Collection - possibly a filtered alias
@@ -148,8 +148,8 @@ public interface EventsI extends Serializable {
    * @param sendSchedulingMessage   Send a declined or cancel scheduling message
    * @return Response with status ok if event deleted
    */
-  Response delete(EventInfo ei,
-                  boolean sendSchedulingMessage);
+  Response<?> delete(EventInfo ei,
+                     boolean sendSchedulingMessage);
 
   /** Method which allows us to flag it as a scheduling action
    *
@@ -158,9 +158,9 @@ public interface EventsI extends Serializable {
    * @param sendSchedulingReply true if we need a reply
    * @return Response with status
    */
-  Response delete(EventInfo ei,
-                  boolean scheduling,
-                  boolean sendSchedulingReply);
+  Response<?> delete(EventInfo ei,
+                     boolean scheduling,
+                     boolean sendSchedulingReply);
 
   /** Add an event and ensure its location and contact exist. The calendar path
    * must be set in the event.
@@ -270,12 +270,12 @@ public interface EventsI extends Serializable {
    * @param newGuidOK   set a new guid if needed (e.g. copy in same collection)
    * @return Response with status
    */
-  Response copyMoveNamed(EventInfo from,
-                         BwCalendar to,
-                         String name,
-                         boolean copy,
-                         boolean overwrite,
-                         boolean newGuidOK);
+  Response<?> copyMoveNamed(EventInfo from,
+                            BwCalendar to,
+                            String name,
+                            boolean copy,
+                            boolean overwrite,
+                            boolean newGuidOK);
 
   /** Claim ownership of this event
    *
@@ -314,7 +314,7 @@ public interface EventsI extends Serializable {
   /** Return the instances for a given combination of start date, rrule,
    * exdates and rdates. A date/time window may be supplied to limit the
    * result.
-   *
+   * <br/>
    * Note: this is currently unused but I believe the intent was to
    * allow a web client to request a range of instances from the server
    * to avoid the necessity of calculating them locally.

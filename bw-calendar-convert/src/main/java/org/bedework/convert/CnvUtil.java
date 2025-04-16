@@ -3,6 +3,8 @@
 */
 package org.bedework.convert;
 
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwEventObj;
@@ -14,9 +16,6 @@ import org.bedework.util.calendar.PropertyIndex;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntitiesResponse;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Date;
 import net.fortuna.ical4j.model.property.DtStart;
@@ -55,7 +54,7 @@ public class CnvUtil {
     final var resp = new GetEntityResponse<RetrievedEvents>();
 
     if (!colCanRetrieve(col)) {
-      return Response.notFound(resp);
+      return resp.notFound();
     }
 
     final var re = new RetrievedEvents();
@@ -69,7 +68,7 @@ public class CnvUtil {
     final GetEntitiesResponse<EventInfo> eisResp =
             cb.getEvent(colPath, uid);
     if (eisResp.isError()) {
-      return Response.fromResponse(resp, eisResp);
+      return resp.fromResponse(eisResp);
     }
 
     final var eis = eisResp.getEntities();
@@ -77,8 +76,8 @@ public class CnvUtil {
     if (!Util.isEmpty(eis)) {
       if (eis.size() > 1) {
         // DORECUR - wrong again
-        return Response.notOk(resp, failed,
-                              "More than one event returned for uid.");
+        return resp.notOk(failed,
+                          "More than one event returned for uid.");
       }
       re.evinfo = eis.iterator().next();
     }
@@ -142,7 +141,7 @@ public class CnvUtil {
                                ical.getTimeZone(timeZone));
       }
     } catch (final Throwable t) {
-      return Response.error(resp, t);
+      return resp.error(t);
     }
 
     IcalUtil.setDates(cb.getPrincipal().getPrincipalRef(),

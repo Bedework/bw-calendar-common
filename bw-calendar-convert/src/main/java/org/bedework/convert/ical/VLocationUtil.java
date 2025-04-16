@@ -18,6 +18,8 @@
 */
 package org.bedework.convert.ical;
 
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwLocation;
 import org.bedework.calfacade.BwXproperty;
@@ -27,9 +29,6 @@ import org.bedework.schemaorg.model.values.SOGeoCoordinates;
 import org.bedework.schemaorg.model.values.SOPlace;
 import org.bedework.schemaorg.model.values.SOPostalAddress;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntitiesResponse;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
@@ -44,6 +43,7 @@ import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo;
 
 import java.net.URI;
+import java.util.Collection;
 
 import static org.bedework.util.calendar.IcalendarUtil.fromBuilder;
 
@@ -118,11 +118,10 @@ public class VLocationUtil {
 
       plist.add(sdata);
     } catch (final Throwable t) {
-      return Response.error(resp, t);
+      return resp.error(t);
     }
 
-    resp.setEntity(vloc);
-    return Response.ok(resp);
+    return resp.setEntity(vloc).ok();
   }
 
   public static GetEntitiesResponse<VLocation> getVlocations(
@@ -131,7 +130,7 @@ public class VLocationUtil {
     final var xlocs = ev.getXproperties(BwXproperty.xBedeworkVLocation);
 
     if (Util.isEmpty(xlocs)) {
-      return Response.notFound(geresp);
+      return geresp.notFound();
     }
 
     // Better if ical4j supported sub-component parsing
@@ -160,11 +159,11 @@ public class VLocationUtil {
     final VToDo comp = ical.getComponent(Component.VTODO);
 
     final var vlocs = ((ComponentContainer<?>)comp).getComponents(Component.VLOCATION);
-    for (final var o: vlocs) {
-      geresp.addEntity((VLocation)o);
-    }
+//    for (final var o: vlocs) {
+ //     geresp.addEntity((VLocation)o);
+  //  }
 
-    return geresp;
+    return geresp.addAll((Collection<VLocation>)vlocs);
   }
 }
 

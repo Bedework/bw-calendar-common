@@ -19,6 +19,7 @@
 package org.bedework.convert.jscal;
 
 import org.bedework.base.exc.BedeworkException;
+import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttachment;
 import org.bedework.calfacade.BwCategory;
@@ -72,8 +73,6 @@ import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -89,12 +88,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.bedework.base.response.Response.Status.failed;
 import static org.bedework.convert.BwDiffer.differs;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternateDescription;
 import static org.bedework.jsforj.model.values.JSRoles.roleContact;
 import static org.bedework.util.calendar.ScheduleMethods.methodTypeReply;
-import static org.bedework.base.response.Response.Status.failed;
 
 /** Class to provide utility methods for translating to VEvent ical4j classes
  *
@@ -129,7 +128,7 @@ public class BwEvent2JsCal {
     final var resp = new GetEntityResponse<JSCalendarObject>();
 
     if ((ei == null) || (ei.getEvent() == null)) {
-      return Response.notOk(resp, failed, "No entity supplied");
+      return resp.notOk(failed, "No entity supplied");
     }
 
     final BwEvent val = ei.getEvent();
@@ -217,8 +216,9 @@ public class BwEvent2JsCal {
           break;
 
         default:
-          return Response.error(resp, "org.bedework.invalid.entity.type: " +
-                  val.getEntityType());
+          return resp.error(
+                  "org.bedework.invalid.entity.type: " +
+                          val.getEntityType());
       }
 
       JSCalendarObject jsval = null;
@@ -237,7 +237,7 @@ public class BwEvent2JsCal {
 
       String strval = val.getRecurrenceId();
       JSLocalDateTime rid = null;
-      if ((strval != null) && (strval.length() > 0)) {
+      if ((strval != null) && (!strval.isEmpty())) {
         rid = new JSLocalDateTimeImpl(
                 jsonDate(timeInZone(strval,
                                     findZone(val.getDtstart(),
@@ -274,7 +274,7 @@ public class BwEvent2JsCal {
        */
 
       if (jsval == null) {
-        return Response.error(resp, "Badly formatted component");
+        return resp.error("Badly formatted component");
       }
 
       /* ------------------- Alarms -------------------- */
@@ -1290,8 +1290,7 @@ public class BwEvent2JsCal {
     final var trigger = alert.getTrigger();
     final var dt = jsonDate(alarm.getTrigger());
 
-    if (trigger instanceof JSOffsetTrigger) {
-      final var offT = (JSOffsetTrigger)trigger;
+    if (trigger instanceof final JSOffsetTrigger offT) {
       if (!offT.getOffset().getStringValue().equals(dt)) {
         return false;
       }
@@ -2215,7 +2214,7 @@ public class BwEvent2JsCal {
       return null;
     }
 
-    return attendees.get(0);
+    return attendees.getFirst();
   }
 
   /* ------------------- RelatedTo -------------------- */

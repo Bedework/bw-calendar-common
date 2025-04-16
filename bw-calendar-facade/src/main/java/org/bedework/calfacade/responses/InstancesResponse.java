@@ -29,7 +29,8 @@ import java.util.Collection;
  *
  * @author Mike Douglass douglm - spherical cow
  */
-public class InstancesResponse extends Response {
+public class InstancesResponse
+        extends Response<InstancesResponse> {
   private Collection<Period> instances;
 
   private boolean truncated;
@@ -66,10 +67,9 @@ public class InstancesResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("instances", getInstances());
-    ts.append("truncated", getTruncated());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("instances", getInstances())
+                .append("truncated", getTruncated());
   }
 }

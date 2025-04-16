@@ -27,7 +27,8 @@ import java.util.List;
  *
  * @author Mike Douglass douglm
  */
-public class EventPropertiesResponse extends Response {
+public class EventPropertiesResponse
+        extends Response<EventPropertiesResponse> {
   private List<String> preferred;
 
   /**
@@ -45,9 +46,8 @@ public class EventPropertiesResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("preferred", getPreferred());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("preferred", getPreferred());
   }
 }

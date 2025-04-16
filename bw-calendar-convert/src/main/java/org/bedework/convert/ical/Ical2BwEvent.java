@@ -18,6 +18,9 @@
 */
 package org.bedework.convert.ical;
 
+import org.bedework.base.response.GetEntitiesResponse;
+import org.bedework.base.response.GetEntityResponse;
+import org.bedework.base.response.Response;
 import org.bedework.calfacade.BwAttendee;
 import org.bedework.calfacade.BwCalendar;
 import org.bedework.calfacade.BwCategory;
@@ -47,12 +50,10 @@ import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.ScheduleMethods;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.base.response.GetEntitiesResponse;
-import org.bedework.base.response.GetEntityResponse;
-import org.bedework.base.response.Response;
 import org.bedework.util.timezones.Timezones;
 import org.bedework.util.xml.tagdefs.XcalTags;
 
+import jakarta.xml.ws.Holder;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.ComponentContainer;
 import net.fortuna.ical4j.model.ComponentList;
@@ -111,13 +112,11 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jakarta.xml.ws.Holder;
-
 import static net.fortuna.ical4j.model.Property.RELATIVE_TO;
 import static net.fortuna.ical4j.model.property.immutable.ImmutableRelativeTo.START;
-import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
 import static org.bedework.base.response.Response.Status.failed;
 import static org.bedework.base.response.Response.Status.ok;
+import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex.ATTENDEE;
 
 /** Class to provide utility methods for translating to BwEvent from ical4j classes
  *
@@ -172,7 +171,7 @@ public class Ical2BwEvent extends IcalUtil {
     final var resp = new GetEntityResponse<EventInfo>();
 
     if (val == null) {
-      return Response.notOk(resp, failed, "No component supplied");
+      return resp.notOk(failed, "No component supplied");
     }
 
     String currentPrincipal = null;
@@ -208,7 +207,7 @@ public class Ical2BwEvent extends IcalUtil {
 
       if (pl == null) {
         // Empty component
-        return Response.notOk(resp, failed, "Empty component");
+        return resp.notOk(failed, "Empty component");
       }
 
       final int entityType;
@@ -231,7 +230,7 @@ public class Ical2BwEvent extends IcalUtil {
         entityType = IcalDefs.entityTypeVpoll;
         vpoll = true;
       } else {
-        return Response.error(resp, "org.bedework.invalid.component.type: " +
+        return resp.error("org.bedework.invalid.component.type: " +
                 val.getName());
       }
 
@@ -249,7 +248,7 @@ public class Ical2BwEvent extends IcalUtil {
         /* XXX A guid is required - but are there devices out there without a
          *       guid - and if so how do we handle it?
          */
-        return Response.notOk(resp, failed, CalFacadeErrorCode.noGuid);
+        return resp.notOk(failed, CalFacadeErrorCode.noGuid);
       }
 
       /* See if we have a recurrence id */
@@ -357,15 +356,15 @@ public class Ical2BwEvent extends IcalUtil {
         final GetEntitiesResponse<EventInfo> eisResp =
                 cb.getEvent(colPath, guid);
         if (eisResp.isError()) {
-          return Response.fromResponse(resp, eisResp);
+          return resp.fromResponse(eisResp);
         }
 
         final var eis = eisResp.getEntities();
         if (!Util.isEmpty(eis)) {
           if (eis.size() > 1) {
             // DORECUR - wrong again
-            return Response.notOk(resp, failed,
-                                  "More than one event returned for guid.");
+            return resp.notOk(failed,
+                              "More than one event returned for guid.");
           }
           evinfo = eis.iterator().next();
         }
@@ -438,9 +437,9 @@ public class Ical2BwEvent extends IcalUtil {
       if (evinfo == null) {
         evinfo = CnvUtil.makeNewEvent(cb, entityType, guid, colPath);
       } else if (evinfo.getEvent().getEntityType() != entityType) {
-        return Response.notOk(resp, failed,
-                              "org.bedework.mismatched.entity.type: " +
-                                      val);
+        return resp.notOk(failed,
+                          "org.bedework.mismatched.entity.type: " +
+                                  val);
       }
 
       final ChangeTable chg = evinfo.getChangeset(
@@ -528,12 +527,12 @@ public class Ical2BwEvent extends IcalUtil {
               break;
             }
 
-            final Response attResp = doAttendee(cb, chg,
-                                                evinfo, (Attendee)prop,
-                                                attUri, methodType,
-                                                mergeAttendees);
+            final var attResp = doAttendee(cb, chg,
+                                           evinfo, (Attendee)prop,
+                                           attUri, methodType,
+                                           mergeAttendees);
             if (!attResp.isOk()) {
-              return Response.fromResponse(resp, attResp);
+              return resp.fromResponse(attResp);
             }
 
             break;
@@ -569,7 +568,7 @@ public class Ical2BwEvent extends IcalUtil {
                 final BwCategory cat;
 
                 if (fcResp.isError()) {
-                  return Response.fromResponse(resp, fcResp);
+                  return resp.fromResponse(fcResp);
                 }
 
                 if (fcResp.isNotFound()) {
@@ -641,7 +640,7 @@ public class Ical2BwEvent extends IcalUtil {
               final var fcResp = cb.getContact(uid);
 
               if (fcResp.isError()) {
-                return Response.fromResponse(resp, fcResp);
+                return resp.fromResponse(fcResp);
               }
 
               if (fcResp.isOk()) {
@@ -652,7 +651,7 @@ public class Ical2BwEvent extends IcalUtil {
             if (contact == null) {
               final var fcResp = cb.findContact(nm);
               if (fcResp.isError()) {
-                return Response.fromResponse(resp, fcResp);
+                return resp.fromResponse(fcResp);
               }
 
               if (fcResp.isOk()) {
@@ -757,7 +756,7 @@ public class Ical2BwEvent extends IcalUtil {
                 logger.debug("Unsupported parameter " + par.getName());
               }
 
-              return Response.notOk(resp, failed,
+              return resp.notOk(failed,
                                     "Unsupported parameter " +
                                             par.getName());
             }
@@ -800,7 +799,7 @@ public class Ical2BwEvent extends IcalUtil {
             final var plresp = processLocation(cb, ev,
                                                val, prop, pval, chg);
             if (plresp.isError()) {
-              return Response.fromResponse(resp, plresp);
+              return resp.fromResponse(plresp);
             }
 
             break;
@@ -1104,7 +1103,7 @@ public class Ical2BwEvent extends IcalUtil {
         for (final var subComp: subComps) {
           if (subComp instanceof Available) {
             if (!(val instanceof VAvailability)) {
-              return Response.error(resp, "AVAILABLE only valid in VAVAILABLE");
+              return resp.error("AVAILABLE only valid in VAVAILABLE");
             }
             final var avlResp = processAvailable(cb, cal,
                                                  ical,
@@ -1112,7 +1111,7 @@ public class Ical2BwEvent extends IcalUtil {
                                                  (Available)subComp,
                                                  evinfo);
             if (!avlResp.isOk()) {
-              return Response.fromResponse(resp, avlResp);
+              return resp.fromResponse(avlResp);
             }
             continue;
           }
@@ -1141,7 +1140,7 @@ public class Ical2BwEvent extends IcalUtil {
                                                       currentPrincipal,
                                                       chg);
             if (!aresp.isOk()) {
-              return Response.fromResponse(resp, aresp);
+              return resp.fromResponse(aresp);
             }
             continue;
           }
@@ -1155,7 +1154,7 @@ public class Ical2BwEvent extends IcalUtil {
                                                pids,
                                                chg);
             if (!vresp.isOk()) {
-              return Response.fromResponse(resp, vresp);
+              return resp.fromResponse(vresp);
             }
             continue;
           }
@@ -1230,7 +1229,7 @@ public class Ical2BwEvent extends IcalUtil {
 
       if (masterEI != null) {
         // Just return notfound as this event is on its override list
-        return Response.notFound(resp);
+        return resp.notFound();
       }
 
       resp.setEntity(evinfo);
@@ -1239,21 +1238,21 @@ public class Ical2BwEvent extends IcalUtil {
       if (logger.debug()) {
         logger.error(t);
       }
-      return Response.error(resp, t);
+      return resp.error(t);
     }
   }
 
-  private static Response doAttendee(final IcalCallback cb,
-                                     final ChangeTable chg,
-                                     final EventInfo evinfo,
-                                     final Attendee attPr,
-                                     final String attUri,
-                                     final int methodType,
-                                     final boolean mergeAttendees) {
+  private static Response<?> doAttendee(final IcalCallback cb,
+                                        final ChangeTable chg,
+                                        final EventInfo evinfo,
+                                        final Attendee attPr,
+                                        final String attUri,
+                                        final int methodType,
+                                        final boolean mergeAttendees) {
     if (methodType == ScheduleMethods.methodTypePublish) {
       if (cb.getStrictness() == IcalCallback.conformanceStrict) {
-        return Response.notOk(new Response(), failed,
-                              CalFacadeErrorCode.attendeesInPublish);
+        return new Response<>().notOk(failed,
+                                      CalFacadeErrorCode.attendeesInPublish);
       }
 
       //if (cb.getStrictness() == IcalCallback.conformanceWarn) {
@@ -1297,7 +1296,7 @@ public class Ical2BwEvent extends IcalUtil {
       }
     }
 
-    return Response.ok();
+    return new Response<>().ok();
   }
 
   /* Return true if value matches a category - which may be added as
@@ -1449,13 +1448,12 @@ public class Ical2BwEvent extends IcalUtil {
     }
   }
 
-  private static Response processLocation(final IcalCallback cb,
-                                          final BwEvent ev,
-                                          final Component val,
-                                          final Property prop,
-                                          final String pval,
-                                          final ChangeTable chg) {
-    final var resp = new Response();
+  private static Response<?> processLocation(final IcalCallback cb,
+                                             final BwEvent ev,
+                                             final Component val,
+                                             final Property prop,
+                                             final String pval,
+                                             final ChangeTable chg) {
     BwLocation loc = null;
 
     /* See if there's a VLOCATION - if so use that
@@ -1491,7 +1489,7 @@ public class Ical2BwEvent extends IcalUtil {
 
         if (mainVloc == null) {
           // Use first or only
-          mainVloc = vlocs.get(0);
+          mainVloc = vlocs.getFirst();
         }
       }
     }
@@ -1535,7 +1533,7 @@ public class Ical2BwEvent extends IcalUtil {
         }
        */
       final String lang = IcalUtil.getLang(prop);
-      BwString addr = null;
+      BwString addr;
 
       if (pval != null) {
         addr = new BwString(lang, pval);
@@ -1572,7 +1570,7 @@ public class Ical2BwEvent extends IcalUtil {
       }
     }
 
-    return Response.ok();
+    return new Response<>().ok();
   }
 
   private static void processTimezones(final BwEvent ev,
@@ -1597,19 +1595,20 @@ public class Ical2BwEvent extends IcalUtil {
     }
   }
 
-  private static Response processAvailable(final IcalCallback cb,
-                                           final BwCalendar cal,
-                                           final Icalendar ical,
-                                           final VAvailability val,
-                                           final Available avl,
-                                           final EventInfo vavail) {
-    final var resp = new Response();
+  private static Response<?> processAvailable(
+          final IcalCallback cb,
+          final BwCalendar cal,
+          final Icalendar ical,
+          final VAvailability val,
+          final Available avl,
+          final EventInfo vavail) {
+    final var resp = new Response<>();
 
     final GetEntityResponse<EventInfo> availi =
             toEvent(cb, cal, ical, avl,
                     false);
     if (!resp.isOk()) {
-      return Response.fromResponse(resp, availi);
+      return resp.fromResponse(availi);
     }
 
     final var ei = availi.getEntity();
@@ -1622,11 +1621,11 @@ public class Ical2BwEvent extends IcalUtil {
     return resp;
   }
 
-  private static Response processCandidate(final VPoll val,
-                                           final Component comp,
-                                        final EventInfo vpoll,
-                                        final Set<Integer> pids,
-                                        final ChangeTable changes) {
+  private static Response<?> processCandidate(final VPoll val,
+                                              final Component comp,
+                                              final EventInfo vpoll,
+                                              final Set<Integer> pids,
+                                              final ChangeTable changes) {
     final BwEvent event = vpoll.getEvent();
 
     final String pollItem = comp.toString();
@@ -1637,15 +1636,15 @@ public class Ical2BwEvent extends IcalUtil {
     final Property p = comp.getProperty(Property.POLL_ITEM_ID);
 
     if (p == null) {
-      return Response.error(new Response(),
-                            "VPoll candidate - no poll item id");
+      return new Response<>().error(
+              "VPoll candidate - no poll item id");
     }
 
     final int pid = ((PollItemId)p).getPollitemid();
 
     if (pids.contains(pid)) {
-      return Response.error(new Response(),
-                            "VPoll candidate - duplicate poll item id " + pid);
+      return new Response<>().error(
+              "VPoll candidate - duplicate poll item id " + pid);
     }
 
     pids.add(pid);
@@ -1655,7 +1654,7 @@ public class Ical2BwEvent extends IcalUtil {
 //        cand.getEvent().setOwnerHref(vpoll.getEvent().getOwnerHref());
 
 //        vpoll.addContainedItem(cand);
-    return Response.ok();
+    return new Response<>().ok();
   }
 
   /* See if the master event is already in the collection of events

@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * User: mike Date: 10/7/17 Time: 13:27
  */
-public class ReindexResponse extends Response {
-  public static class Failure extends Response {
+public class ReindexResponse extends Response<ReindexResponse> {
+  public static class Failure extends Response<Failure> {
     private String hitInfo;
     private String source;
 
@@ -115,15 +115,14 @@ public class ReindexResponse extends Response {
     failures.add(val);
   }
 
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("docType", getDocType());
-    ts.append("indexName", getIndexName());
-    ts.append("processed", getProcessed());
-    ts.append("recurring", getRecurring());
-    ts.append("totalFailed", getTotalFailed());
-    ts.append("failures", getFailures());
-    ts.append("stats", getStats());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("docType", getDocType())
+                .append("indexName", getIndexName())
+                .append("processed", getProcessed())
+                .append("recurring", getRecurring())
+                .append("totalFailed", getTotalFailed())
+                .append("failures", getFailures())
+                .append("stats", getStats());
   }
 }

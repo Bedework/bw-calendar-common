@@ -28,15 +28,17 @@ import java.util.Collection;
  *
  * @author Mike Douglass douglm - spherical cow
  */
-public class CategoriesResponse extends Response {
+public class CategoriesResponse
+        extends Response<CategoriesResponse> {
   private Collection<BwCategory> categories;
 
   /**
    *
    * @param val collection of categories
    */
-  public void setCategories(final Collection<BwCategory> val) {
+  public CategoriesResponse setCategories(final Collection<BwCategory> val) {
     categories = val;
+    return this;
   }
 
   /**
@@ -47,9 +49,8 @@ public class CategoriesResponse extends Response {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("categories", getCategories());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("categories", getCategories());
   }
 }

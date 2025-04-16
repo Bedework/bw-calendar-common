@@ -46,9 +46,8 @@ public class ContactsResponse extends EventPropertiesResponse {
   }
 
   @Override
-  public void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("contacts", getContacts());
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("contacts", getContacts());
   }
 }

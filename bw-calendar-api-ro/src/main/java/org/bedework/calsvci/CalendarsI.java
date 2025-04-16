@@ -365,10 +365,10 @@ public interface CalendarsI extends Serializable {
 
   /**
    *
-   * @param path to collection
+   * @param val collection
    * @return never null - requestStatus set for not an external subscription.
    */
-  SynchStatusResponse getSynchStatus(String path);
+  SynchStatusResponse getSynchStatus(BwCalendar val);
 
   /** Check the subscription if this is an external subscription. Will contact
    * the synch server and check the validity. If there is no subscription

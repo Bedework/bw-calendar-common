@@ -20,7 +20,7 @@ package org.bedework.calfacade.filter;
 
 import org.bedework.caldav.util.filter.EntityTypeFilter;
 import org.bedework.caldav.util.filter.ObjectFilter;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
@@ -90,8 +90,8 @@ public class BwObjectFilter extends ObjectFilter<ObjectFilter<?>> {
     String val = null;
     Integer ival = null;
 
-    if (ent instanceof BwCalendar) {
-      val = ((BwCalendar)ent).getPath();
+    if (ent instanceof BwCollection) {
+      val = ((BwCollection)ent).getPath();
     } else if (ent instanceof String) {
       val = (String)ent;
     } else if (ent instanceof Integer) {

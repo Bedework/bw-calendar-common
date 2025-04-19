@@ -18,7 +18,7 @@
 */
 package org.bedework.calsvci;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwResource;
 import org.bedework.calfacade.svc.EventInfo;
 import org.bedework.util.misc.Util;
@@ -42,7 +42,7 @@ public class SynchReportItem implements Comparable<SynchReportItem> {
   /** Non-null if this is for a resource - will not have its content */
   private BwResource resource;
 
-  private BwCalendar col;
+  private BwCollection col;
 
   private final String vpath;
 
@@ -77,7 +77,7 @@ public class SynchReportItem implements Comparable<SynchReportItem> {
    * @param canSync false if this cannot do sync report
    */
   public SynchReportItem(final String vpath,
-                         final BwCalendar col,
+                         final BwCollection col,
                          final boolean canSync) {
     this.vpath = vpath;
     this.col = col;
@@ -93,7 +93,7 @@ public class SynchReportItem implements Comparable<SynchReportItem> {
    * @param token to use
    */
   public SynchReportItem(final String vpath,
-                         final BwCalendar col,
+                         final BwCollection col,
                          final boolean canSync,
                          final String token) {
     this.vpath = vpath;
@@ -138,7 +138,7 @@ public class SynchReportItem implements Comparable<SynchReportItem> {
    *
    * @return collection or null
    */
-  public BwCalendar getCol() {
+  public BwCollection getCol() {
     return col;
   }
 

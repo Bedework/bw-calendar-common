@@ -34,18 +34,18 @@ public interface CollectionAliases extends Serializable {
   /**
    * @return collection that was queried.
    */
-  BwCalendar getCollection();
+  BwCollection getCollection();
 
   /**
    * @return chain of aliases closest to collection first.
    *         Empty for none.
    */
-  List<BwCalendar> getAliased();
+  List<BwCollection> getAliased();
 
   /**
    * @return true if a circular reference is detected
    */
-  public BwCalendar getInvalidAlias();
+  public BwCollection getInvalidAlias();
 
   /**
    * @return true if a circular reference is detected

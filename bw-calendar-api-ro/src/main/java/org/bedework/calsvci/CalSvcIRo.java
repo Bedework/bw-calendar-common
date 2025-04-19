@@ -240,7 +240,7 @@ public interface CalSvcIRo extends AutoCloseable, Serializable {
    *
    * @return CalendarsI   calendars handler
    */
-  CalendarsI getCalendarsHandler();
+  CollectionsI getCollectionsHandler();
 
   /** Obtain an object which handles calendar suites
    *

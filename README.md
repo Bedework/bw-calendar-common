@@ -73,7 +73,7 @@ For full details, see [Sonatype's documentation for using Maven to publish relea
 * Small fix - call getParticipantsSet()
 * Add an attendee object we will use to handle attendee represented as either ical ATTENDEE and/OR PARTICIPANT.
 * Make webdavexception subclass of runtimeexception and tidy up a bit. Should be no noticable changes.
-* Redo set/getSupportedComponents in BwCalendar and remove explicit setting in other code.
+* Redo set/getSupportedComponents in BwCollection and remove explicit setting in other code.
 * Add, but don't process, participants with no calendar address.
 * Improve owner check.
 * Mostly switch to using BwParticipants and Attendee objects to manipulate event attendees and participants.

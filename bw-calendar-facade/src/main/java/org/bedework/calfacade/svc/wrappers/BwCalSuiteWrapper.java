@@ -19,7 +19,7 @@
 package org.bedework.calfacade.svc.wrappers;
 
 import org.bedework.access.CurrentAccess;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.svc.BwAdminGroup;
 import org.bedework.calfacade.svc.BwCalSuite;
@@ -245,19 +245,19 @@ public class BwCalSuiteWrapper extends BwCalSuite
 
   /** Set the root calendar
    *
-   * @param val    BwCalendar rootCalendar
+   * @param val    BwCollection rootCalendar
    */
   @Override
-  public void setRootCollection(final BwCalendar val) {
+  public void setRootCollection(final BwCollection val) {
     entity.setRootCollection(val);
   }
 
   /** Get the root calendar
    *
-   * @return BwCalendar   rootCollection
+   * @return BwCollection   rootCollection
    */
   @Override
-  public BwCalendar getRootCollection() {
+  public BwCollection getRootCollection() {
     return entity.getRootCollection();
   }
 

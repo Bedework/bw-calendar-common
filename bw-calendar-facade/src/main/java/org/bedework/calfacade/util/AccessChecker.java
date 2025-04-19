@@ -19,9 +19,9 @@
 package org.bedework.calfacade.util;
 
 import org.bedework.access.CurrentAccess;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.base.BwShareableDbentity;
-import org.bedework.calfacade.wrappers.CalendarWrapper;
+import org.bedework.calfacade.wrappers.CollectionWrapper;
 
 import java.io.Serializable;
 
@@ -48,7 +48,7 @@ public interface AccessChecker extends Serializable {
    * @param val to be checked
    * @return null if no access
    */
-  CalendarWrapper checkAccess(final BwCalendar val);
+  CollectionWrapper checkAccess(final BwCollection val);
 
   /**
    *
@@ -56,8 +56,8 @@ public interface AccessChecker extends Serializable {
    * @param desiredAccess access we want
    * @return null if no access
    */
-  CalendarWrapper checkAccess(final BwCalendar val,
-                              int desiredAccess);
+  CollectionWrapper checkAccess(final BwCollection val,
+                                int desiredAccess);
 
   AccessUtilI getAccessUtil();
 }

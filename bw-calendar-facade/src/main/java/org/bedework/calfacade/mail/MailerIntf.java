@@ -19,7 +19,7 @@
 
 package org.bedework.calfacade.mail;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwPrincipal;
 
 import net.fortuna.ical4j.model.Calendar;
@@ -83,13 +83,13 @@ public interface MailerIntf extends Serializable {
    *
    * @param cal
    */
-  void addList(BwCalendar cal);
+  void addList(BwCollection cal);
 
   /** Delete a list corresponding to the given calendar.
    *
    * @param cal
    */
-  void deleteList(BwCalendar cal);
+  void deleteList(BwCollection cal);
 
   /** Return a collection of mail list ids
    *
@@ -102,28 +102,28 @@ public interface MailerIntf extends Serializable {
    * @param cal
    * @return true if list exists
    */
-  boolean checkList(BwCalendar cal);
+  boolean checkList(BwCollection cal);
 
   /** Post a  message to the list corresponding to the given calendar.
    *
    * @param cal
    * @param val
    */
-  void postList(BwCalendar cal, Message val);
+  void postList(BwCollection cal, Message val);
 
   /** Add a member to the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
    */
-  public void addMember(BwCalendar cal, BwPrincipal<?> member);
+  public void addMember(BwCollection cal, BwPrincipal<?> member);
 
   /** Remove a member from the list corresponding to the given calendar.
    *
    * @param cal
    * @param member
    */
-  public void removeMember(BwCalendar cal, BwPrincipal<?> member);
+  public void removeMember(BwCollection cal, BwPrincipal<?> member);
 
   /** Check a member is on the list corresponding to the given calendar.
    *
@@ -131,7 +131,7 @@ public interface MailerIntf extends Serializable {
    * @param member
    * @return boolean
    */
-  boolean checkMember(BwCalendar cal, BwPrincipal<?> member);
+  boolean checkMember(BwCollection cal, BwPrincipal<?> member);
 
   /** Update a members email address on the list corresponding to the given calendar.
    *
@@ -139,7 +139,7 @@ public interface MailerIntf extends Serializable {
    * @param member
    * @param newEmail
    */
-  void updateMember(BwCalendar cal, BwPrincipal<?> member, String newEmail)
+  void updateMember(BwCollection cal, BwPrincipal<?> member, String newEmail)
        ;
 
   /** List members on the list corresponding to the given calendar. This requires
@@ -149,7 +149,7 @@ public interface MailerIntf extends Serializable {
    * @param cal
    * @return Collection
    */
-  Collection<BwPrincipal<?>> listMembers(BwCalendar cal);
+  Collection<BwPrincipal<?>> listMembers(BwCollection cal);
 
   /**
    * @param val

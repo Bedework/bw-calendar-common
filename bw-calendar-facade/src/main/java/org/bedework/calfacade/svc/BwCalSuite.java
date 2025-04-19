@@ -19,7 +19,7 @@
 
 package org.bedework.calfacade.svc;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwShareablePrincipal;
 import org.bedework.calfacade.annotations.Dump;
@@ -85,7 +85,7 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
 
   /** The root collection
    */
-  private BwCalendar rootCollection;
+  private BwCollection rootCollection;
 
   private String context;
 
@@ -202,19 +202,19 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
 
   /** Set the root collection
    *
-   * @param val    BwCalendar rootCalendar
+   * @param val    BwCollection rootCalendar
    */
   @NoDump
-  public void setRootCollection(final BwCalendar val) {
+  public void setRootCollection(final BwCollection val) {
     rootCollection = val;
   }
 
   /** Get the root collection
    *
-   * @return BwCalendar   rootCollection
+   * @return BwCollection   rootCollection
    */
   @NoDump
-  public BwCalendar getRootCollection() {
+  public BwCollection getRootCollection() {
     return rootCollection;
   }
 

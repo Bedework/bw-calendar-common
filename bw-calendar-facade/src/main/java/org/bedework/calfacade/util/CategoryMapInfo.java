@@ -3,7 +3,7 @@
 */
 package org.bedework.calfacade.util;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.svc.BwPreferences.CategoryMapping;
 import org.bedework.calfacade.svc.BwPreferences.CategoryMappings;
 import org.bedework.util.misc.Util;
@@ -15,10 +15,10 @@ import java.util.Set;
  */
 public class CategoryMapInfo {
   private final CategoryMappings catMaps;
-  private final Set<BwCalendar> topicalAreas;
+  private final Set<BwCollection> topicalAreas;
 
   public CategoryMapInfo(final CategoryMappings catMaps,
-                         final Set<BwCalendar> topicalAreas) {
+                         final Set<BwCollection> topicalAreas) {
     this.catMaps = catMaps;
     this.topicalAreas = topicalAreas;
   }
@@ -27,7 +27,7 @@ public class CategoryMapInfo {
     return catMaps;
   }
 
-  public Set<BwCalendar> getTopicalAreas() {
+  public Set<BwCollection> getTopicalAreas() {
     return topicalAreas;
   }
 
@@ -53,13 +53,13 @@ public class CategoryMapInfo {
     return null;
   }
 
-  public BwCalendar getTopicalArea(final CategoryMapping catMap) {
-    final Set<BwCalendar> topicalAreas = getTopicalAreas();
+  public BwCollection getTopicalArea(final CategoryMapping catMap) {
+    final Set<BwCollection> topicalAreas = getTopicalAreas();
     if (Util.isEmpty(topicalAreas)) {
       return null;
     }
 
-    for (final BwCalendar col: topicalAreas) {
+    for (final BwCollection col: topicalAreas) {
       if (col.getSummary().equals(catMap.getTo())) {
         return col;
       }

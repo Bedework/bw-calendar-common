@@ -18,7 +18,7 @@
 */
 package org.bedework.calfacade.responses;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.base.ToString;
 import org.bedework.base.response.Response;
 
@@ -27,22 +27,22 @@ import org.bedework.base.response.Response;
  * @author Mike Douglass douglm - spherical cow
  */
 public class CollectionsResponse extends Response {
-  private BwCalendar collections;
-  private BwCalendar publicCollections;
-  private BwCalendar userCollections;
+  private BwCollection collections;
+  private BwCollection publicCollections;
+  private BwCollection userCollections;
 
   /**
    *
    * @param val root of collections
    */
-  public void setCollections(final BwCalendar val) {
+  public void setCollections(final BwCollection val) {
     collections = val;
   }
 
   /**
    * @return root of collections
    */
-  public BwCalendar getCollections() {
+  public BwCollection getCollections() {
     return collections;
   }
 
@@ -50,14 +50,14 @@ public class CollectionsResponse extends Response {
    *
    * @param val root of public collections
    */
-  public void setPublicCollections(final BwCalendar val) {
+  public void setPublicCollections(final BwCollection val) {
     publicCollections = val;
   }
 
   /**
    * @return root of public collections
    */
-  public BwCalendar getPublicCollections() {
+  public BwCollection getPublicCollections() {
     return publicCollections;
   }
 
@@ -65,14 +65,14 @@ public class CollectionsResponse extends Response {
    *
    * @param val root of user collections
    */
-  public void setUserCollections(final BwCalendar val) {
+  public void setUserCollections(final BwCollection val) {
     userCollections = val;
   }
 
   /**
    * @return root of user collections
    */
-  public BwCalendar getUserCollections() {
+  public BwCollection getUserCollections() {
     return userCollections;
   }
 

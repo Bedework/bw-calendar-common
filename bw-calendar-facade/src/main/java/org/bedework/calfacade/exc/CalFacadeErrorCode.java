@@ -234,7 +234,7 @@ public interface CalFacadeErrorCode extends BedeworkErrorCode {
       "org.bedework.exception.calendarnotfound";
 
   /** Somebody tried to create a duplicate calendar */
-  String duplicateCalendar =
+  String duplicateCollection =
       "org.bedework.exception.duplicatecalendar";
 
   /** Somebody tried to delete a collection with children */
@@ -242,11 +242,11 @@ public interface CalFacadeErrorCode extends BedeworkErrorCode {
       "org.bedework.exception.calendarnotempty";
 
   /** */
-  String illegalCalendarCreation =
+  String illegalCollectionCreation =
       "org.bedework.exception.illegalcalendarcreation";
 
   /** */
-  String cannotDeleteCalendarRoot =
+  String cannotDeleteCollectionRoot =
       "org.bedework.exception.cannotdeletecalendarroot";
 
   /** */

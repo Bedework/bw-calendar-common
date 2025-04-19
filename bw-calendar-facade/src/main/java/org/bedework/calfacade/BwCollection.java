@@ -103,7 +103,8 @@ import javax.xml.namespace.QName;
                        "numProperties",
                        "pwNeedsEncrypt", 
                        "tombstoned"})
-public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
+public class BwCollection
+        extends BwShareableContainedDbentity<BwCollection>
         implements CollatableEntity, CategorisedEntity, PropertiesEntity {
   // TODO - make configurable
   public static final int minRefreshRateSeconds = 15 * 60;
@@ -295,9 +296,9 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    *                      Non-db fields
    * ============================================================== */
 
-  private BwCalendar aliasTarget;
+  private BwCollection aliasTarget;
 
-  private BwCalendar aliasOrigin;
+  private BwCollection aliasOrigin;
 
   private int aliasCalType;
 
@@ -305,7 +306,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   private List<String> supportedComponents;
 
-  private Collection<BwCalendar> children;
+  private Collection<BwCollection> children;
 
   private List<String> vpollSupportedComponents;
 
@@ -313,7 +314,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   /** Constructor
    */
-  public BwCalendar() {
+  public BwCollection() {
     super();
 
     /* Set the lastmod and created */
@@ -1441,36 +1442,36 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
   /** Set the aliased entity - this is usualy the end of the chain of
    * aliases, e.g. in a->b->c this would be c.
    *
-   * @param val    BwCalendar object's alias target
+   * @param val    BwCollection object's alias target
    */
-  public void setAliasTarget(final BwCalendar val) {
+  public void setAliasTarget(final BwCollection val) {
     aliasTarget = val;
   }
 
   /** Get the aliased entity
    *
-   * @return BwCalendar   the object's alias target
+   * @return BwCollection   the object's alias target
    */
   @NoDump
-  public BwCalendar getAliasTarget() {
+  public BwCollection getAliasTarget() {
     return aliasTarget;
   }
 
   /** Set the collection that was the root of the chain that referred
    * to this collection, e.g. in a->b->c this would be a.
    *
-   * @param val    BwCalendar object's alias target
+   * @param val    BwCollection object's alias target
    */
-  public void setAliasOrigin(final BwCalendar val) {
+  public void setAliasOrigin(final BwCollection val) {
     aliasOrigin = val;
   }
 
   /** Get the aliased entity
    *
-   * @return BwCalendar   the object's alias target
+   * @return BwCollection   the object's alias target
    */
   @NoDump
-  public BwCalendar getAliasOrigin() {
+  public BwCollection getAliasOrigin() {
     return aliasOrigin;
   }
 
@@ -1518,8 +1519,8 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
   @NoProxy
   @NoDump
   @JsonIgnore
-  public BwCalendar getAliasedEntity() {
-    BwCalendar coll = this;
+  public BwCollection getAliasedEntity() {
+    BwCollection coll = this;
     while ((coll != null) && coll.getInternalAlias()) {
       coll = coll.getAliasTarget();
     }
@@ -1587,7 +1588,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    *
    * @param val Collection of children objects
    */
-  public void setChildren(final Collection<BwCalendar>  val) {
+  public void setChildren(final Collection<BwCollection>  val) {
     children = val;
   }
 
@@ -1597,7 +1598,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    */
   @NoProxy
   @NoDump
-  public Collection<BwCalendar> getChildren() {
+  public Collection<BwCollection> getChildren() {
     return children;
   }
 
@@ -1891,8 +1892,8 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
   /**
    * @return a copy for tombstoning.
    */
-  public BwCalendar makeTombstoneCopy() {
-    final BwCalendar col = new BwCalendar();
+  public BwCollection makeTombstoneCopy() {
+    final BwCollection col = new BwCollection();
 
     super.copyTo(col);
 
@@ -1923,7 +1924,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
                             final Object theObject,
                             final Object theValue) {
           if ("col-lastmod".equals(el.getTagName())) {
-            ((BwCalendar)theObject).setLastmod(
+            ((BwCollection)theObject).setLastmod(
                     (BwCollectionLastmod)theValue);
             return true;
           }
@@ -1952,7 +1953,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    * ==================================================================== */
 
   @Override
-  public int compareTo(final BwCalendar that) {
+  public int compareTo(final BwCollection that) {
     if (that == this) {
       return 0;
     }
@@ -1993,7 +1994,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
       boolean donech = false;
 
-      for (BwCalendar ch: getChildren()) {
+      for (BwCollection ch: getChildren()) {
         if (!donech) {
           donech = true;
         } else {
@@ -2018,7 +2019,7 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
 
   @Override
   public Object clone() {
-    final BwCalendar cal = shallowClone();
+    final BwCollection cal = shallowClone();
 
     cal.setCategories(cloneCategories());
     cal.setProperties(cloneProperties());
@@ -2030,12 +2031,12 @@ public class BwCalendar extends BwShareableContainedDbentity<BwCalendar>
    * 
    * @return Same entity with new wrapper
    */
-  public BwCalendar cloneWrapper() {
+  public BwCollection cloneWrapper() {
     throw new RuntimeException("org.bedework.wrapper.method.called");
   }
 
-  public BwCalendar shallowClone() {
-    final BwCalendar cal = new BwCalendar();
+  public BwCollection shallowClone() {
+    final BwCollection cal = new BwCollection();
 
     super.copyTo(cal);
 

@@ -19,7 +19,7 @@
 package org.bedework.calsvci;
 
 import org.bedework.caldav.util.sharing.AccessType;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwEvent;
@@ -180,9 +180,9 @@ public interface RestoreIntf {
 
   /**
    * @param path of collection
-   * @return BwCalendar
+   * @return BwCollection
    */
-  BwCalendar getCalendar(String path);
+  BwCollection getCalendar(String path);
 
   /**
    * @param uid of entity
@@ -212,13 +212,13 @@ public interface RestoreIntf {
    *
    * @param val root collection
    */
-  void saveRootCalendar(BwCalendar val);
+  void saveRootCalendar(BwCollection val);
 
   /** Restore a single calendar - parent is set in the entity
    *
    * @param val collection to add
    */
-  void addCalendar(BwCalendar val);
+  void addCalendar(BwCollection val);
 
   /** */
   enum FixAliasResult {
@@ -254,7 +254,7 @@ public interface RestoreIntf {
    * @param a          - access
    * @return indication of how it went
    */
-  FixAliasResult fixSharee(BwCalendar col,
+  FixAliasResult fixSharee(BwCollection col,
                            String shareeHref,
                            AccessType a);
 }

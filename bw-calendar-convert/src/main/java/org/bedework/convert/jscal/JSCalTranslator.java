@@ -3,7 +3,7 @@
 */
 package org.bedework.convert.jscal;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.BwVersion;
@@ -102,7 +102,7 @@ public class JSCalTranslator extends IcalTranslator {
   }
 
   @Override
-  public Icalendar fromIcal(final BwCalendar col,
+  public Icalendar fromIcal(final BwCollection col,
                             final Reader rdr,
                             final String contentType,
                             final boolean mergeAttendees) {
@@ -141,7 +141,7 @@ public class JSCalTranslator extends IcalTranslator {
 
   private void toBw(final IcalCallback cb,
                     final JSCalendarObject val,
-                    final BwCalendar col,
+                    final BwCollection col,
                     final Icalendar ic) {
     if (!(val instanceof JSEvent) &&
             !(val instanceof JSTask)) {

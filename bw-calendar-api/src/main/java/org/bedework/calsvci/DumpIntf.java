@@ -18,7 +18,7 @@
 */
 package org.bedework.calsvci;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwEvent;
@@ -53,7 +53,7 @@ import java.util.Iterator;
  * <p>Classes to dump in the order they must appear are<ul>
  * <li>BwSystem</li>
  * <li>BwUser</li>
- * <li>BwCalendar</li>
+ * <li>BwCollection</li>
  * <li>BwLocation</li>
  * <li>BwSponsor</li>
  * <li>BwOrganizer</li>
@@ -88,17 +88,17 @@ public interface DumpIntf {
    */
   Iterator<BwAuthUser> getAuthUsers();
 
-  /** Will return an Iterator returning the top level BwCalendar objects.
+  /** Will return an Iterator returning the top level BwCollection objects.
    *
    * @return Iterator over entities
    */
-  Iterator<BwCalendar> getCalendars();
+  Iterator<BwCollection> getCalendars();
 
   /**
    * @param val - the collection
    * @return Children of val
    */
-  Collection<BwCalendar> getChildren(BwCalendar val);
+  Collection<BwCollection> getChildren(BwCollection val);
 
   /** Will return an Iterator returning BwCalSuite objects.
    *

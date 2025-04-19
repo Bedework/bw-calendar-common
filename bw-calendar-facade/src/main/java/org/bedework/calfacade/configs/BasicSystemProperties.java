@@ -35,15 +35,15 @@ public class BasicSystemProperties {
 
   public final static String publicCalendarRoot = "public";
 
-  public final static String publicCalendarRootPath;
+  public final static String publicCollectionRootPath;
 
   public final static String globalResourcesPath = "/public/Resources/";
 
-  public final static String userCalendarRoot = "user";
+  public final static String userCollectionRoot = "user";
 
   public final static String userCalendarRootPath;
 
-  public final static String userDefaultCalendar = "calendar";
+  public final static String userDefaultCollection = "calendar";
 
   public final static String userInbox = "Inbox";
 
@@ -53,7 +53,7 @@ public class BasicSystemProperties {
 
   public final static String userDefaultTasksCalendar = "tasks";
 
-  public final static String userDefaultPollsCalendar = "polls";
+  public final static String userDefaultPollsCollection = "polls";
 
   public final static String defaultNotificationsName = "Notifications";
 
@@ -68,12 +68,12 @@ public class BasicSystemProperties {
   public final static String bedeworkResourceDirectory = ".bedework";
 
   static {
-    publicCalendarRootPath = Util.buildPath(
+    publicCollectionRootPath = Util.buildPath(
             colPathEndsWithSlash, "/",
             BasicSystemProperties.publicCalendarRoot);
 
     userCalendarRootPath = Util.buildPath(
             colPathEndsWithSlash, "/",
-            BasicSystemProperties.userCalendarRoot);
+            BasicSystemProperties.userCollectionRoot);
   }
 }

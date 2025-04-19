@@ -101,7 +101,7 @@ public abstract class BwShareableContainedDbentity<T> extends BwShareableDbentit
     }
 
     if (principal.getKind() == Ace.whoTypeUser) {
-      homeDir = BasicSystemProperties.userCalendarRoot;
+      homeDir = BasicSystemProperties.userCollectionRoot;
     } else {
       homeDir = Util.pathElement(1, principal.getPrincipalRef());
     }

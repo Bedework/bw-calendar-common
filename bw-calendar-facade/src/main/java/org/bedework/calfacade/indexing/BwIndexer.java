@@ -19,7 +19,7 @@
 package org.bedework.calfacade.indexing;
 
 import org.bedework.caldav.util.filter.FilterBase;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwEventProperty;
@@ -472,9 +472,9 @@ public interface BwIndexer extends Serializable {
    * @param index e.g. HREF, UID or CN, VALUE
    * @return response with status and possible collection object
    */
-  GetEntityResponse<BwCalendar> fetchCol(String val,
-                                         int desiredAccess,
-                                         PropertyInfoIndex... index);
+  GetEntityResponse<BwCollection> fetchCol(String val,
+                                           int desiredAccess,
+                                           PropertyInfoIndex... index);
 
   /** Fetch children of the collection with the given href. Tombstoned
    * collections are excluded
@@ -482,7 +482,7 @@ public interface BwIndexer extends Serializable {
    * @param href of parent
    * @return possibly empty list of children
    */
-  Collection<BwCalendar> fetchChildren(String href);
+  Collection<BwCollection> fetchChildren(String href);
 
   /** Fetch children of the collection with the given href.
    *
@@ -490,15 +490,15 @@ public interface BwIndexer extends Serializable {
    *
    * @return possibly empty list of children
    */
-  Collection<BwCalendar> fetchChildren(String href,
-                                       boolean excludeTombstoned);
+  Collection<BwCollection> fetchChildren(String href,
+                                         boolean excludeTombstoned);
 
   /** Fetch children at any depth of the collection with the given href.
    *
    * @param href of parent
    * @return possibly empty list of children
    */
-  Collection<BwCalendar> fetchChildrenDeep(String href);
+  Collection<BwCollection> fetchChildrenDeep(String href);
 
   /** Find a principal by href.
    *

@@ -80,9 +80,9 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
   /**
    * @return the path for calendar home for the current principal, e.g. /user/douglm
    */
-  public String getCalendarHomePath() {
+  public String getCollectionHomePath() {
     if (calendarHomePath == null) {
-      calendarHomePath = getCalendarHomePath(getPrincipal());
+      calendarHomePath = getCollectionHomePath(getPrincipal());
     }
 
     return calendarHomePath;
@@ -92,7 +92,7 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
    * @param pr the principal
    * @return the path for calendar home for the given principal, e.g. /user/douglm
    */
-  public String getCalendarHomePath(final AccessPrincipal pr) {
+  public String getCollectionHomePath(final AccessPrincipal pr) {
     if (pr.getKind() == WhoDefs.whoTypeUser) {
       return Util.buildPath(BasicSystemProperties.colPathEndsWithSlash,
                             BasicSystemProperties.userCalendarRootPath,

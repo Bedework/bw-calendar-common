@@ -21,7 +21,7 @@ package org.bedework.common.jmx;
 import org.bedework.caldav.util.sharing.AccessType;
 import org.bedework.caldav.util.sharing.SetType;
 import org.bedework.caldav.util.sharing.ShareType;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calsvci.CalSvcFactoryDefault;
 import org.bedework.calsvci.CalSvcI;
 import org.bedework.calfacade.svc.CalSvcIPars;
@@ -130,7 +130,7 @@ public class NotificationConf extends ConfBase<NotificationPropertiesImpl>
       share.getSet().add(set);
 
       try (final CalSvcI svci = getSvci(getNotifierId())) {
-        final BwCalendar col = svci.getCalendarsHandler().get(href);
+        final BwCollection col = svci.getCollectionsHandler().get(href);
 
         if (col == null) {
           return "No such collection";

@@ -27,7 +27,7 @@ import org.bedework.caldav.util.filter.ObjectFilter;
 import org.bedework.caldav.util.filter.OrFilter;
 import org.bedework.caldav.util.filter.PresenceFilter;
 import org.bedework.caldav.util.filter.parse.Filters;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.ical.BwIcalPropertyInfo;
@@ -223,7 +223,7 @@ public abstract class SimpleFilterParser implements Logged {
    * @param path of collection
    * @return collection object or null.
    */
-  public abstract BwCalendar getCollection(String path);
+  public abstract BwCollection getCollection(String path);
 
   /** Attempt to get collection referenced by the alias. For an internal alias
    * the result will also be set in the aliasTarget property of the parameter.
@@ -231,18 +231,19 @@ public abstract class SimpleFilterParser implements Logged {
    * @param val collection
    * @param resolveSubAlias - if true and the alias points to an alias, resolve
    *                  down to a non-alias.
-   * @return BwCalendar
+   * @return BwCollection
    */
-  public abstract BwCalendar resolveAlias(BwCalendar val,
-                                          boolean resolveSubAlias);
+  public abstract BwCollection resolveAlias(BwCollection val,
+                                            boolean resolveSubAlias);
 
   /** Returns children of the given collection to which the current user has
    * some access.
    *
    * @param  col          parent collection
-   * @return Collection   of BwCalendar
+   * @return Collection   of BwCollection
    */
-  public abstract Collection<BwCalendar> getChildren(BwCalendar col);
+  public abstract Collection<BwCollection> getChildren(
+          BwCollection col);
 
   /** An unsatisfactory approach - we'll special case categories for the moment
    * to see if this works. When using these filters we need to search for a
@@ -291,7 +292,7 @@ public abstract class SimpleFilterParser implements Logged {
    * @param vpath the virtual path
    * @return collection of collection objects - null for bad vpath
    */
-  public abstract Collection<BwCalendar> decomposeVirtualPath(final String vpath);
+  public abstract Collection<BwCollection> decomposeVirtualPath(final String vpath);
 
   /**
    *
@@ -1220,16 +1221,16 @@ public abstract class SimpleFilterParser implements Logged {
      * folder or calendar collection.
      */
 
-    final Collection<BwCalendar> cols = callDecomposeVirtualPath(vpath);
+    final Collection<BwCollection> cols = callDecomposeVirtualPath(vpath);
 
     if (cols == null) {
       throw parseResult.fail("Bad virtual path: " + vpath);
     }
 
     FilterBase vfilter = null;
-    BwCalendar vpathTarget = null;
+    BwCollection vpathTarget = null;
 
-    for (final BwCalendar col: cols) {
+    for (final BwCollection col: cols) {
       if (debug()) {
         debug("      vpath collection:" + col.getPath());
       }
@@ -1252,7 +1253,7 @@ public abstract class SimpleFilterParser implements Logged {
       }
 
       if (col.getCollectionInfo().onlyCalEntities ||
-              (col.getCalType() == BwCalendar.calTypeFolder)) {
+              (col.getCalType() == BwCollection.calTypeFolder)) {
         // reached an end point
         vpathTarget = col;
       }
@@ -1557,7 +1558,7 @@ public abstract class SimpleFilterParser implements Logged {
     }
   }
 
-  private Collection<BwCalendar> callDecomposeVirtualPath(final String vpath)
+  private Collection<BwCollection> callDecomposeVirtualPath(final String vpath)
           throws ParseFailed {
     try {
       return decomposeVirtualPath(vpath);

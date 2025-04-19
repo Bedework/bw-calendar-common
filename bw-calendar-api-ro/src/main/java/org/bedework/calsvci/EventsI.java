@@ -19,7 +19,7 @@
 package org.bedework.calsvci;
 
 import org.bedework.caldav.util.filter.FilterBase;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwEvent;
@@ -116,16 +116,16 @@ public interface EventsI extends Serializable {
    * @param retrieveList List of properties to retrieve or null for a full event.
    * @return EventInfo or null
    */
-  EventInfo get(BwCalendar col,
-                       String name,
-                       String recurrenceId,
-                       List<String> retrieveList);
+  EventInfo get(BwCollection col,
+                String name,
+                String recurrenceId,
+                List<String> retrieveList);
 
   /** Return the events for the current user within the given date and time
    * range. If retrieveList is supplied only those fields (and a few required
    * fields) will be returned.
    *
-   * @param cal          BwCalendar object - non-null means limit to given calendar
+   * @param cal          BwCollection object - non-null means limit to given calendar
    *                     null is limit to current user
    * @param filter       BwFilter object restricting search or null.
    * @param startDate    BwDateTime start - may be null
@@ -134,7 +134,7 @@ public interface EventsI extends Serializable {
    * @param recurRetrieval How recurring event is returned.
    * @return Collection  populated event value objects
    */
-  Collection<EventInfo> getEvents(BwCalendar cal,
+  Collection<EventInfo> getEvents(BwCollection cal,
                                   FilterBase filter,
                                   BwDateTime startDate,
                                   BwDateTime endDate,
@@ -271,7 +271,7 @@ public interface EventsI extends Serializable {
    * @return Response with status
    */
   Response<?> copyMoveNamed(EventInfo from,
-                            BwCalendar to,
+                            BwCollection to,
                             String name,
                             boolean copy,
                             boolean overwrite,

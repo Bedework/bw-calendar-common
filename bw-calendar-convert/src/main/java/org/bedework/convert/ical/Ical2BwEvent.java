@@ -22,7 +22,7 @@ import org.bedework.base.response.GetEntitiesResponse;
 import org.bedework.base.response.GetEntityResponse;
 import org.bedework.base.response.Response;
 import org.bedework.calfacade.BwAttendee;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
@@ -164,7 +164,7 @@ public class Ical2BwEvent extends IcalUtil {
    */
   public static GetEntityResponse<EventInfo> toEvent(
           final IcalCallback cb,
-          final BwCalendar cal,
+          final BwCollection cal,
           final Icalendar ical,
           final Component val,
           final boolean mergeAttendees) {
@@ -346,9 +346,9 @@ public class Ical2BwEvent extends IcalUtil {
 
       if ((evinfo == null) &&
           (cal != null) &&
-          (cal.getCalType() != BwCalendar.calTypeInbox) &&
-          (cal.getCalType() != BwCalendar.calTypePendingInbox) &&
-          (cal.getCalType() != BwCalendar.calTypeOutbox)) {
+          (cal.getCalType() != BwCollection.calTypeInbox) &&
+          (cal.getCalType() != BwCollection.calTypePendingInbox) &&
+          (cal.getCalType() != BwCollection.calTypeOutbox)) {
         if (logger.debug()) {
           logger.debug("TRANS-TO_EVENT: try to fetch event with guid=" + guid);
         }
@@ -1597,7 +1597,7 @@ public class Ical2BwEvent extends IcalUtil {
 
   private static Response<?> processAvailable(
           final IcalCallback cb,
-          final BwCalendar cal,
+          final BwCollection cal,
           final Icalendar ical,
           final VAvailability val,
           final Available avl,

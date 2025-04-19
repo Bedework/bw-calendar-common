@@ -20,7 +20,7 @@ package org.bedework.calfacade.wrappers;
 
 import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwCollectionLastmod;
 import org.bedework.calfacade.BwProperty;
@@ -51,15 +51,15 @@ import java.util.Set;
  * @author Mike Douglass douglm @ rpi.edu
  * @version 1.0
  */
-public class CalendarWrapper extends BwCalendar
-        implements EntityWrapper<BwCalendar> {
+public class CollectionWrapper extends BwCollection
+        implements EntityWrapper<BwCollection> {
   private final AccessUtilI accessUtil;
 
-  private BwCalendar entity;
+  private BwCollection entity;
 
-  private BwCalendar aliasTarget;
+  private BwCollection aliasTarget;
 
-  private BwCalendar aliasOrigin;
+  private BwCollection aliasOrigin;
 
   /* Current access for the user.
    */
@@ -78,25 +78,25 @@ public class CalendarWrapper extends BwCalendar
   /* True if we cannot reach the target - once per session and not saved. */
   private boolean disabled;
 
-  private Collection<BwCalendar> children;
+  private Collection<BwCollection> children;
 
   /** Constructor
    *
    * @param entity to be wrapped
    * @param accessUtil for access checks
    */
-  public CalendarWrapper(final BwCalendar entity, final AccessUtilI accessUtil) {
+  public CollectionWrapper(final BwCollection entity, final AccessUtilI accessUtil) {
     this.entity = entity;
     this.accessUtil = accessUtil;
   }
 
   @Override
-  public void putEntity(final BwCalendar val) {
+  public void putEntity(final BwCollection val) {
     entity = val;
   }
 
   @Override
-  public BwCalendar fetchEntity() {
+  public BwCollection fetchEntity() {
     return entity;
   }
 
@@ -239,7 +239,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#setSummary(java.lang.String)
+   * @see org.bedework.calfacade.BwCollection#setSummary(java.lang.String)
    */
   @Override
   public void setSummary(final String val) {
@@ -247,7 +247,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getSummary()
+   * @see org.bedework.calfacade.BwCollection#getSummary()
    */
   @Override
   public String getSummary() {
@@ -255,7 +255,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#setDescription(java.lang.String)
+   * @see org.bedework.calfacade.BwCollection#setDescription(java.lang.String)
    */
   @Override
   public void setDescription(final String val) {
@@ -263,7 +263,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getDescription()
+   * @see org.bedework.calfacade.BwCollection#getDescription()
    */
   @Override
   public String getDescription() {
@@ -271,7 +271,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#setMailListId(java.lang.String)
+   * @see org.bedework.calfacade.BwCollection#setMailListId(java.lang.String)
    */
   @Override
   public void setMailListId(final String val) {
@@ -279,7 +279,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getMailListId()
+   * @see org.bedework.calfacade.BwCollection#getMailListId()
    */
   @Override
   public String getMailListId() {
@@ -287,7 +287,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#setCalType(int)
+   * @see org.bedework.calfacade.BwCollection#setCalType(int)
    */
   @Override
   public void setCalType(final int val) {
@@ -296,12 +296,12 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getCalType()
+   * @see org.bedework.calfacade.BwCollection#getCalType()
    */
   @Override
   public int getCalType() {
     /*
-    BwCalendar entColl = entity.getAliasedEntity();
+    BwCollection entColl = entity.getAliasedEntity();
 
     if (entColl == null) {
       return entity.getCalType();
@@ -336,9 +336,9 @@ public class CalendarWrapper extends BwCalendar
     if (val != null) {
       final boolean internal = val.startsWith(CalFacadeDefs.bwUriPrefix);
       if (internal) {
-        entity.setCalType(BwCalendar.calTypeAlias);
+        entity.setCalType(BwCollection.calTypeAlias);
       } else {
-        entity.setCalType(BwCalendar.calTypeExtSub);
+        entity.setCalType(BwCollection.calTypeExtSub);
       }
     }
     entity.setAliasUri(val);
@@ -487,7 +487,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getProperties()
+   * @see org.bedework.calfacade.BwCollection#getProperties()
    */
   @Override
   public Set<BwProperty> getProperties() {
@@ -495,7 +495,7 @@ public class CalendarWrapper extends BwCalendar
   }
 
   /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwCalendar#getCalendarCollection()
+   * @see org.bedework.calfacade.BwCollection#getCalendarCollection()
    */
   @Override
   public boolean getCalendarCollection() {
@@ -606,8 +606,8 @@ public class CalendarWrapper extends BwCalendar
 
   @Override
   @JsonIgnore
-  public BwCalendar getAliasedEntity() {
-    final BwCalendar ent = entity.getAliasedEntity();
+  public BwCollection getAliasedEntity() {
+    final BwCollection ent = entity.getAliasedEntity();
     if (ent == entity) {
       // Not aliased - return this wrapper
       return this;
@@ -637,12 +637,12 @@ public class CalendarWrapper extends BwCalendar
   }
 
   @Override
-  public void setChildren(final Collection<BwCalendar> val) {
+  public void setChildren(final Collection<BwCollection> val) {
     children = val;
   }
 
   @Override
-  public Collection<BwCalendar> getChildren() {
+  public Collection<BwCollection> getChildren() {
     return children;
   }
 
@@ -684,21 +684,21 @@ public class CalendarWrapper extends BwCalendar
    * ==================================================================== */
 
   @Override
-  public void setAliasTarget(final BwCalendar val) {
+  public void setAliasTarget(final BwCollection val) {
     entity.setAliasTarget(val);
     aliasTarget = null;  // Force refetch
   }
 
   @Override
-  public BwCalendar getAliasTarget() {
+  public BwCollection getAliasTarget() {
     if (aliasTarget == null) {
       aliasTarget = entity.getAliasTarget();
       if (aliasTarget == null) {
         return null;
       }
 
-      if (!(aliasTarget instanceof CalendarWrapper)) {
-        aliasTarget = new CalendarWrapper(aliasTarget, accessUtil);
+      if (!(aliasTarget instanceof CollectionWrapper)) {
+        aliasTarget = new CollectionWrapper(aliasTarget, accessUtil);
       }
     }
 
@@ -706,21 +706,21 @@ public class CalendarWrapper extends BwCalendar
   }
 
   @Override
-  public void setAliasOrigin(final BwCalendar val) {
+  public void setAliasOrigin(final BwCollection val) {
     entity.setAliasOrigin(val);
     aliasOrigin = null;  // Force refetch
   }
 
   @Override
-  public BwCalendar getAliasOrigin() {
+  public BwCollection getAliasOrigin() {
     if (aliasOrigin == null) {
       aliasOrigin = entity.getAliasOrigin();
       if (aliasOrigin == null) {
         return null;
       }
 
-      if (!(aliasOrigin instanceof CalendarWrapper)) {
-        aliasOrigin = new CalendarWrapper(aliasOrigin, accessUtil);
+      if (!(aliasOrigin instanceof CollectionWrapper)) {
+        aliasOrigin = new CollectionWrapper(aliasOrigin, accessUtil);
       }
     }
 
@@ -749,7 +749,7 @@ public class CalendarWrapper extends BwCalendar
    * @see org.bedework.calfacade.base.BwDbentity#compareTo(java.lang.Object)
    */
   @Override
-  public int compareTo(final BwCalendar o) {
+  public int compareTo(final BwCollection o) {
     return entity.compareTo(o);
   }
 
@@ -773,8 +773,8 @@ public class CalendarWrapper extends BwCalendar
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
   public Object clone() {
-    final CalendarWrapper cw = new CalendarWrapper((BwCalendar)entity.clone(),
-                                                   accessUtil);
+    final CollectionWrapper cw = new CollectionWrapper((BwCollection)entity.clone(),
+                                                       accessUtil);
 
     cw.currentAccess = currentAccess;
     cw.caMap = caMap;
@@ -785,9 +785,9 @@ public class CalendarWrapper extends BwCalendar
   }
 
   @Override
-  public BwCalendar cloneWrapper() {
-    final CalendarWrapper cw = new CalendarWrapper(entity,
-                                                   accessUtil);
+  public BwCollection cloneWrapper() {
+    final CollectionWrapper cw = new CollectionWrapper(entity,
+                                                       accessUtil);
 
     cw.currentAccess = currentAccess;
     cw.caMap = caMap;
@@ -801,9 +801,9 @@ public class CalendarWrapper extends BwCalendar
   }
 
   @Override
-  public BwCalendar shallowClone() {
-    final CalendarWrapper cw = new CalendarWrapper(entity.shallowClone(),
-                                                   accessUtil);
+  public BwCollection shallowClone() {
+    final CollectionWrapper cw = new CollectionWrapper(entity.shallowClone(),
+                                                       accessUtil);
 
     cw.currentAccess = currentAccess;
     cw.caMap = caMap;

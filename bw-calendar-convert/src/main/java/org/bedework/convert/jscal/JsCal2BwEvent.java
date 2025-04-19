@@ -6,7 +6,7 @@ package org.bedework.convert.jscal;
 import org.bedework.base.response.GetEntityResponse;
 import org.bedework.calfacade.BwAlarm;
 import org.bedework.calfacade.BwAttendee;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwCategory;
 import org.bedework.calfacade.BwContact;
 import org.bedework.calfacade.BwDateTime;
@@ -86,7 +86,7 @@ public class JsCal2BwEvent {
   public static GetEntityResponse<EventInfo> toEvent(
           final IcalCallback cb,
           final JSCalendarObject val,
-          final BwCalendar col,
+          final BwCollection col,
           final Icalendar ical) {
     final var resp = new GetEntityResponse<EventInfo>();
 

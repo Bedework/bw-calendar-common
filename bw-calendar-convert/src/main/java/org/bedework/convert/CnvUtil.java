@@ -5,7 +5,7 @@ package org.bedework.convert;
 
 import org.bedework.base.response.GetEntitiesResponse;
 import org.bedework.base.response.GetEntityResponse;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwEventObj;
 import org.bedework.calfacade.ifs.IcalCallback;
@@ -26,11 +26,11 @@ import static org.bedework.base.response.Response.Status.failed;
  * User: mike Date: 7/31/20 Time: 22:42
  */
 public class CnvUtil {
-  static boolean colCanRetrieve(final BwCalendar col) {
+  static boolean colCanRetrieve(final BwCollection col) {
     return (col != null) &&
-            (col.getCalType() != BwCalendar.calTypeInbox) &&
-            (col.getCalType() != BwCalendar.calTypePendingInbox) &&
-            (col.getCalType() != BwCalendar.calTypeOutbox);
+            (col.getCalType() != BwCollection.calTypeInbox) &&
+            (col.getCalType() != BwCollection.calTypePendingInbox) &&
+            (col.getCalType() != BwCollection.calTypeOutbox);
   }
 
   public static class RetrievedEvents {
@@ -46,7 +46,7 @@ public class CnvUtil {
           final String uid,
           final String rid,
           final int entityType,
-          final BwCalendar col,
+          final BwCollection col,
           final Icalendar ical,
           final String startDate, // ical format
           final String timeZone,

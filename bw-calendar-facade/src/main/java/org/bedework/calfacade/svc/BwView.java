@@ -19,7 +19,7 @@
 package org.bedework.calfacade.svc;
 
 import org.bedework.caldav.util.filter.FilterBase;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.annotations.Dump;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.base.BwDbentity;
@@ -54,7 +54,7 @@ public class BwView extends BwDbentity<BwView> {
 
   /** The collections
    */
-  private List<BwCalendar> collections;
+  private List<BwCollection> collections;
 
   /** Constructor
    *
@@ -169,14 +169,14 @@ public class BwView extends BwDbentity<BwView> {
    *
    * @param val the list of collections or null
    */
-  public void setCollections(final List<BwCalendar> val) {
+  public void setCollections(final List<BwCollection> val) {
     collections = val;
   }
 
   /**
    */
   @NoDump
-  public List<BwCalendar> getCollections() {
+  public List<BwCollection> getCollections() {
     return collections;
   }
 

@@ -64,7 +64,7 @@ public class AliasesInfo implements Serializable {
 
   /* The collection containing the entity
    */
-  private final BwCalendar collection;
+  private final BwCollection collection;
   
   private final String principalHref;
 
@@ -92,7 +92,7 @@ public class AliasesInfo implements Serializable {
    * @param entityName - the entity being updated
    */
   public AliasesInfo(final String principalHref,
-                     final BwCalendar collection,
+                     final BwCollection collection,
                      final String entityName) {
     this.principalHref = principalHref;
     this.collection = collection;
@@ -109,7 +109,7 @@ public class AliasesInfo implements Serializable {
   /**
    * @return collection
    */
-  public BwCalendar getCollection() {
+  public BwCollection getCollection() {
     return collection;
   }
 

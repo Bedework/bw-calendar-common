@@ -20,7 +20,7 @@ package org.bedework.calsvci;
 
 import org.bedework.calfacade.Participant;
 import org.bedework.calfacade.BwAttendee;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.BwDuration;
 import org.bedework.calfacade.BwEvent;
@@ -162,7 +162,7 @@ public interface SchedulingI extends Serializable {
    * @param exceptUid if non-null omit this uid from the freebusy calculation
    * @return BwEvent
    */
-  BwEvent getFreeBusy(Collection<BwCalendar> fbset,
+  BwEvent getFreeBusy(Collection<BwCollection> fbset,
                       BwPrincipal<?> who,
                       BwDateTime start,
                       BwDateTime end,
@@ -330,7 +330,7 @@ public interface SchedulingI extends Serializable {
    *
    * @return Collection of calendars.
    */
-  Collection<BwCalendar> getFreebusySet();
+  Collection<BwCollection> getFreebusySet();
 
   /** Get aggregated free busy for a ScheduleResult.
    *

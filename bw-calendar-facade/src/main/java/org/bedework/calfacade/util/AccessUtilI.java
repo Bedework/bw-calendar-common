@@ -22,7 +22,7 @@ import org.bedework.access.Ace;
 import org.bedework.access.AceWho;
 import org.bedework.access.CurrentAccess;
 import org.bedework.access.PrivilegeDefs;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.calfacade.base.ShareableEntity;
 import org.bedework.calfacade.svc.PrincipalInfo;
@@ -66,7 +66,7 @@ public interface AccessUtilI extends PrivilegeDefs, Serializable {
    * @param val shareable contained entity - so parent can be located
    * @return parent calendar or null.
    */
-  BwCalendar getParent(BwShareableContainedDbentity<?> val);
+  BwCollection getParent(BwShareableContainedDbentity<?> val);
 
   /* ====================================================================
    *                   Access control

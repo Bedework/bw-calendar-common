@@ -19,7 +19,7 @@
 package org.bedework.convert;
 
 import org.bedework.base.exc.BedeworkException;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwEvent;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.base.StartEndComponent;
@@ -236,7 +236,7 @@ public class IcalTranslator implements Logged, Serializable {
    * @param rdr      Icalendar reader
    * @return Icalendar
    */
-  public Icalendar fromIcal(final BwCalendar col,
+  public Icalendar fromIcal(final BwCollection col,
                             final Reader rdr) {
     return fromIcal(col, rdr, null,
                     false); // don't merge attendees
@@ -248,7 +248,7 @@ public class IcalTranslator implements Logged, Serializable {
    * @param ical     xCal icalendar object
    * @return Icalendar
    */
-  public Icalendar fromIcal(final BwCalendar col,
+  public Icalendar fromIcal(final BwCollection col,
                             final IcalendarType ical) {
 
     final Icalendar ic = new Icalendar();
@@ -275,7 +275,7 @@ public class IcalTranslator implements Logged, Serializable {
    * @param diff     True if we should assume we are updating existing events.
    * @return Icalendar
    * /
-  public Icalendar fromComp(final BwCalendar col,
+  public Icalendar fromComp(final BwCollection col,
                             final Component comp,
                             final boolean diff,
                             final boolean mergeAttendees) {
@@ -305,7 +305,7 @@ public class IcalTranslator implements Logged, Serializable {
    * @param mergeAttendees True if we should only update our own attendee.
    * @return Icalendar
    */
-  public Icalendar fromIcal(final BwCalendar col,
+  public Icalendar fromIcal(final BwCollection col,
                             final Reader rdr,
                             final String contentType,
                             final boolean mergeAttendees) {
@@ -371,7 +371,7 @@ public class IcalTranslator implements Logged, Serializable {
     }
   }
 
-  private Icalendar makeIc(final BwCalendar col,
+  private Icalendar makeIc(final BwCollection col,
                            final Icalendar ic,
                            final Calendar cal,
                            final boolean mergeAttendees) {

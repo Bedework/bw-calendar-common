@@ -20,7 +20,7 @@
 package org.bedework.mail;
 
 import org.bedework.base.exc.BedeworkException;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.BwPrincipal;
 import org.bedework.calfacade.mail.MailConfigProperties;
 import org.bedework.calfacade.mail.MailerIntf;
@@ -108,12 +108,12 @@ public class SimpleMailer implements Logged, MailerIntf {
   }
 
   @Override
-  public void addList(final BwCalendar cal) {
+  public void addList(final BwCollection cal) {
     debug("addList called with " + cal.getName());
   }
 
   @Override
-  public void deleteList(final BwCalendar cal) {
+  public void deleteList(final BwCollection cal) {
     debug("deleteList called with " + cal.getName());
   }
 
@@ -124,33 +124,33 @@ public class SimpleMailer implements Logged, MailerIntf {
   }
 
   @Override
-  public boolean checkList(final BwCalendar cal) {
+  public boolean checkList(final BwCollection cal) {
     debug("checkList called with " + cal.getName());
     return true;
   }
 
   @Override
-  public void postList(final BwCalendar cal, final Message val) {
+  public void postList(final BwCollection cal, final Message val) {
     debug("postList called with " + cal.getName() + " and message:");
     debug(val.toString());
   }
 
   @Override
-  public void addMember(final BwCalendar cal,
+  public void addMember(final BwCollection cal,
                         final BwPrincipal<?> member) {
     debug("addUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public void removeMember(final BwCalendar cal,
+  public void removeMember(final BwCollection cal,
                            final BwPrincipal<?> member) {
     debug("removeUser called with " + cal.getName() + " and member " +
              member.getAccount());
   }
 
   @Override
-  public boolean checkMember(final BwCalendar cal,
+  public boolean checkMember(final BwCollection cal,
                              final BwPrincipal<?> member) {
     debug("checkUser called with " + cal.getName() + " and member " +
              member.getAccount());
@@ -158,7 +158,7 @@ public class SimpleMailer implements Logged, MailerIntf {
   }
 
   @Override
-  public void updateMember(final BwCalendar cal,
+  public void updateMember(final BwCollection cal,
                            final BwPrincipal<?> member,
                            final String newEmail)
         {
@@ -167,7 +167,7 @@ public class SimpleMailer implements Logged, MailerIntf {
   }
 
   @Override
-  public Collection<BwPrincipal<?>> listMembers(final BwCalendar cal) {
+  public Collection<BwPrincipal<?>> listMembers(final BwCollection cal) {
     debug("listUsers called with " + cal.getName());
     return new ArrayList<>();
   }

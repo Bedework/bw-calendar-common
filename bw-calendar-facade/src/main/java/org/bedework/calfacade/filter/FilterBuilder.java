@@ -24,7 +24,7 @@ import org.bedework.caldav.util.filter.BooleanFilter;
 import org.bedework.caldav.util.filter.FilterBase;
 import org.bedework.caldav.util.filter.ObjectFilter;
 import org.bedework.caldav.util.filter.OrFilter;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.EventListEntry;
 import org.bedework.calfacade.exc.CalFacadeSubscriptionLoopException;
 import org.bedework.calfacade.filter.SimpleFilterParser.ParseResult;
@@ -77,7 +77,7 @@ import java.util.Iterator;
  *
  */
 public class FilterBuilder implements Logged {
-  private HashMap<String, BwCalendar> colCache = new HashMap<>();
+  private HashMap<String, BwCollection> colCache = new HashMap<>();
 
   //private HashMap<String, CalFilter> filterCache = new HashMap<String, CalFilter>();
 
@@ -91,7 +91,7 @@ public class FilterBuilder implements Logged {
 
   private static class EntityCalFilter extends CalFilter {
     /* The real calendar collection to which this applies */
-    BwCalendar cal;
+    BwCollection cal;
   }
 
   private static class CalFilterTerms extends CalFilter {
@@ -127,7 +127,7 @@ public class FilterBuilder implements Logged {
       return BooleanFilter.falseFilter;
     }
 
-    BwCalendar col = colCache.get(path);
+    BwCollection col = colCache.get(path);
 
     if (col == null) {
       try {
@@ -243,7 +243,7 @@ public class FilterBuilder implements Logged {
    * pathElement is used to detect loops in the actual path. We fail with an
    * exception if we discover a repeated URI in the list.
    */
-  private CalFilter makeColFilter(final BwCalendar cal,
+  private CalFilter makeColFilter(final BwCollection cal,
                                   final boolean applyFilter,
                                   final boolean explicitSelection,
                                   final ArrayList<String> pathElements) {
@@ -254,7 +254,7 @@ public class FilterBuilder implements Logged {
       fltr = parseExpr(cal);
     }
 
-    if (cal.getCalType() ==  BwCalendar.calTypeEventList) {
+    if (cal.getCalType() ==  BwCollection.calTypeEventList) {
       OrCalFilter ocf = new OrCalFilter();
 
       for (EventListEntry ele: cal.getEventList()) {
@@ -272,8 +272,8 @@ public class FilterBuilder implements Logged {
     if (cal.getCollectionInfo().onlyCalEntities) {
       // Leaf node
       if (!explicitSelection &&
-          (cal.getCalType() !=  BwCalendar.calTypeCalendarCollection) &&
-          (cal.getCalType() !=  BwCalendar.calTypeExtSub)) {
+          (cal.getCalType() !=  BwCollection.calTypeCalendarCollection) &&
+          (cal.getCalType() !=  BwCollection.calTypeExtSub)) {
         return null;
       }
 
@@ -286,7 +286,7 @@ public class FilterBuilder implements Logged {
     }
 
     if (cal.getInternalAlias()) {
-      BwCalendar target = parser.resolveAlias(cal, false);
+      BwCollection target = parser.resolveAlias(cal, false);
       if (target == null) {
         return null;
       }
@@ -302,7 +302,7 @@ public class FilterBuilder implements Logged {
       return anded(fltr, makeColFilter(target, true, false, pathElements));
     }
 
-    if (cal.getCalType() == BwCalendar.calTypeFolder) {
+    if (cal.getCalType() == BwCollection.calTypeFolder) {
       return anded(fltr, makeFolderFilter(cal, pathElements));
     }
 
@@ -326,13 +326,13 @@ public class FilterBuilder implements Logged {
     return calFilter;
   }
 
-  private CalFilter makeFolderFilter(final BwCalendar val,
+  private CalFilter makeFolderFilter(final BwCollection val,
                                      final ArrayList<String> pathElements) {
-    Collection<BwCalendar> cols = parser.getChildren(val);
+    Collection<BwCollection> cols = parser.getChildren(val);
 
     OrCalFilter res = new OrCalFilter();
 
-    for (BwCalendar col: cols) {
+    for (BwCollection col: cols) {
       if (colCache.get(col.getPath()) == null) {
         colCache.put(col.getPath(), col);
       }
@@ -518,11 +518,11 @@ public class FilterBuilder implements Logged {
     if (f instanceof ObjectFilter) {
       ObjectFilter of = (ObjectFilter)f;
 
-      if (of.getEntity() instanceof BwCalendar) {
+      if (of.getEntity() instanceof BwCollection) {
         final StringBuilder sb = new StringBuilder(curLine);
         sb.append(curLine);
         sb.append("  cal=");
-        sb.append(((BwCalendar)of.getEntity()).getPath());
+        sb.append(((BwCollection)of.getEntity()).getPath());
 
         debug(sb.toString());
       } else {
@@ -533,7 +533,7 @@ public class FilterBuilder implements Logged {
     }
   }
 
-  private FilterBase parseExpr(final BwCalendar col) {
+  private FilterBase parseExpr(final BwCollection col) {
     SimpleFilterParser sfp = parser.getParser();
 
     ParseResult pr = sfp.parse(col.getFilterExpr(),

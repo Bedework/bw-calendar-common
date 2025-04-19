@@ -18,10 +18,10 @@
 */
 package org.bedework.calsvci;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.synch.BwSynchInfo;
-import org.bedework.calsvci.CalendarsI.CheckSubscriptionResult;
-import org.bedework.calsvci.CalendarsI.SynchStatusResponse;
+import org.bedework.calsvci.CollectionsI.CheckSubscriptionResult;
+import org.bedework.calsvci.CollectionsI.SynchStatusResponse;
 import org.bedework.base.response.Response;
 
 import java.io.Serializable;
@@ -59,14 +59,14 @@ public interface SynchI extends Serializable {
    * @param val the collection representing the subscription
    * @return true if subscribed OK.
    */
-  boolean subscribe(BwCalendar val);
+  boolean subscribe(BwCollection val);
 
   /**
    *
    * @param val Collection
    * @return status - never null.
    */
-  SynchStatusResponse getSynchStatus(BwCalendar val);
+  SynchStatusResponse getSynchStatus(BwCollection val);
 
   /** Check the subscription if this is an external subscription. Will contact
    * the synch server and check the validity. If there is no subscription
@@ -75,7 +75,7 @@ public interface SynchI extends Serializable {
    * @param val the collection representing the subscription
    * @return result of call
    */
-  CheckSubscriptionResult checkSubscription(BwCalendar val);
+  CheckSubscriptionResult checkSubscription(BwCollection val);
 
   /** Remove a subscription for the given collection.
    *
@@ -83,7 +83,7 @@ public interface SynchI extends Serializable {
    * @param forDelete - we're deleting the collection - use Oracle workround
    * @return true if unsubscribed OK.
    */
-  boolean unsubscribe(BwCalendar val,
+  boolean unsubscribe(BwCollection val,
                       boolean forDelete);
 
   /** Refresh the subscription for the given collection.
@@ -91,7 +91,7 @@ public interface SynchI extends Serializable {
    * @param val the collection representing the subscription
    * @return Response showing status.
    */
-  Response refresh(BwCalendar val);
+  Response refresh(BwCollection val);
 
   /** Returns the synch service information.
    *

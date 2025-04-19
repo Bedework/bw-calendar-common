@@ -22,7 +22,7 @@ import org.bedework.caldav.util.sharing.InviteReplyType;
 import org.bedework.caldav.util.sharing.InviteType;
 import org.bedework.caldav.util.sharing.ShareResultType;
 import org.bedework.caldav.util.sharing.ShareType;
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.svc.SharingReplyResult;
 import org.bedework.calfacade.svc.SubscribeResult;
 
@@ -41,7 +41,7 @@ public interface SharingI extends Serializable {
    * @return list of ok and !ok sharees
    */
   ShareResultType share(String principalHref,
-                        BwCalendar col,
+                        BwCollection col,
                         ShareType share);
 
   /**
@@ -49,7 +49,7 @@ public interface SharingI extends Serializable {
    * @param share the request
    * @return list of ok and !ok sharees
    */
-  ShareResultType share(BwCalendar col,
+  ShareResultType share(BwCollection col,
                         ShareType share);
 
   /**
@@ -57,35 +57,35 @@ public interface SharingI extends Serializable {
    * @param reply the request
    * @return a ReplyResult object.
    */
-  SharingReplyResult reply(BwCalendar col,
+  SharingReplyResult reply(BwCollection col,
                            InviteReplyType reply);
 
   /**
    * @param col to check
    * @return current invitations
    */
-  InviteType getInviteStatus(BwCalendar col);
+  InviteType getInviteStatus(BwCollection col);
 
   /** Do any cleanup necessary for a collection delete.
    *
    * @param col to delete
    * @param sendNotifications true to notify sharees
    */
-  void delete(BwCalendar col,
+  void delete(BwCollection col,
               boolean sendNotifications);
 
   /** Publish the collection - that is make it available for subscriptions.
    *
    * @param col to publish
    */
-  void publish(BwCalendar col);
+  void publish(BwCollection col);
 
   /** Unpublish the collection - that is make it unavailable for subscriptions
    * and remove any existing subscriptions.
    *
    * @param col to unpublish
    */
-  void unpublish(BwCalendar col);
+  void unpublish(BwCollection col);
 
   /** Subscribe to the collection - must be a published collection.
    *
@@ -117,5 +117,5 @@ public interface SharingI extends Serializable {
    *
    * @param col alias to unsubscribe
    */
-  void unsubscribe(BwCalendar col);
+  void unsubscribe(BwCollection col);
 }

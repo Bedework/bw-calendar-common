@@ -18,7 +18,7 @@
 */
 package org.bedework.calfacade.svc.prefs;
 
-import org.bedework.calfacade.BwCalendar;
+import org.bedework.calfacade.BwCollection;
 import org.bedework.calfacade.annotations.Dump;
 
 /** Represent user Calendar preferences
@@ -27,5 +27,5 @@ import org.bedework.calfacade.annotations.Dump;
  *  @version 1.0
  */
 @Dump(elementName="collections-pref")
-public class CalendarPref extends CollectionPref<BwCalendar> {
+public class CalendarPref extends CollectionPref<BwCollection> {
 }

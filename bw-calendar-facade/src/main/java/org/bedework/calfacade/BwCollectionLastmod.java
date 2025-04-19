@@ -29,7 +29,7 @@ import java.util.Date;
  * @author Mike Douglass
  * @version 1.0
  */
-public class BwCollectionLastmod extends BwLastMod<BwCalendar, BwCollectionLastmod> {
+public class BwCollectionLastmod extends BwLastMod<BwCollection, BwCollectionLastmod> {
   /* Set from the entity value */
   private String path;
 
@@ -44,7 +44,7 @@ public class BwCollectionLastmod extends BwLastMod<BwCalendar, BwCollectionLastm
    *
    * @param dbEntity collection
    */
-  public BwCollectionLastmod(final BwCalendar dbEntity) {
+  public BwCollectionLastmod(final BwCollection dbEntity) {
     super(dbEntity);
 
     if (dbEntity != null) {
@@ -58,7 +58,7 @@ public class BwCollectionLastmod extends BwLastMod<BwCalendar, BwCollectionLastm
    * @param dbEntity collection
    * @param dt Date lastmod
    */
-  public BwCollectionLastmod(final BwCalendar dbEntity, final Date dt) {
+  public BwCollectionLastmod(final BwCollection dbEntity, final Date dt) {
     super(dbEntity, dt);
 
     if (dbEntity != null) {
@@ -72,7 +72,7 @@ public class BwCollectionLastmod extends BwLastMod<BwCalendar, BwCollectionLastm
    * @param dbEntity collection
    * @param timestamp lastmod
    */
-  public BwCollectionLastmod(final BwCalendar dbEntity,
+  public BwCollectionLastmod(final BwCollection dbEntity,
                              final String timestamp) {
     super(dbEntity);
 
@@ -89,7 +89,7 @@ public class BwCollectionLastmod extends BwLastMod<BwCalendar, BwCollectionLastm
    * @param val collection
    */
   @Override
-  public void setDbEntity(final BwCalendar val) {
+  public void setDbEntity(final BwCollection val) {
     super.setDbEntity(val);
 
     if (val != null) {

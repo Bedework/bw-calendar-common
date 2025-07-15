@@ -79,6 +79,7 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   private String eventregAdminToken;
   private String eventregUrl;
   private String eventregWSUrl;
+  private String eventregAdminUrl;
 
   private String cacheUrlPrefix;
 
@@ -318,6 +319,16 @@ public class SystemPropertiesImpl extends ConfigBase<SystemPropertiesImpl>
   @Override
   public String getEventregWSUrl() {
     return eventregWSUrl;
+  }
+
+  @Override
+  public void setEventregAdminUrl(final String val) {
+    eventregAdminUrl = val;
+  }
+
+  @Override
+  public String getEventregAdminUrl() {
+    return eventregAdminUrl;
   }
 
   @Override

@@ -223,6 +223,19 @@ public interface SystemProperties extends CalDAVSystemProperties {
  @MBeanInfo("The url for event reg web service")
  String getEventregWSUrl();
 
+ /** Set the url for event reg admin service
+  *
+  * @param val the url for event reg admin service
+  */
+ void setEventregAdminUrl(String val);
+
+ /** Get the url for event reg admin service
+  *
+  * @return token
+  */
+ @MBeanInfo("The url for event reg admin service")
+ String getEventregAdminUrl();
+
  /** Set the url prefix for the cache
   *
   * @param val the url prefix for the cache

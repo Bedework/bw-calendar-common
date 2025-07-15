@@ -296,6 +296,16 @@ public final class ROSystemProperties implements SystemProperties {
   }
 
   @Override
+  public void setEventregAdminUrl(final String val) {
+    throw new RuntimeException("Immutable");
+  }
+
+  @Override
+  public String getEventregAdminUrl() {
+    return getConfig().getEventregAdminUrl();
+  }
+
+  @Override
   public void setCacheUrlPrefix(final String val) {
     throw new RuntimeException("Immutable");
   }

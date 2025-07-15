@@ -802,6 +802,16 @@ public final class ConfigurationsImpl
   }
 
   @Override
+  public void setEventregAdminUrl(final String val) {
+    getConfig().setEventregAdminUrl(val);
+  }
+
+  @Override
+  public String getEventregAdminUrl() {
+    return getConfig().getEventregAdminUrl();
+  }
+
+  @Override
   public void setCacheUrlPrefix(final String val) {
     getConfig().setCacheUrlPrefix(val);
   }

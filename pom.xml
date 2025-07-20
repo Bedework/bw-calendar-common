@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>bw-calendar-common</artifactId>
-  <version>5.0.0</version>
+  <version>5.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Bedework: calendar common modules</name>
   <description>Common calendar classes and code for bedework</description>

@@ -1,0 +1,4 @@
+[[sysevents-msgs]]
+== sysevents-msgs
+Provides definitions for the internal system event messages generated and consumed by the calendar engine.
+

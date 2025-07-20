@@ -1,0 +1,4 @@
+[[mail]]
+== mail
+Provides definitions for the email code for the calendar engine.
+

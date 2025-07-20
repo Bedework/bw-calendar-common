@@ -1,0 +1,4 @@
+[[sysevents-common]]
+== sysevents-common
+Provides definitions for the internal system events generated and consumed by the calendar engine.
+

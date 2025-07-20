@@ -1,0 +1,4 @@
+[[annotations]]
+== annotations
+Provides annotations for the common classes (mostly icalendar and database related).
+

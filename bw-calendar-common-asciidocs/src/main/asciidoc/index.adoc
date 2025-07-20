@@ -1,0 +1,59 @@
+= Bedework Calendar Common modules.
+:title: The Bedework Calendar Common modules.
+:safe-mode-unsafe:
+:docinfo: shared
+:docinfodir: ./docinfo
+:docinfo2:
+:scriptsdir: ./tocbot-3.0.2
+:imagesdir: ./resources/
+:toc: left
+:toclevels: 4
+:sectnumlevels: 4
+//
+:reports-dir: reports/
+:annotations-dir: annotations
+:api-dir: api
+:api-ro-dir: api-ro
+:config-dir: config
+:convert-dir: convert
+:facade-dir: facade
+:mail-dir: mail
+:sysevents-common-dir: sysevents-common
+:sysevents-msgs-dir: sysevents-msgs
+//
+:sectnums!:
+
+include::introduction.adoc[]
+
+:sectnums:
+
+include::{annotations-dir}/overview.adoc[]
+include::{annotations-dir}/using.adoc[]
+
+include::{api-dir}/overview.adoc[]
+include::{api-dir}/using.adoc[]
+
+include::{api-ro-dir}/overview.adoc[]
+include::{api-ro-dir}/using.adoc[]
+
+include::{config-dir}/overview.adoc[]
+include::{config-dir}/using.adoc[]
+
+include::{convert-dir}/overview.adoc[]
+include::{convert-dir}/using.adoc[]
+
+include::{facade-dir}/overview.adoc[]
+include::{facade-dir}/using.adoc[]
+
+include::{mail-dir}/overview.adoc[]
+include::{mail-dir}/using.adoc[]
+
+include::{sysevents-common-dir}/overview.adoc[]
+include::{sysevents-common-dir}/using.adoc[]
+
+include::{sysevents-msgs-dir}/overview.adoc[]
+include::{sysevents-msgs-dir}/using.adoc[]
+
+[[reports]]
+== Reports
+link:reports/dependency-check-report.html[Dependency check]

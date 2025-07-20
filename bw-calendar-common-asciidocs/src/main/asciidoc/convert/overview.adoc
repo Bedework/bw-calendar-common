@@ -1,0 +1,5 @@
+[[convert]]
+== convert
+Provides definitions for the conversion code for the calendar engine.
+
+Mostly code to convert from the internal format to external formats and vice versa.

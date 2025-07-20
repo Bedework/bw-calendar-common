@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.23">
+<title>The Bedework Calendar Common modules.</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Bedework Calendar Common modules.</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_retrieve_a_category">Retrieve a category</a></li>
+<li><a href="#_search_for_a_category_with_a_string">Search for a category with a string</a></li>
+</ul>
+</li>
+<li><a href="#annotations">1. annotations</a>
+<ul class="sectlevel2">
+<li><a href="#_using_this_project">1.1. Using this project</a></li>
+</ul>
+</li>
+<li><a href="#api">2. api</a></li>
+<li><a href="#api-ro">3. api-ro</a></li>
+<li><a href="#config">4. config</a></li>
+<li><a href="#convert">5. convert</a></li>
+<li><a href="#facade">6. facade</a></li>
+<li><a href="#mail">7. mail</a>
+<ul class="sectlevel2">
+<li><a href="#_using_this_project_2">7.1. Using this project</a></li>
+</ul>
+</li>
+<li><a href="#sysevents-common">8. sysevents-common</a>
+<ul class="sectlevel2">
+<li><a href="#_using_this_project_3">8.1. Using this project</a></li>
+</ul>
+</li>
+<li><a href="#sysevents-msgs">9. sysevents-msgs</a>
+<ul class="sectlevel2">
+<li><a href="#_using_this_project_4">9.1. Using this project</a></li>
+</ul>
+</li>
+<li><a href="#reports">10. Reports</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The category service allows retrieval of categories by href or
+searching based on strings and filters.</p>
+</div>
+<div class="sect2">
+<h3 id="_retrieve_a_category">Retrieve a category</h3>
+<div class="paragraph">
+<p><a href="http://localhost:8080/bwcat/category/dmoz/Sports/" class="bare">http://localhost:8080/bwcat/category/dmoz/Sports/</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search_for_a_category_with_a_string">Search for a category with a string</h3>
+<div class="paragraph">
+<p>This documentation is mostly a place-holder.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annotations">1. annotations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides annotations for the common classes (mostly icalendar and database related).</p>
+</div>
+<div class="sect2">
+<h3 id="_using_this_project">1.1. Using this project</h3>
+<div class="paragraph">
+<p>Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-annotations&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api">2. api</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the r/w api for the calendar engine. This SHOULD NOT be treated as a public api as it is somewhat volatile.
+=== Using this project
+Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-api&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="api-ro">3. api-ro</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the read-only api for the calendar engine. This SHOULD NOT be treated as a public api as it is somewhat volatile.</p>
+</div>
+<div class="paragraph">
+<p>Note that the split between read/write and read-only is incomplete. The intent is ultimately to have a deployable read-only calendar engine with no classes that update data.</p>
+</div>
+<div class="paragraph">
+<p>This would provide greater security for the public read-only web services as well as a smaller footprint.
+=== Using this project
+Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-api-ro&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="config">4. config</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the configuration for the calendar engine.
+=== Using this project
+Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-config&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="convert">5. convert</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the conversion code for the calendar engine.</p>
+</div>
+<div class="paragraph">
+<p>Mostly code to convert from the internal format to external formats and vice versa.
+=== Using this project
+Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-convert&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="facade">6. facade</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides classes for the apis) for the calendar engine.</p>
+</div>
+<div class="paragraph">
+<p>The origins of this are based on what is <a href="https://en.wikipedia.org/wiki/Facade_pattern">described here</a>, though it predates wikipedia.</p>
+</div>
+<div class="paragraph">
+<p>This is closer to a public api. It could do with refactoring into read-only, read-write and admin.
+=== Using this project
+Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-convert&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mail">7. mail</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the email code for the calendar engine.</p>
+</div>
+<div class="sect2">
+<h3 id="_using_this_project_2">7.1. Using this project</h3>
+<div class="paragraph">
+<p>Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-mail&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sysevents-common">8. sysevents-common</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the internal system events generated and consumed by the calendar engine.</p>
+</div>
+<div class="sect2">
+<h3 id="_using_this_project_3">8.1. Using this project</h3>
+<div class="paragraph">
+<p>Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-sysevents-common&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sysevents-msgs">9. sysevents-msgs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Provides definitions for the internal system event messages generated and consumed by the calendar engine.</p>
+</div>
+<div class="sect2">
+<h3 id="_using_this_project_4">9.1. Using this project</h3>
+<div class="paragraph">
+<p>Add the artifact(s) as a dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>      &lt;dependency&gt;
+        &lt;groupId&gt;org.bedework&lt;/groupId&gt;
+        &lt;artifactId&gt;bw-calendar-sysevents-msgs&lt;/artifactId&gt;
+      &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reports">10. Reports</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="reports/dependency-check-report.html">Dependency check</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2025-07-20 00:07:48 -0400
+</div>
+</div>
+</body>
+</html>

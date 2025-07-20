@@ -1,0 +1,3 @@
+[[api]]
+== api
+Provides definitions for the r/w api for the calendar engine. This SHOULD NOT be treated as a public api as it is somewhat volatile.

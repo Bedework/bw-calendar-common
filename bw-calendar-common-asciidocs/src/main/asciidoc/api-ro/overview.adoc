@@ -1,0 +1,7 @@
+[[api-ro]]
+== api-ro
+Provides definitions for the read-only api for the calendar engine. This SHOULD NOT be treated as a public api as it is somewhat volatile.
+
+Note that the split between read/write and read-only is incomplete. The intent is ultimately to have a deployable read-only calendar engine with no classes that update data.
+
+This would provide greater security for the public read-only web services as well as a smaller footprint.

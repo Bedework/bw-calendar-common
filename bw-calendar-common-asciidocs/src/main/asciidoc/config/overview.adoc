@@ -1,0 +1,3 @@
+[[config]]
+== config
+Provides definitions for the configuration for the calendar engine.

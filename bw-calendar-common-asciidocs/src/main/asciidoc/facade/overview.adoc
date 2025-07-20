@@ -1,0 +1,7 @@
+[[facade]]
+== facade
+Provides classes for the apis) for the calendar engine.
+
+The origins of this are based on what is https://en.wikipedia.org/wiki/Facade_pattern[described here], though it predates wikipedia.
+
+This is closer to a public api. It could do with refactoring into read-only, read-write and admin.

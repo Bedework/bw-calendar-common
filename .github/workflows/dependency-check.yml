@@ -56,7 +56,7 @@ jobs:
       - name: Build & scan
         id: scan
         run: |
-          mvn -Pbedework-dev --settings ./.github/workflows/settings.xml \
+          mvn -Pbedework-dev,depcheck --settings ./.github/workflows/settings.xml \
             --no-transfer-progress clean install -DskipTests \
             -DnvdApiKey=${{secrets.nvdApiKey}} -DskipITs -Dmax.cvss.score=8 \
             org.owasp:dependency-check-maven:aggregate 

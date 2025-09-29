@@ -122,6 +122,19 @@ public interface AuthProperties extends CalDAVAuthProperties {
   @MBeanInfo("Max time span in years for a recurring event")
   int getMaxYears();
 
+  /** Set the max page size for a fetch
+   *
+   * @param val    int max
+   */
+  void setMaxPageSize(int val);
+
+  /** Get the max page size for a fetch
+   *
+   * @return max page size
+   */
+  @MBeanInfo("Max page size for a fetch")
+  int getMaxPageSize();
+
   /**
    * @return copy of this
    */

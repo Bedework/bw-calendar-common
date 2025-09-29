@@ -215,6 +215,16 @@ public final class ROAuthProperties implements AuthProperties {
   }
 
   @Override
+  public void setMaxPageSize(final int val) {
+    getConfig().setMaxPageSize(val);
+  }
+
+  @Override
+  public int getMaxPageSize() {
+    return getConfig().getMaxPageSize();
+  }
+
+  @Override
   public AuthProperties cloneIt() {
     return this;
   }

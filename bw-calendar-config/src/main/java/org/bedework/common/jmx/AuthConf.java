@@ -222,6 +222,16 @@ public class AuthConf extends ConfBase<AuthPropertiesImpl>
     return getConfig().getMaxYears();
   }
 
+  @Override
+  public void setMaxPageSize(final int val) {
+    getConfig().setMaxPageSize(val);
+  }
+
+  @Override
+  public int getMaxPageSize() {
+    return getConfig().getMaxPageSize();
+  }
+
   /* ========================================================================
    * Operations
    * ======================================================================== */

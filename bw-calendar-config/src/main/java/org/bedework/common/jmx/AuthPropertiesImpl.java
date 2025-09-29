@@ -48,6 +48,8 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
 
   private int maxYears;
 
+  private int maxPageSize;
+
   private Integer maxAttendeesPerInstance;
 
   private String minDateTime;
@@ -286,6 +288,16 @@ public class AuthPropertiesImpl extends ConfigBase<AuthPropertiesImpl>
   @Override
   public int getMaxYears() {
     return maxYears;
+  }
+
+  @Override
+  public void setMaxPageSize(final int val) {
+    maxPageSize = val;
+  }
+
+  @Override
+  public int getMaxPageSize() {
+    return maxPageSize;
   }
 
   /* ====================================================================

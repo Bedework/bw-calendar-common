@@ -37,12 +37,12 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
 
   protected boolean subscriptionsOnly;
 
-  protected BwPrincipal principal;
+  protected BwPrincipal<?> principal;
 
   /* associated with principal */
   protected String calendarHomePath;
 
-  protected BwPrincipal authPrincipal;
+  protected BwPrincipal<?> authPrincipal;
 
   /* Null allows all accesses according to user - otherwise restricted to this. */
   protected PrivilegeSet maxAllowedPrivs;
@@ -54,8 +54,8 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
    *                   public client
    * @param subscriptionsOnly - true if this user is limited to internal subscriptions 
    */
-  public PrincipalInfo(final BwPrincipal principal,
-                       final BwPrincipal authPrincipal,
+  public PrincipalInfo(final BwPrincipal<?> principal,
+                       final BwPrincipal<?> authPrincipal,
                        final PrivilegeSet maxAllowedPrivs,
                        final boolean subscriptionsOnly) {
     this.principal = principal;
@@ -118,14 +118,14 @@ public abstract class PrincipalInfo implements AccessCb, Serializable {
   /**
    * @return current principal
    */
-  public BwPrincipal getPrincipal() {
+  public BwPrincipal<?> getPrincipal() {
     return principal;
   }
 
   /**
    * @return principal we authenticated as
    */
-  public BwPrincipal getAuthPrincipal() {
+  public BwPrincipal<?> getAuthPrincipal() {
     return authPrincipal;
   }
 }

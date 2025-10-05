@@ -82,16 +82,16 @@ public class EventTimeZonesRegistry implements TimeZoneRegistry {
 
       /* Try to find it in the event */
 
-      String tzSpec = findTzValue(ev, id);
+      final String tzSpec = findTzValue(ev, id);
 
       if (tzSpec == null) {
         return null;
       }
 
-      StringBuilder sb = new StringBuilder();
-      sb.append("BEGIN:VCALENDAR\n");
-      sb.append(tzSpec);
-      sb.append("END:VCALENDAR\n");
+      final StringBuilder sb = new StringBuilder()
+              .append("BEGIN:VCALENDAR\n")
+              .append(tzSpec)
+              .append("END:VCALENDAR\n");
 
       synchronized (trans) {
         tz = trans.tzFromTzdef(sb.toString());
@@ -106,14 +106,14 @@ public class EventTimeZonesRegistry implements TimeZoneRegistry {
       }
 
       return tz;
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
   /**
-   * @param ev
-   * @param tzId
+   * @param ev the icalendar event
+   * @param tzId timezone id
    * @return tz spec or null.
    */
   @SuppressWarnings("deprecation")
@@ -136,18 +136,22 @@ public class EventTimeZonesRegistry implements TimeZoneRegistry {
       return xps.iterator().next().getValue();
     }
 
-    for (BwXproperty xp: xps) {
-      String val = xp.getValue();
+    for (final BwXproperty xp: xps) {
+      final String val = xp.getValue();
+      if (val == null) {
+        continue;
+      }
 
       // value is semicolon escaped name ";" then tzspec
-      int pos = BwXproperty.nextSemi(val, 0);
+      final int pos = BwXproperty.nextSemi(val, 0);
 
       if (pos < 0) {
         // bad
         continue;
       }
 
-      String id = BwXproperty.unescapeSemi(val.substring(0, pos));
+      final String id = BwXproperty.unescapeSemi(
+              val.substring(0, pos));
 
       if (id.equals(tzId)) {
         return val.substring(pos + 1);

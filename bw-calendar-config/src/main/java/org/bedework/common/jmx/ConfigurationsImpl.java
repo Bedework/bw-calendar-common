@@ -95,9 +95,6 @@ public final class ConfigurationsImpl
   private static final String cmdUtilClass =
           "org.bedework.tools.cmdutil.CmdUtil";
 
-  private static final String dumpRestoreClass =
-          "org.bedework.dumprestore.BwDumpRestore";
-
   private static DumpRestoreProperties dumpRestoreProperties;
 
   private static CmdUtilProperties cmdUtilProperties;
@@ -349,11 +346,6 @@ public final class ConfigurationsImpl
         loadCmdUtil();
       }
 
-      /* ------------- DumpRestore properties --------------------- */
-      if (!readOnlySystem) {
-        loadDumpRestore();
-      }
-
       /* ------------- Indexer properties ------------------------- */
       startIndexing();
 
@@ -392,11 +384,6 @@ public final class ConfigurationsImpl
   private void loadCmdUtil() throws Throwable {
     cmdUtilProperties = (CmdUtilProperties)load(
             loadInstance(cmdUtilClass), false);
-  }
-
-  private void loadDumpRestore() throws Throwable {
-    dumpRestoreProperties = (DumpRestoreProperties)load(
-            loadInstance(dumpRestoreClass), false);
   }
 
   private void startIndexing() throws Throwable {

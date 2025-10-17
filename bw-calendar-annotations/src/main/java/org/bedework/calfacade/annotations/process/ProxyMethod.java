@@ -18,26 +18,22 @@
 */
 package org.bedework.calfacade.annotations.process;
 
-import java.util.List;
-
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.tools.Diagnostic.Kind;
 
 /** We create a list of these as we process the event. We tie together the
  * setter and getter methods so that only the setter needs to be annotated
  *
- * @author Mike DOuglass
+ * @author Mike Douglass
  */
 public class ProxyMethod extends MethodHandler<ProxyMethod> {
   /**
-   * @param env
-   * @param annUtil
-   * @param d
+   * @param env our processing environment
+   * @param annUtil useful routines
+   * @param d an executable element
    */
   public ProxyMethod(final ProcessingEnvironment env,
                      final AnnUtil annUtil,
@@ -50,9 +46,9 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
    */
   @Override
   public void generateGet() {
-    String typeStr = annUtil.getClassName(returnType);
+    final String typeStr = annUtil.getClassName(returnType);
 
-    /* check corresponding setter to see if this is immutable */
+    /* check the corresponding setter to see if this is immutable */
     if ((setGet != null) && setGet.immutable) {
       annUtil.println("    return ", makeCallGetter("getTarget()"), ";");
       annUtil.prntlns("  }",
@@ -63,54 +59,49 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
 
     if (!annUtil.isCollection(returnType)) {
       if (!(returnType.getKind().isPrimitive())) {
-        annUtil.println("    ", typeStr, " val = ", makeCallGetter("ref"), ";");
-
-        annUtil.prntlns("    if (val != null) {",
+        annUtil.println("   final var val = ", makeCallGetter("ref"), ";")
+               .prntlns("    if (val != null) {",
                         "      return val;",
                         "    }",
-                        "");
-
-        annUtil.println("    if (", makeGetEmptyFlag("ref"), ") {");
-
-        annUtil.prntlns("      return null;",
+                        "")
+               .println("    if (", makeGetEmptyFlag("ref"), ") {")
+               .prntlns("      return null;",
                         "    }",
                         "");
       }
 
-      annUtil.println("    return ", makeCallGetter("getTarget()"), ";");
-
-      annUtil.prntlns("  }",
+      annUtil.println("    return ", makeCallGetter("getTarget()"), ";")
+             .prntlns("  }",
                       "");
 
       return;
     }
 
-    annUtil.println("    ", typeStr, " c = super.", methName, "();");
-    annUtil.println("    if (c == null) {");
-    annUtil.println("      c = new Override", typeStr,
-                               "(BwEvent.ProxiedFieldIndex.pfi",
-                               ucFieldName, ",");
-    annUtil.println("                                    ref, this) {");
-    annUtil.println("        public void setOverrideCollection(", typeStr, " val) {");
-    annUtil.println("          ", makeCallSetter("ref", "val"), ";");
-    annUtil.prntlns("          setChangeFlag(true);",
+    annUtil.println("    var c = super.", methName, "();")
+           .println("    if (c == null) {")
+           .println("      c = new Override", typeStr,
+                               "(")
+           .println("              BwEvent.ProxiedFieldIndex.pfi",
+                               ucFieldName, ",")
+           .println("              ref, this) {")
+           .println("        public void setOverrideCollection(final ", typeStr, " val) {")
+           .println("          ", makeCallSetter("ref", "val"), ";")
+           .prntlns("          setChangeFlag(true);",
                     "        }",
-                    "");
-
-    annUtil.println("        public ", typeStr, " getOverrideCollection() {");
-    annUtil.println("          return ", makeCallGetter("ref"), ";");
-    annUtil.prntlns("        }",
-                    "");
-
-    annUtil.println("        public void copyIntoOverrideCollection() {");
-    annUtil.println("          ", typeStr, " mstr = getMasterCollection();");
-    annUtil.println(" ");
-    annUtil.println("          if (mstr != null) {");
-    annUtil.println("            ", typeStr, " over = getOverrideCollection();");
+                    "")
+           .println("        public ", typeStr, " getOverrideCollection() {")
+           .println("          return ", makeCallGetter("ref"), ";")
+           .prntlns("        }",
+                    "")
+           .println("        public void copyIntoOverrideCollection() {")
+           .println("          final var mstr = getMasterCollection();")
+           .println(" ")
+           .println("          if (mstr != null) {")
+           .println("            final var over = getOverrideCollection();");
     if (cloneForOverride) {
-      annUtil.println("            for (", cloneElementType, " el: mstr) {");
-      annUtil.println("              over.add((", cloneElementType, ")el.clone());");
-      annUtil.println("            }");
+      annUtil.println("            for (final var el: mstr) {")
+             .println("              over.add((", cloneElementType, ")el.clone());")
+             .println("            }");
     } else {
       annUtil.println("            over.addAll(mstr);");
     }
@@ -125,17 +116,17 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
      * Needed to build TreeSet decl below.
      */
     String typePar = null;
-    TypeElement returnEl = annUtil.asTypeElement(returnType);
+    final var returnEl = annUtil.asTypeElement(returnType);
     if (returnEl.getKind() == ElementKind.CLASS) {
-      List<? extends TypeParameterElement> tps =  returnEl.getTypeParameters();
+      final var tps =  returnEl.getTypeParameters();
 
-      typePar = tps.iterator().next().toString();
+      typePar = tps.getFirst().toString();
     } else if (returnEl.getKind() == ElementKind.INTERFACE) {
-      List<? extends TypeParameterElement> tps =  returnEl.getTypeParameters();
+      final var tps =  returnEl.getTypeParameters();
 
-      typePar = tps.iterator().next().toString();
+      typePar = tps.getFirst().toString();
     } else {
-      Messager msg = env.getMessager();
+      final Messager msg = env.getMessager();
       msg.printMessage(Kind.WARNING,
                        "Unhandled returnType: " + returnType);
     }
@@ -167,8 +158,8 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
       if (immutable) {
         annUtil.println("      throw new RuntimeException(\"Immutable\");");
       } else {
-        annUtil.println("      ", makeCallSetter("ref", "val"), ";");
-        annUtil.println("      setChangeFlag(true);");
+        annUtil.println("      ", makeCallSetter("ref", "val"), ";")
+               .println("      setChangeFlag(true);");
       }
 
       annUtil.prntlns("    }",
@@ -178,27 +169,29 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
       return;
     }
 
-    if (annUtil.isCollection(fieldType)) {
-      String fieldTypeStr = annUtil.getClassName(fieldType);
+    String valName = "val";
 
-      annUtil.println("    if (val instanceof Override", AnnUtil.nonGeneric(fieldTypeStr),
-                                        ") {");
-      annUtil.println("      val = ((Override", fieldTypeStr, ")val).getOverrideCollection();");
-      annUtil.println("    }");
+    if (annUtil.isCollection(fieldType)) {
+      final String fieldTypeStr = annUtil.getClassName(fieldType);
+      annUtil.println("    var par = val;")
+             .println("    if (val instanceof Override", AnnUtil.nonGeneric(fieldTypeStr),
+                                        ") {")
+             .println("      par = ((Override", fieldTypeStr, ")val).getOverrideCollection();")
+             .println("    }");
+      valName = "par";
     }
 
-    annUtil.println("    int res = doSet(", makeFieldIndex(), ", ",
-                                         String.valueOf(immutable), ",");
-    annUtil.println("                    ", makeCallGetter("getTarget()"), ",");
-    annUtil.println("                    ", makeCallGetter("ref"), ", val);");
-
-    annUtil.println("    if (res == setRefNull) {");
-    annUtil.println("      ", makeCallSetter("ref", null), ";");
-    annUtil.prntlns("    }",
+    annUtil.println("    final int res = doSet(", makeFieldIndex(), ", ",
+                                         String.valueOf(immutable), ",")
+           .println("                          ", makeCallGetter("getTarget()"), ",")
+           .println("                          ", makeCallGetter("ref"), ", " + valName + ");")
+           .println("    if (res == setRefNull) {")
+           .println("      ", makeCallSetter("ref", null), ";")
+           .prntlns("    }",
                     "",
-                    "    if (res == setRefVal) {");
-    annUtil.println("      ", makeCallSetter("ref", "val"), ";");
-    annUtil.prntlns("    }",
+                    "    if (res == setRefVal) {")
+           .println("      ", makeCallSetter("ref", valName), ";")
+           .prntlns("    }",
                     "  }",
                     "");
   }
@@ -207,19 +200,19 @@ public class ProxyMethod extends MethodHandler<ProxyMethod> {
    */
   @Override
   public void generateMethod() {
-    env.getMessager().printMessage(Kind.ERROR,
-                                   "Proxy should only do set/get, found: " +
-                                           methName);
+    env.getMessager()
+       .printMessage(Kind.ERROR,
+                     "Proxy should only do set/get, found: " +
+                             methName);
   }
 
   private String makeGetEmptyFlag(final String objRef) {
-    StringBuilder sb = new StringBuilder(objRef);
-    sb.append(".");
-    sb.append("getEmptyFlag(");
-    sb.append(makeFieldIndex());
-    sb.append(")");
-
-    return sb.toString();
+    return new StringBuilder(objRef)
+            .append(".")
+            .append("getEmptyFlag(")
+            .append(makeFieldIndex())
+            .append(")")
+            .toString();
   }
 
   private String makeFieldIndex() {

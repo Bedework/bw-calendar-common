@@ -161,7 +161,7 @@ public abstract class MethodHandler<T> implements Comparable<MethodHandler> {
   public void generate() {
     annUtil.generateSignature(methName, pars, returnType, thrownTypes);
 
-    if (getter && (pars.size() == 0)) {
+    if (getter && (pars.isEmpty())) {
       generateGet();
     } else if (setter && (pars.size() == 1)) {
       generateSet();

@@ -23,11 +23,8 @@ import org.bedework.calfacade.base.OverrideList;
 import org.bedework.calfacade.base.OverrideSet;
 import org.bedework.calfacade.util.CalFacadeUtil;
 
-//import org.bedework.util.misc.Util;
-
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 /** <p>DO NOT EDIT THE GENERATED JAVA.
  *
@@ -58,21 +55,21 @@ import java.util.TreeSet;
 public class BwEventProxy extends BwEvent implements ChangeFlag {
   /** The referring event
    */
-  private BwEventAnnotation ref;
+  private final BwEventAnnotation ref;
 
   private boolean changeFlag;
 
   /** Constructor
    *
-   * @param ref
+   * @param ref the annotation
    */
-  public BwEventProxy(BwEventAnnotation ref) {
+  public BwEventProxy(final BwEventAnnotation ref) {
     this.ref = ref;
   }
 
-  /* ====================================================================
+  /* ==========================================================
    *                      Bean methods
-   * ==================================================================== */
+   * ========================================================== */
 
   /** Get referenced event
    *
@@ -84,9 +81,9 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
 
   /** Set the event change flag.
    *
-   * @param  val     boolean true if event changed.
+   * @param  val boolean true if event changed.
    */
-  public void setChangeFlag(boolean val) {
+  public void setChangeFlag(final boolean val) {
     changeFlag = val;
   }
 
@@ -120,63 +117,49 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return ref.getTarget();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   BwDbentity methods
-   * ==================================================================== */
+   * ============================================================ */
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setId(int)
-   */
-  public void setId(int val) {
+  @Override
+  public void setId(final int val) {
     throw new RuntimeException("Immutable");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#getId()
-   */
+  @Override
   public int getId() {
     return ref.getId();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setSeq(int)
-   */
-  public void setSeq(int val) {
+  @Override
+  public void setSeq(final int val) {
     throw new RuntimeException("Immutable");
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#getSeq()
-   */
+  @Override
   public int getSeq() {
     return ref.getSeq();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   BwOwnedDbentity methods
-   * ==================================================================== */
+   * ============================================================ */
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.base.BwOwnedDbentity#setOwnerHref(java.lang.String)
-   */
-  public void setOwnerHref(String val) {
+  @Override
+  public void setOwnerHref(final String val) {
     if (!CalFacadeUtil.eqObjval(getTarget().getOwnerHref(), val)) {
       ref.setOwnerHref(val);
       setChangeFlag(true);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.base.BwOwnedDbentity#getOwnerHref()
-   */
+  @Override
   public String getOwnerHref() {
     return ref.getOwnerHref();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.base.BwOwnedDbentity#setPublick(Boolean)
-   */
-  public void setPublick(Boolean val) {
+  @Override
+  public void setPublick(final Boolean val) {
     /*
     Boolean old = ref.getPublick();
     ref.setPublick(val);
@@ -189,11 +172,9 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     setChangeFlag(true);
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.base.BwOwnedDbentity#getPublick()
-   */
+  @Override
   public Boolean getPublick() {
-    Boolean val = ref.getPublick();
+    final var val = ref.getPublick();
     if (val != null) {
       return val;
     }
@@ -202,45 +183,35 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     //return ref.getPublick();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setCreatorHref(java.lang.String)
-   */
-  public void setCreatorHref(String val) {
+  @Override
+  public void setCreatorHref(final String val) {
     if (!CalFacadeUtil.eqObjval(getTarget().getCreatorHref(), val)) {
       ref.setCreatorHref(val);
       setChangeFlag(true);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#getCreatorHref()
-   */
+  @Override
   public String getCreatorHref() {
     return getTarget().getCreatorHref();
   }
 
-  /** Set the access
-   *
-   * @param val    String access
-   */
-  public void setAccess(String val) {
+  @Override
+  public void setAccess(final String val) {
     if (!CalFacadeUtil.eqObjval(getTarget().getAccess(), val)) {
       ref.setAccess(val);
       setChangeFlag(true);
     }
   }
 
-  /** Get the access
-   *
-   * @return String   access
-   */
+  @Override
   public String getAccess() {
     if (!ref.getOverride()) {
       // Always comes from the annotation.
       return ref.getAccess();
     }
 
-    String val = ref.getAccess();
+    final var val = ref.getAccess();
     if (val != null) {
       return val;
     }
@@ -248,20 +219,14 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return getTarget().getAccess();
   }
 
-  /** Set the object's collection path
-   *
-   * @param val    String path
-   */
-  public void setColPath(String val) {
+  @Override
+  public void setColPath(final String val) {
     ref.setColPath(val);
   }
 
-  /** Get the object's collection path
-   *
-   * @return String   path
-   */
+  @Override
   public String getColPath() {
-    String val = ref.getColPath();
+    final var val = ref.getColPath();
     if (val != null) {
       return val;
     }
@@ -269,70 +234,60 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return getTarget().getColPath();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                      Start, end and duration methods
    * Currently these are always set in the annotation
-   * ==================================================================== */
+   * ============================================================ */
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setDtstart(org.bedework.calfacade.BwDateTime)
-   */
-  public void setDtstart(BwDateTime val) {
+  @Override
+  public void setDtstart(final BwDateTime val) {
     if (!CalFacadeUtil.eqObjval(getRef().getDtstart(), val)) {
       ref.setDtstart(val);
       setChangeFlag(true);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setDtend(org.bedework.calfacade.BwDateTime)
-   */
-  public void setDtend(BwDateTime val) {
+  @Override
+  public void setDtend(final BwDateTime val) {
     if (!CalFacadeUtil.eqObjval(getRef().getDtend(), val)) {
       ref.setDtend(val);
       setChangeFlag(true);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setEndType(char)
-   */
-  public void setEndType(char val) {
+  @Override
+  public void setEndType(final char val) {
     ref.setEndType(val);
     setChangeFlag(true);
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setDuration(java.lang.String)
-   */
-  public void setDuration(String val) {
+  @Override
+  public void setDuration(final String val) {
     if (!CalFacadeUtil.eqObjval(getRef().getDuration(), val)) {
       ref.setDuration(val);
       setChangeFlag(true);
     }
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#setNoStart(java.lang.Boolean)
-   */
-  public void setNoStart(Boolean val) {
+  @Override
+  public void setNoStart(final Boolean val) {
     if (!CalFacadeUtil.eqObjval(getRef().getNoStart(), val)) {
       ref.setNoStart(val);
       setChangeFlag(true);
     }
   }
 
-  /* ====================================================================
-   *                      Temp methods until schema change
-   * ==================================================================== */
+  /* ============================================================
+   *                  Temp methods until schema change
+   * ============================================================ */
 
   @Override
   public void setOrganizerSchedulingObject(final Boolean val) {
-    final List<BwXproperty> props =
+    final var props =
             getXproperties(BwXproperty.bedeworkOrganizerSchedulingObject);
     BwXproperty xp = null;
-    if ((props != null) && (props.size() > 0)) {
-      xp = props.get(0);
+    if ((props != null) && !props.isEmpty()) {
+      xp = props.getFirst();
     }
 
     if (xp != null) {
@@ -351,7 +306,7 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
 
   @Override
   public Boolean getOrganizerSchedulingObject() {
-    String val = ref.getXproperty(BwXproperty.bedeworkOrganizerSchedulingObject);
+    final var val = ref.getXproperty(BwXproperty.bedeworkOrganizerSchedulingObject);
     if (val != null) {
       return Boolean.valueOf(val);
     }
@@ -361,11 +316,11 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
 
   @Override
   public void setAttendeeSchedulingObject(final Boolean val) {
-    final List<BwXproperty> props =
+    final var props =
             getXproperties(BwXproperty.bedeworkAttendeeSchedulingObject);
     BwXproperty xp = null;
-    if ((props != null) && (props.size() > 0)) {
-      xp = props.get(0);
+    if ((props != null) && !props.isEmpty()) {
+      xp = props.getFirst();
     }
 
     if (xp != null) {
@@ -384,7 +339,7 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
 
   @Override
   public Boolean getAttendeeSchedulingObject() {
-    String val = ref.getXproperty(BwXproperty.bedeworkAttendeeSchedulingObject);
+    final var val = ref.getXproperty(BwXproperty.bedeworkAttendeeSchedulingObject);
     if (val != null) {
       return Boolean.valueOf(val);
     }
@@ -392,62 +347,56 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return getTarget().getAttendeeSchedulingObject();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                      Bean methods
-   * ==================================================================== */
+   * ============================================================ */
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++ Code inserted here
 
-  /* ====================================================================
+  /* ============================================================
    *                   Recurrence Helper methods
-   * ==================================================================== */
+   * ============================================================ */
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#hasRrules()
-   */
+  @Override
   public boolean hasRrules() {
     return ref.hasRrules() || getTarget().hasRrules();
   }
 
-  /* (non-Javadoc)
-   * @see org.bedework.calfacade.BwEvent#hasExrules()
-   */
+  @Override
   public boolean hasExrules() {
     return ref.hasExrules() || getTarget().hasExrules();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   Convenience methods
-   * ==================================================================== */
+   * ============================================================ */
 
-  /** Set the last mod for this event.
-   */
+  @Override
   public void updateLastmod() {
     ref.updateLastmod();
   }
 
-  /** Set the dtstamp for this event.
-   */
+  @Override
   public void updateDtstamp() {
     ref.updateDtstamp();
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                           Factory methods
-   * ==================================================================== */
+   * ============================================================ */
 
   /** Creates an annotation object for the given event then returns a proxy
    * object to handle it.
    *
    * @param ev  BwEvent object to annotate
-   * @param ownerHref
+   * @param ownerHref identifies owner
    * @param forInstance      true if this is an overrride or a recurrence instance
    * @return BwEventProxy object
    */
-  public static BwEventProxy makeAnnotation(BwEvent ev,
-                                            String ownerHref,
-                                            boolean forInstance) {
-    BwEventAnnotation ann = new BwEventAnnotation();
+  public static BwEventProxy makeAnnotation(final BwEvent ev,
+                                            final String ownerHref,
+                                            final boolean forInstance) {
+    final var ann = new BwEventAnnotation();
 
     initAnnotation(ann, ev, ownerHref, forInstance);
 
@@ -461,17 +410,17 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
    * @param ownerHref  if null event owner is used
    * @param forInstance      true if this is an overrride or a recurrence instance
    */
-  public static void initAnnotation(BwEventAnnotation ann,
-                                    BwEvent ev,
-                                    String ownerHref,
-                                    boolean forInstance) {
+  public static void initAnnotation(final BwEventAnnotation ann,
+                                    final BwEvent ev,
+                                    final String ownerHref,
+                                    final boolean forInstance) {
     ann.setTarget(ev);
 
     /* XXX This should be a parameter */
     ann.setMaster(ev);
 
-    BwDateTime start = ev.getDtstart();
-    BwDateTime end = ev.getDtend();
+    final var start = ev.getDtstart();
+    final var end = ev.getDtend();
 
     ann.setDtstart(start);
     ann.setDtend(end);
@@ -495,9 +444,9 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     }
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   Recurrence update and query methods
-   * ==================================================================== */
+   * ============================================================ */
 
   public BwDuration makeDurationBean() {
     String duration = ref.getDuration();
@@ -507,29 +456,27 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return BwDuration.makeDuration(duration);
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   Object methods
-   * ==================================================================== */
+   * ============================================================ */
 
   public String toString() {
-    StringBuilder sb = new StringBuilder("BwEventProxy{");
-
-    sb.append(ref.toString());
-
-    sb.append("}");
-
-    return sb.toString();
+    return new StringBuilder("BwEventProxy{")
+            .append(ref.toString())
+            .append("}")
+            .toString();
   }
 
   /** When cloning a proxy we generally need to point the cloned annotation at
    * a new target and master.
    *
-   * @param master
-   * @param target
+   * @param master new master for override
+   * @param target new target for override
    * @return cloned proxy.
    */
-  public BwEventProxy clone(BwEvent master, BwEvent target) {
-    BwEventAnnotation ann = (BwEventAnnotation)ref.clone();
+  public BwEventProxy clone(final BwEvent master,
+                            final BwEvent target) {
+    final var ann = (BwEventAnnotation)ref.clone();
 
     ann.setMaster(master);
     ann.setTarget(target);
@@ -541,20 +488,20 @@ public class BwEventProxy extends BwEvent implements ChangeFlag {
     return new BwEventProxy((BwEventAnnotation)ref.clone());
   }
 
-  /* ====================================================================
+  /* ============================================================
    *                   private methods
-   * ==================================================================== */
+   * ============================================================ */
 
-  private static int setNoChange = 0;
-  private static int setRefNull = 1;   // call ref.setMMM(null)
-  private static int setRefVal = 2;   // call ref.setMMM(val)
-  private static int setChanged = 3;  // All changes done
+  private static final int setNoChange = 0;
+  private static final int setRefNull = 1;   // call ref.setMMM(null)
+  private static final int setRefVal = 2;   // call ref.setMMM(val)
+  private static final int setChanged = 3;  // All changes done
 
-  private int doSet(ProxiedFieldIndex pfi,
-                    boolean immutable,
-                    Object masterVal,
-                    Object refVal,
-                    Object newVal) {
+  private int doSet(final ProxiedFieldIndex pfi,
+                    final boolean immutable,
+                    final Object masterVal,
+                    final Object refVal,
+                    final Object newVal) {
     int res = setNoChange;
 
     if (CalFacadeUtil.eqObjval(masterVal, newVal)) {

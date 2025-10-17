@@ -172,27 +172,9 @@ public class AnnUtil {
                                 final List<? extends VariableElement> pars,
                                 final TypeMirror returnType,
                                 final List<? extends TypeMirror> thrownTypes) {
-    /* Generate some javadoc first.
-     */
-    println("  /* (non-Javadoc)");
-    prntncc("   * @see ", className, "#", methName, "(");
+    println("  @Override");
 
-    int sz = pars.size();
-    int i = 0;
-
-    for (final VariableElement par: pars) {
-      out.print(nonGeneric(par.asType().toString()));
-
-      i++;
-      if (i < sz) {
-        out.print(", ");
-      }
-    }
-
-    prntlns(")",
-            "   */");
-
-    String rType = getClassName(returnType);
+    final String rType = getClassName(returnType);
 
     //BwEvent.ProxiedFieldIndex pfi = BwEvent.ProxiedFieldIndex.valueOf(
     //                       "pfi" + ucFieldName);
@@ -205,44 +187,44 @@ public class AnnUtil {
     /* Use a stringbuilder to get length of first part. */
     StringBuilder sb = new StringBuilder();
 
-    sb.append("  public ");
-    sb.append(rType);
-    sb.append(" ");
-    sb.append(methName);
-    sb.append("(");
-    out.print(sb.toString());
+    sb.append("  public ")
+      .append(rType)
+      .append(" ")
+      .append(methName)
+      .append("(");
+    out.print(sb);
 
-    int padlen = sb.length();
+    final int padlen = sb.length();
     sb = new StringBuilder();
-    for (int lni = 0; lni < padlen; lni++) {
-      sb.append(" ");
-    }
+    sb.append(" ".repeat(Math.max(0, padlen)));
 
-    i = 0;
+    final int sz = pars.size();
+    int i = 0;
 
     for (final VariableElement par: pars) {
-      prntncc(fixName(par.asType().toString()), " ",
+      prntncc("final ", fixName(par.asType().toString()), " ",
               par.getSimpleName().toString());
 
       i++;
       if (i < sz) {
         out.println(", ");
-        out.print(sb.toString());
+        out.print(sb);
       }
     }
 
     out.print(")");
 
-    if (thrownTypes.size() > 0) {
+    if (!thrownTypes.isEmpty()) {
       out.println();
       out.print("        throws ");
       boolean first = true;
-      for (TypeMirror rt: thrownTypes) {
+      for (final var rt: thrownTypes) {
         if (!first) {
           out.print(", ");
         }
 
         out.print(fixName(rt.toString()));
+        first = false;
       }
     }
 
@@ -416,29 +398,32 @@ public class AnnUtil {
   }
 
   /**
-   * @param val
+   * @param val the strings
    */
-  public void println(final String... val) {
-    for (String ln: val) {
+  public AnnUtil println(final String... val) {
+    for (final String ln: val) {
       out.print(ln);
     }
 
     out.println();
+    return this;
   }
 
   /**
-   * @param val
+   * @param val the string
    */
-  public void println(final String val) {
+  public AnnUtil println(final String val) {
     out.println(val);
+    return this;
   }
 
   /**
-   * @param lines
+   * @param lines the strings
    */
-  public void prntlns(final String... lines) {
-    for (String ln: lines) {
+  public AnnUtil prntlns(final String... lines) {
+    for (final String ln: lines) {
       out.println(ln);
     }
+    return this;
   }
 }

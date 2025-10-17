@@ -24,6 +24,8 @@ import org.bedework.calfacade.annotations.ical.IcalProperty;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.base.ToString;
 
+import java.util.Arrays;
+
 /** An Event Annotation in Bedework
  *
  *  @author Mike Douglass
@@ -53,9 +55,7 @@ public class BwEventAnnotation extends BwEvent {
   private static final char[] initCflags = new char[flagsLen];
 
   static {
-    for (int i = 0; i < flagsLen; i++) {
-      initCflags[i] = 'F';
-    }
+    Arrays.fill(initCflags, 'F');
   }
 
   /** Constructor

@@ -18,6 +18,7 @@
 */
 package org.bedework.calfacade.util;
 
+import org.bedework.base.exc.BedeworkException;
 import org.bedework.calfacade.base.BwCloneable;
 
 import java.io.Serializable;
@@ -72,7 +73,7 @@ public class CalFacadeUtil implements Serializable {
 
     final int pos = href.lastIndexOf("/");
     if (pos < 0) {
-      throw new RuntimeException("Bad href: " + href);
+      throw new BedeworkException("Bad href: " + href);
     }
 
     final int fragPos = href.lastIndexOf("#");

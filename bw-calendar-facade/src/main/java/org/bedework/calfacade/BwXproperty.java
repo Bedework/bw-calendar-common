@@ -1021,20 +1021,17 @@ public class BwXproperty extends BwDbentity<BwXproperty>
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("name", getName())
-      .append("pars", getPars())
-      .append("value", getValue());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("name", getName())
+                .append("pars", getPars())
+                .append("value", getValue());
   }
 
   @Override
   public String toString() {
-    final ToString ts = new ToString(this);
-
-    toStringSegment(ts);
-
-    return ts.toString();
+    return toStringSegment(new ToString(this))
+            .toString();
   }
 
   @Override

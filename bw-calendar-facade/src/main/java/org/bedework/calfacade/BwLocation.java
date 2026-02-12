@@ -775,27 +775,22 @@ public class BwLocation extends BwEventProperty<BwLocation>
   }
 
   @Override
-  public String toString() {
-    final ToString ts = new ToString(this);
-
-    toStringSegment(ts);
-
-    ts.append("uid", getUid());
-    ts.append("address", getAddress());
-    ts.append("addressField", getAddressField());
-    ts.append("roomField", getRoomField());
-    ts.append("accessible", getAccessible());
-    ts.append("subField1", getSubField1());
-    ts.append("subField2", getSubField2());
-    ts.append("geouri", getGeouri());
-    ts.append("subaddress", getSubaddress());
-    ts.append("street", getStreet());
-    ts.append("city", getCity());
-    ts.append("state", getState());
-    ts.append("zip", getZip());
-    ts.append("link", getLink());
-
-    return ts.toString();
+  public ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("uid", getUid())
+                .append("address", getAddress())
+                .append("addressField", getAddressField())
+                .append("roomField", getRoomField())
+                .append("accessible", getAccessible())
+                .append("subField1", getSubField1())
+                .append("subField2", getSubField2())
+                .append("geouri", getGeouri())
+                .append("subaddress", getSubaddress())
+                .append("street", getStreet())
+                .append("city", getCity()).
+                append("state", getState())
+                .append("zip", getZip())
+                .append("link", getLink());
   }
 
   @Override

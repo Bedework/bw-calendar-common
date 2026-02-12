@@ -124,9 +124,9 @@ public abstract class BwShareableContainedDbentity<T> extends BwShareableDbentit
    * @param ts    ToString for result
    */
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("collection", getColPath());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("collection", getColPath());
   }
 
   /** Copy this objects fields into the parameter. Don't clone many of the

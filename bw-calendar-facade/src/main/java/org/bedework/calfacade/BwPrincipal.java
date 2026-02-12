@@ -647,17 +647,17 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>>
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("account", getAccount())
-      .append("pref", getPrincipalRef())
-      .append("created", getCreated())
-      .newLine()
-      .append("logon", getLogon())
-      .append("lastAccess", getLastAccess())
-      .append("lastModify", getLastModify())
-      .append("kind", getKind());
-    ts.append("quota", getQuota());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("account", getAccount())
+                .append("pref", getPrincipalRef())
+                .append("created", getCreated())
+                .newLine()
+                .append("logon", getLogon())
+                .append("lastAccess", getLastAccess())
+                .append("lastModify", getLastModify())
+                .append("kind", getKind())
+                .append("quota", getQuota());
   }
 
   /** Add a principal to the ToString object
@@ -787,15 +787,6 @@ public abstract class BwPrincipal<T extends BwPrincipal<?>>
     }
 
     return compareTo((BwPrincipal<?>)o) == 0;
-  }
-
-  @Override
-  public String toString() {
-    final ToString ts = new ToString(this);
-
-
-    toStringSegment(ts);
-    return ts.toString();
   }
 
   @Override

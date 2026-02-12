@@ -140,12 +140,13 @@ public abstract class BwEventProperty<T> extends
    * @param val to copy to
    */
   public void copyTo(final BwEventProperty<?> val) {
+    super.copyTo(val);
     val.setUid(getUid());
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("uid", getUid());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("uid", getUid());
   }
 }

@@ -292,19 +292,16 @@ public class BwStringBase <T extends BwStringBase> extends BwDbentity<T>
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("lang", getLang())
-      .append("value", getValue());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("lang", getLang())
+                .append("value", getValue());
   }
 
   @Override
   public String toString() {
-    final ToString ts = new ToString(this);
-
-    toStringSegment(ts);
-
-    return ts.toString();
+    return toStringSegment(new ToString(this))
+            .toString();
   }
 
   @Override

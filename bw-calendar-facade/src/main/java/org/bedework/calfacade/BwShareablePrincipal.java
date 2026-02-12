@@ -105,11 +105,11 @@ public class BwShareablePrincipal<T extends BwPrincipal<?>>
    * @param ts    ToString for result
    */
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.newLine();
-    ts.append("creator", getCreatorHref());
-    ts.append("access", getAccess());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .newLine()
+                .append("creator", getCreatorHref())
+                .append("access", getAccess());
   }
 
   /** Copy this objects fields into the parameter

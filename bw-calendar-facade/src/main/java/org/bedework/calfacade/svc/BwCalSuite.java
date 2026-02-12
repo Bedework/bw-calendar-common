@@ -285,13 +285,12 @@ public class BwCalSuite extends BwShareablePrincipal<BwCalSuite> {
    * @param ts    StringBuilder for result
    */
    @Override
-   protected void toStringSegment(final ToString ts) {
-     super.toStringSegment(ts);
-
-    ts.append("name", getName());
-    ts.append("group", getGroup());
-    ts.append("rootCollection", getRootCollectionPath());
-    ts.append("description", getDescription());
+   protected ToString toStringSegment(final ToString ts) {
+     return super.toStringSegment(ts)
+                 .append("name", getName())
+                 .append("group", getGroup())
+                 .append("rootCollection", getRootCollectionPath())
+                 .append("description", getDescription());
   }
 
   private FieldSplitter fetchFields1Split() {

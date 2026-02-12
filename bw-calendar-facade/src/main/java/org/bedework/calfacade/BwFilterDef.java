@@ -357,11 +357,11 @@ public class BwFilterDef extends BwShareableContainedDbentity<BwFilterDef>
    * @param ts    StringBuilder for result
    */
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.newLine();
-    ts.append("name", getName());
-    ts.append("description", getDescription());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .newLine()
+                .append("name", getName())
+                .append("description", getDescription());
   }
 
   /* ====================================================================

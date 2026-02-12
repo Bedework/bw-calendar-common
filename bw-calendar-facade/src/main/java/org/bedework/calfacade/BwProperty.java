@@ -203,19 +203,16 @@ public class BwProperty extends BwDbentity<BwProperty> {
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("name", getName());
-    ts.append("value", getValue());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("name", getName())
+                .append("value", getValue());
   }
 
   @Override
   public String toString() {
-    final ToString ts = new ToString(this);
-
-    toStringSegment(ts);
-
-    return ts.toString();
+    return toStringSegment(new ToString(this))
+            .toString();
   }
 
   @Override

@@ -97,8 +97,14 @@ public class BwUnversionedDbentity<T> extends DumpEntity<T>
    *
    * @param ts    ToString for result
    */
-  protected void toStringSegment(final ToString ts) {
-    ts.append("id", getId());
+  protected ToString toStringSegment(final ToString ts) {
+    return ts.append("id", getId());
+  }
+
+  @Override
+  public String toString() {
+    return toStringSegment(new ToString(this))
+            .toString();
   }
 
   /* ====================================================================

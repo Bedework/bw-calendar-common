@@ -4563,26 +4563,26 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
    */
   @Override
   @NoProxy
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.newLine();
-    ts.append("entityType", getEntityType());
-    ts.append("deleted", getDeleted());
-    ts.newLine();
-    ts.append("dtstamp", getDtstamp());
-    ts.newLine();
-    ts.append("dtstart", getDtstart());
-    ts.newLine();
-    ts.append("dtend", getDtend());
+  protected ToString toStringSegment(final ToString ts) {
+    super.toStringSegment(ts)
+         .newLine()
+         .append("entityType", getEntityType())
+         .append("deleted", getDeleted())
+         .newLine()
+         .append("dtstamp", getDtstamp())
+         .newLine()
+         .append("dtstart", getDtstart())
+         .newLine()
+         .append("dtend", getDtend());
 
-    ts.newLine();
-    ts.append("status", getStatus());
-    ts.newLine();
-    ts.append("lastmod", getLastmod());
-    ts.append("created", getCreated());
-    ts.append("stag", getStag());
-    ts.newLine();
-    ts.append("priority", getPriority());
+    ts.newLine()
+      .append("status", getStatus())
+      .newLine()
+      .append("lastmod", getLastmod())
+      .append("created", getCreated())
+      .append("stag", getStag())
+      .newLine()
+      .append("priority", getPriority());
 
     if (getPercentComplete() != null) {
       ts.append("percentComplete", getPercentComplete());
@@ -4597,17 +4597,17 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
       ts.append("geo", getGeo());
     }
 
-    ts.newLine();
-    ts.append("uid", getUid());
-    ts.newLine();
-    ts.append("name", getName());
+    ts.newLine()
+      .append("uid", getUid())
+      .newLine().
+      append("name", getName());
 
-    ts.newLine();
-    ts.append("ctoken", getCtoken());
+    ts.newLine()
+      .append("ctoken", getCtoken());
 
     /* ---------------- recurrence information */
-    ts.newLine();
-    ts.append("\n, getRecurring", getRecurring());
+    ts.newLine()
+      .append("getRecurring", getRecurring());
 
     if (getRecurrenceId() != null) {
       ts.append("recurrenceId", getRecurrenceId());
@@ -4629,54 +4629,54 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
       }
     }
 
-    ts.newLine();
-    ts.append("organizer", getOrganizer());
+    ts.newLine()
+      .append("organizer", getOrganizer());
 
     if (getNumRecipients() > 0) {
       ts.append("recipients", getRecipients());
     }
 
     if (getNumCategories() > 0) {
-      ts.newLine();
-      ts.append("categories", getCategories());
+      ts.newLine()
+        .append("categories", getCategories());
     }
 
     if (getNumComments() > 0) {
-      ts.newLine();
-      ts.append("comments", getComments());
+      ts.newLine()
+        .append("comments", getComments());
     }
 
     if (getNumContacts() > 0) {
-      ts.newLine();
-      ts.append("contacts", getContacts());
+      ts.newLine()
+        .append("contacts", getContacts());
     }
 
     if (getNumSummaries() > 0) {
-      ts.newLine();
-      ts.append("summary", getSummaries());
+      ts.newLine()
+        .append("summary", getSummaries());
     }
 
     if (getNumDescriptions() > 0) {
-      ts.newLine();
-      ts.append("description", getDescriptions());
+      ts.newLine()
+        .append("description", getDescriptions());
     }
 
     if (getNumResources() > 0) {
-      ts.newLine();
-      ts.append("resource", getResources());
+      ts.newLine()
+        .append("resource", getResources());
     }
 
     if (getNumAttendees() > 0) {
-      ts.newLine();
-      ts.append("attendee", getAttendees(), true);
+      ts.newLine()
+        .append("attendee", getAttendees(), true);
     }
 
-    ts.newLine();
-    ts.append("sequence", getSequence());
-    ts.append("scheduleMethod", getScheduleMethod());
-    ts.newLine();
-    ts.append("originator", getOriginator());
-    ts.append("scheduleState", getScheduleState());
+    ts.newLine()
+      .append("sequence", getSequence())
+      .append("scheduleMethod", getScheduleMethod())
+      .newLine()
+      .append("originator", getOriginator())
+      .append("scheduleState", getScheduleState());
 
 
     if (getNumRequestStatuses() > 0) {
@@ -4688,20 +4688,21 @@ public class BwEvent extends BwShareableContainedDbentity<BwEvent>
     }
 
     if (getNumAlarms() > 0) {
-      ts.newLine();
-      ts.append("alarms", getAlarms(), true);
+      ts.newLine().append("alarms", getAlarms(), true);
     }
 
-    ts.append("pollItemId", getPollItemId());
-    ts.append("pollCandidate", getPollCandidate());
+    ts.append("pollItemId", getPollItemId())
+      .append("pollCandidate", getPollCandidate());
 
     if (getEntityType() == IcalDefs.entityTypeVpoll) {
-      ts.append("pollWinner", getPollWinner());
-      ts.append("pollMode", getPollMode());
-      ts.append("pollProperties", getPollProperties());
-      ts.append("pollAcceptResponse", getPollAcceptResponse());
-      ts.append("pollItems", getPollItems());
+      ts.append("pollWinner", getPollWinner())
+        .append("pollMode", getPollMode())
+        .append("pollProperties", getPollProperties())
+        .append("pollAcceptResponse", getPollAcceptResponse())
+        .append("pollItems", getPollItems());
     }
+
+    return ts;
   }
 
   /** Copy this objects fields into the parameter

@@ -201,10 +201,11 @@ public class BwLastMod<T extends BwDbentity, T1>
    * @param ts    for result
    */
   @Override
-  protected void toStringSegment(final ToString ts) {
-    ts.append("id", getId());
-    ts.append("timestamp", getTimestamp());
-    ts.append("sequence", getSequence());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("id", getId())
+                .append("timestamp", getTimestamp())
+                .append("sequence", getSequence());
   }
 
   /* ====================================================================

@@ -1081,10 +1081,9 @@ Example
 --------------------------------------------------------*/
 
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-
-    ts.append("type", alarmTypes[getAlarmType()]);
+  protected ToString toStringSegment(final ToString ts) {
+    super.toStringSegment(ts)
+         .append("type", alarmTypes[getAlarmType()]);
 
     if (getTriggerStart()) {
       ts.append("trigger(START)", getTrigger());
@@ -1093,8 +1092,8 @@ Example
     }
 
     if (getDuration() != null) {
-      ts.append("duration", getDuration());
-      ts.append("repeat", getRepeat());
+      ts.append("duration", getDuration())
+        .append("repeat", getRepeat());
     }
 
     if (getAlarmType() == alarmTypeAudio) {
@@ -1109,9 +1108,11 @@ Example
       ts.append("attendees", getAttendees());
       ts.append("attach", getAttach());
     } else if (getAlarmType() == alarmTypeProcedure) {
-      ts.append("attach", getAttach());
-      ts.append("description", getDescription());
+      ts.append("attach", getAttach())
+        .append("description", getDescription());
     }
+
+    return ts;
   }
 
   /** Here we attempt to see if an incomplete object matches this one. We match

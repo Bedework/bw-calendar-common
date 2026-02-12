@@ -88,10 +88,10 @@ public abstract class BwOwnedDbentity<T> extends BwDbentity<T>
    * @param ts    ToString for result
    */
   @Override
-  protected void toStringSegment(final ToString ts) {
-    super.toStringSegment(ts);
-    ts.append("owner", getOwnerHref());
-    ts.append("publick", getPublick());
+  protected ToString toStringSegment(final ToString ts) {
+    return super.toStringSegment(ts)
+                .append("owner", getOwnerHref())
+                .append("publick", getPublick());
   }
 
   /** Copy this objects fields into the parameter. Don't clone many of the

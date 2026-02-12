@@ -135,7 +135,7 @@ public class BwGroup<T extends BwGroup<?>> extends BwPrincipal<T> {
   }
 
   @Override
-  protected void toStringSegment(final ToString ts) {
+  protected ToString toStringSegment(final ToString ts) {
     super.toStringSegment(ts);
 
     final Collection<String> refs = new ArrayList<>();
@@ -147,9 +147,8 @@ public class BwGroup<T extends BwGroup<?>> extends BwPrincipal<T> {
       }
     }
 
-    ts.newLine().append("groupMembers", refs);
+    return ts.newLine().append("groupMembers", refs);
   }
-
 
   /* ==============================================================
    *                   Copying methods

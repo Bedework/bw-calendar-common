@@ -34,8 +34,9 @@ public class ContactsResponse extends EventPropertiesResponse {
    *
    * @param val collection of contacts
    */
-  public void setContacts(final Collection<BwContact> val) {
+  public ContactsResponse setContacts(final Collection<BwContact> val) {
     contacts = val;
+    return this;
   }
 
   /**

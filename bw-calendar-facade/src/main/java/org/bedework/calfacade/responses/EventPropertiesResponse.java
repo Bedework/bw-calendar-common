@@ -31,6 +31,8 @@ public class EventPropertiesResponse
         extends Response<EventPropertiesResponse> {
   private List<String> preferred;
 
+  private boolean includeArchived;
+
   /**
    * @param val list of hrefs
    */
@@ -45,9 +47,18 @@ public class EventPropertiesResponse
     return preferred;
   }
 
+  public void setIncludeArchived(final boolean val) {
+    includeArchived = val;
+  }
+
+  public boolean getIncludeArchived() {
+    return includeArchived;
+  }
+
   @Override
   public ToString toStringSegment(final ToString ts) {
     return super.toStringSegment(ts)
-                .append("preferred", getPreferred());
+                .append("preferred", getPreferred())
+                .append("includeArchived", getIncludeArchived());
   }
 }

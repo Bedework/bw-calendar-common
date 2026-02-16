@@ -32,6 +32,8 @@ public class CategoriesResponse
         extends Response<CategoriesResponse> {
   private Collection<BwCategory> categories;
 
+  private boolean includeArchived;
+
   /**
    *
    * @param val collection of categories
@@ -48,9 +50,18 @@ public class CategoriesResponse
     return categories;
   }
 
+  public void setIncludeArchived(final boolean val) {
+    includeArchived = val;
+  }
+
+  public boolean getIncludeArchived() {
+    return includeArchived;
+  }
+
   @Override
   public ToString toStringSegment(final ToString ts) {
     return super.toStringSegment(ts)
-                .append("categories", getCategories());
+                .append("categories", getCategories())
+                .append("includeArchived", getIncludeArchived());
   }
 }

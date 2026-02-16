@@ -60,7 +60,9 @@ public abstract class BwEventProperty<T> extends
    */
   abstract void fixNames();
 
-  public final static String statusDeleted = "deleted";
+  public final static String statusArchived = "archived";
+
+  public abstract void setStatus(final String val);
 
   /**
    * @return String
@@ -68,12 +70,20 @@ public abstract class BwEventProperty<T> extends
   @IcalProperty(pindex = PropertyInfoIndex.STATUS)
   public abstract String getStatus();
 
+  public void setArchived(final boolean val) {
+    if (val) {
+      setStatus(statusArchived);
+    }  else {
+      setStatus(null);
+    }
+  }
+
   /**
    * @return String
    */
-  @IcalProperty(pindex = PropertyInfoIndex.DELETED)
-  public boolean getDeleted() {
-    return statusDeleted.equals(getStatus());
+  @IcalProperty(pindex = PropertyInfoIndex.ARCHIVED)
+  public boolean getArchived() {
+    return statusArchived.equals(getStatus());
   }
 
   /** Set the uid

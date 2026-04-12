@@ -2,7 +2,10 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased (6.1.0-SNAPSHOT)
+## Unreleased (5.2.0-SNAPSHOT)
+
+## [5.1.0] - 2026-04-11
+* Changes to contacts, categories and locations to handle archival of entities.
 
 ## [5.0.0] - 2025-07-20
 * First jakarta release

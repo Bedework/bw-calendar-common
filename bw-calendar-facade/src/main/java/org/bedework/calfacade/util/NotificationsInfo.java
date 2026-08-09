@@ -36,11 +36,11 @@ import org.bedework.calfacade.BwString;
 import org.bedework.calfacade.BwXproperty;
 import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.misc.Util;
-import org.bedework.util.timezones.DateTimeUtil;
 
 import java.util.Collection;
 
 import static org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
+import static org.bedework.util.dates.DateFormatter.webDateTimeFormat;
 
 /** Generate change notification messages from event and other information.
  * Output is an XML object following the Apple extensions.
@@ -58,7 +58,7 @@ public class NotificationsInfo {
    */
   public static String added(final String currentAuth,
                              final BwEvent ev) {
-    NotificationType note = getNotification();
+    final var note = getNotification();
 
     note.setNotification(getAdded(currentAuth, ev));
 
@@ -72,7 +72,7 @@ public class NotificationsInfo {
    */
   public static String deleted(final String currentAuth,
                                final BwEvent ev) {
-    NotificationType note = getNotification();
+    final var note = getNotification();
 
     note.setNotification(getDeleted(currentAuth, ev));
 
@@ -86,13 +86,13 @@ public class NotificationsInfo {
    */
   public static String updated(final String currentAuth,
                                final BwEvent ev) {
-    ResourceChangeType rc = getUpdated(currentAuth, ev);
+    final var rc = getUpdated(currentAuth, ev);
 
     if (rc == null) {
       return null;
     }
 
-    NotificationType note = getNotification();
+    final var note = getNotification();
 
     note.setNotification(rc);
 
@@ -107,65 +107,65 @@ public class NotificationsInfo {
    */
   public static ResourceChangeType getDeleted(final String currentAuth,
                                               final BwEvent ev) {
-      ResourceChangeType rc = new ResourceChangeType();
+    final var rc = new ResourceChangeType();
 
-      DeletedType del = new DeletedType();
+    final var del = new DeletedType();
 
-      del.setHref(getHref(ev));
+    del.setHref(getHref(ev));
 
-      del.setChangedBy(getChangedBy(currentAuth));
+    del.setChangedBy(getChangedBy(currentAuth));
 
-      DeletedDetailsType dd = new DeletedDetailsType();
+    final var dd = new DeletedDetailsType();
 
-      dd.setDeletedComponent(getType(ev));
-      dd.setDeletedSummary(ev.getSummary());
-      //if (ev.isRecurringEntity()) {
-          // TODO: Set these correctly.
-          //dd.setDeletedNextInstance(val);
-          //dd.setDeletedNextInstanceTzid(val);
-          //dd.setDeletedHadMoreInstances(val);
-      //}
-        
-      if (ev.getDtstart() != null) {
-        ChangedPropertyType start = new ChangedPropertyType();
-        start.setName(PropertyInfoIndex.DTSTART.name());
-        start.setDataFrom(String.valueOf(ev.getDtstart()));
-        dd.getDeletedProps().add(start);
-      }
-        
-      if (ev.getDtend() != null) {
-        ChangedPropertyType end = new ChangedPropertyType();
-        end.setName(PropertyInfoIndex.DTEND.name());
-        end.setDataFrom(String.valueOf(ev.getDtend()));
-        dd.getDeletedProps().add(end);
-      }
-       
-      if (ev.getDuration() != null && !ev.getDuration().isEmpty()) {
-        ChangedPropertyType dur = new ChangedPropertyType();
-        dur.setName(PropertyInfoIndex.DURATION.name());
-        dur.setDataFrom(ev.getDuration());
-        dd.getDeletedProps().add(dur);
-      }
-        
-      if (ev.getLocation() != null) {
-        ChangedPropertyType loc = new ChangedPropertyType();
-        loc.setName(PropertyInfoIndex.LOCATION.name());
-        loc.setDataFrom(ev.getLocation().getAddress().getValue());
-        dd.getDeletedProps().add(loc);
-      }
-        
-      if (ev.getDescription() != null) {
-        ChangedPropertyType desc = new ChangedPropertyType();
-        desc.setName(PropertyInfoIndex.DESCRIPTION.name());
-        desc.setDataFrom(ev.getDescription());
-        dd.getDeletedProps().add(desc);
-      }
+    dd.setDeletedComponent(getType(ev));
+    dd.setDeletedSummary(ev.getSummary());
+    //if (ev.isRecurringEntity()) {
+    // TODO: Set these correctly.
+    //dd.setDeletedNextInstance(val);
+    //dd.setDeletedNextInstanceTzid(val);
+    //dd.setDeletedHadMoreInstances(val);
+    //}
 
-      del.setDeletedDetails(dd);
+    if (ev.getDtstart() != null) {
+      final var start = new ChangedPropertyType();
+      start.setName(PropertyInfoIndex.DTSTART.name());
+      start.setDataFrom(String.valueOf(ev.getDtstart()));
+      dd.getDeletedProps().add(start);
+    }
 
-      rc.setDeleted(del);
+    if (ev.getDtend() != null) {
+      final var end = new ChangedPropertyType();
+      end.setName(PropertyInfoIndex.DTEND.name());
+      end.setDataFrom(String.valueOf(ev.getDtend()));
+      dd.getDeletedProps().add(end);
+    }
 
-      return rc;
+    if (ev.getDuration() != null && !ev.getDuration().isEmpty()) {
+      final var dur = new ChangedPropertyType();
+      dur.setName(PropertyInfoIndex.DURATION.name());
+      dur.setDataFrom(ev.getDuration());
+      dd.getDeletedProps().add(dur);
+    }
+
+    if (ev.getLocation() != null) {
+      final var loc = new ChangedPropertyType();
+      loc.setName(PropertyInfoIndex.LOCATION.name());
+      loc.setDataFrom(ev.getLocation().getAddress().getValue());
+      dd.getDeletedProps().add(loc);
+    }
+
+    if (ev.getDescription() != null) {
+      final var desc = new ChangedPropertyType();
+      desc.setName(PropertyInfoIndex.DESCRIPTION.name());
+      desc.setDataFrom(ev.getDescription());
+      dd.getDeletedProps().add(desc);
+    }
+
+    del.setDeletedDetails(dd);
+
+    rc.setDeleted(del);
+
+    return rc;
   }
 
   /** Call for an added event
@@ -176,9 +176,9 @@ public class NotificationsInfo {
    */
   public static ResourceChangeType getAdded(final String currentAuth,
                                             final BwEvent ev) {
-    ResourceChangeType rc = new ResourceChangeType();
+    final var rc = new ResourceChangeType();
 
-    CreatedType cre = new CreatedType();
+    final var cre = new CreatedType();
 
     cre.setHref(getHref(ev));
 
@@ -196,17 +196,17 @@ public class NotificationsInfo {
    * @return resource updated notification.
    */
   public static ResourceChangeType getUpdated(
-          final String currentAuth,
-          final BwEvent ev) {
-    ChangeTable changes = ev.getChangeset(currentAuth);
+      final String currentAuth,
+      final BwEvent ev) {
+    final var changes = ev.getChangeset(currentAuth);
 
     if (changes.isEmpty()) {
       return null;
     }
 
-    ResourceChangeType rc = new ResourceChangeType();
+    final var rc = new ResourceChangeType();
 
-    UpdatedType upd = new UpdatedType();
+    final var upd = new UpdatedType();
 
     upd.setHref(getHref(ev));
 
@@ -219,43 +219,42 @@ public class NotificationsInfo {
     return rc;
   }
 
-  /* ====================================================================
+  /* ===========================================================
                       Private methods
-     ==================================================================== */
+     =========================================================== */
 
   private NotificationsInfo() {}
 
   private static ChangedByType getChangedBy(final String currentAuth) {
-    ChangedByType cb = new ChangedByType();
+    final var cb = new ChangedByType();
     // firstName
     // lastName
     cb.setCommonName(currentAuth); // XXX - need real name(s)
-    cb.setDtstamp(DateTimeUtil.rfcDateTime());
+    cb.setDtstamp(webDateTimeFormat.fromDate());
     cb.setHref(currentAuth);
 
     return cb;
   }
 
   private static NotificationType getNotification() {
-    NotificationType note = new NotificationType();
+    final var note = new NotificationType();
 
-    note.setDtstamp(DateTimeUtil.rfcDateTime());
+    note.setDtstamp(webDateTimeFormat.fromDate());
 
     return note;
   }
 
   private static CalendarChangesType instanceChanges(
-          final String currentAuth,
-          final BwEvent ev) {
-    CalendarChangesType cc = new CalendarChangesType();
-
-    RecurrenceType r = new RecurrenceType();
+      final String currentAuth,
+      final BwEvent ev) {
+    final var cc = new CalendarChangesType();
+    final var r = new RecurrenceType();
 
     r.setRecurrenceid(ev.getRecurrenceId());
 
-    ChangesType c = new ChangesType();
+    final var c = new ChangesType();
 
-    for (ChangeTableEntry cte: ev.getChangeset(currentAuth).getEntries()) {
+    for (final var cte: ev.getChangeset(currentAuth).getEntries()) {
       if (!cte.getChanged()) {
         continue;
       }
@@ -263,8 +262,8 @@ public class NotificationsInfo {
       if (cte.getIndex() == PropertyInfoIndex.XPROP) {
         /* Reflected a a set of removes and adds. */
         if (!Util.isEmpty(cte.getRemovedValues())) {
-          for (BwXproperty xp: ((Collection<BwXproperty>)cte.getRemovedValues())) {
-            ChangedPropertyType cp = new ChangedPropertyType();
+          for (final var xp: ((Collection<BwXproperty>)cte.getRemovedValues())) {
+            final var cp = new ChangedPropertyType();
             cp.setName(xp.getName());
 
             cp.setDataFrom(String.valueOf(xp));
@@ -274,8 +273,8 @@ public class NotificationsInfo {
         }
 
         if (!Util.isEmpty(cte.getAddedValues())) {
-          for (BwXproperty xp: ((Collection<BwXproperty>)cte.getAddedValues())) {
-            ChangedPropertyType cp = new ChangedPropertyType();
+          for (final var xp: ((Collection<BwXproperty>)cte.getAddedValues())) {
+            final var cp = new ChangedPropertyType();
             cp.setName(xp.getName());
 
             cp.setDataTo(String.valueOf(xp));
@@ -284,7 +283,7 @@ public class NotificationsInfo {
           }
         }
       } else {
-        ChangedPropertyType cp = new ChangedPropertyType();
+        final var cp = new ChangedPropertyType();
 
         cp.setName(cte.getIndex().name());
 
@@ -317,38 +316,30 @@ public class NotificationsInfo {
     }
 
     if (!cte.getIndex().getDbMultiValued()) {
-      if (o instanceof BwString) {
-        return ((BwString)o).getValue();  
-      } else if (o instanceof BwLongString) {
-        return ((BwLongString)o).getValue();  
-      } else if (o instanceof BwLocation) {
-        return ((BwLocation)o).getAddress().getValue();  
-      } else if (o instanceof BwXproperty) {
-        return ((BwXproperty)o).getValue();  
-      } else {
-        return String.valueOf(o);
-      }
+      return switch (o) {
+        case final BwString bwString -> bwString.getValue();
+        case final BwLongString bwLongString -> bwLongString.getValue();
+        case final BwLocation bwLocation ->
+            bwLocation.getAddress().getValue();
+        case final BwXproperty bwXproperty -> bwXproperty.getValue();
+        default -> String.valueOf(o);
+      };
     }
 
-    if (o instanceof BwString) {
-      return ((BwString)o).getValue();  
-    } else if (o instanceof BwLongString) {
-      return ((BwLongString)o).getValue();  
-    } else if (o instanceof BwLocation) {
-      return ((BwLocation)o).getAddress().getValue();  
-    } else if (o instanceof BwXproperty) {
-      return ((BwXproperty)o).getValue();  
-    } else {
-      return String.valueOf(o);
-    }
+    return switch (o) {
+      case final BwString bwString -> bwString.getValue();
+      case final BwLongString bwLongString -> bwLongString.getValue();
+      case final BwLocation bwLocation ->
+          bwLocation.getAddress().getValue();
+      case final BwXproperty bwXproperty -> bwXproperty.getValue();
+      default -> String.valueOf(o);
+    };
   }
-
-
 
   private static String getType(final BwEvent ev) {
     try {
       return IcalDefs.entityTypeIcalNames[ev.getEntityType()];
-    } catch (Throwable t) {
+    } catch (final Throwable t) {
       return "X";
     }
   }

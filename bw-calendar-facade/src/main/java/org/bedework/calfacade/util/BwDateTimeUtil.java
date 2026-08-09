@@ -24,7 +24,6 @@ import org.bedework.calfacade.BwDateTime;
 import org.bedework.calfacade.base.BwTimeRange;
 import org.bedework.calfacade.exc.CalFacadeErrorCode;
 import org.bedework.calfacade.locale.BwLocale;
-import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.timezones.Timezones;
 
 import net.fortuna.ical4j.model.TimeZone;
@@ -35,6 +34,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import static org.bedework.util.dates.DateFormatter.icalDateFormat;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeFormat;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
+import static org.bedework.util.dates.DateFormatter.parseDate;
 
 /** Date and time utilities
  *
@@ -48,9 +52,6 @@ public class BwDateTimeUtil {
   private static final DateFormat rfcDateTimeUTCFormat =
     new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
 
-  private static final DateFormat rfc822GMTFormat =
-    new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-
   static {
     isoDateTimeUTCFormat.setTimeZone(java.util.TimeZone.getTimeZone(
                                  net.fortuna.ical4j.util.TimeZones.UTC_ID));
@@ -59,9 +60,6 @@ public class BwDateTimeUtil {
     rfcDateTimeUTCFormat.setTimeZone(java.util.TimeZone.getTimeZone(
                                  net.fortuna.ical4j.util.TimeZones.UTC_ID));
     rfcDateTimeUTCFormat.setLenient(false);
-
-    rfc822GMTFormat.setTimeZone(java.util.TimeZone.getTimeZone(
-                                 net.fortuna.ical4j.util.TimeZones.UTC_ID));
   }
 
   private BwDateTimeUtil() {
@@ -91,19 +89,19 @@ public class BwDateTimeUtil {
 
     try {
       if (val.getDateType()) {
-        return DateTimeUtil.fromISODate(dtval);
+        return icalDateFormat.toDate(dtval);
       }
 
       if (dtval.endsWith("Z")) {
-        return DateTimeUtil.fromISODateTimeUTC(dtval);
+        return icalDateTimeUTCFormat.toDate(dtval);
       }
 
       final String tzid = val.getTzid();
       if (tzid == null) {
-        return DateTimeUtil.fromISODateTime(dtval);
+        return icalDateTimeFormat.toDate(dtval);
       }
 
-      return DateTimeUtil.fromISODateTime(dtval,
+      return icalDateTimeFormat.toDate(dtval,
                                           tzreg.getTimeZone(tzid));
     } catch (final Throwable t) {
       throw new BedeworkBadDateException();
@@ -116,7 +114,7 @@ public class BwDateTimeUtil {
    * @return BwDateTime object representing the date
    */
   public static BwDateTime getDateTime(final Date date) {
-    final String dtval = DateTimeUtil.isoDateTime(date);
+    final String dtval = icalDateTimeFormat.fromDate(date);
     return getDateTime(dtval, false, false, null);
   }
 
@@ -149,11 +147,11 @@ public class BwDateTimeUtil {
         tz = Timezones.getDefaultTz();
       }
 
-      if (DateTimeUtil.isISODateTimeUTC(date)) {
+      if (icalDateTimeUTCFormat.matches(date)) {
         // Convert to local time (relative to supplied timezone)
 
-        final Date dt = DateTimeUtil.fromISODateTimeUTC(date);
-        date = DateTimeUtil.isoDateTime(dt, tz);
+        date = icalDateTimeFormat.fromDate(
+            icalDateTimeUTCFormat.toDate(date), tz);
       }
 
       return BwDateTime.makeBwDateTime(dateOnly, date, tzid);
@@ -200,14 +198,14 @@ public class BwDateTimeUtil {
     endCal.set(Calendar.SECOND, 0);
 
     if (start != null) {
-      startCal.setTime(fromDate(start));
+      startCal.setTime(parseDate(start));
     }
 
     if (end == null) {
       endCal.setTime(startCal.getTime());
       endCal.add(defaultField, defaultVal);
     } else {
-      endCal.setTime(fromDate(end));
+      endCal.setTime(parseDate(end));
     }
 
     // Don't allow more than the max
@@ -223,34 +221,14 @@ public class BwDateTimeUtil {
 
     return new BwTimeRange(
         BwDateTimeUtil.getDateTime(
-               DateTimeUtil.isoDateTime(startCal.getTime()),
-                                        false,
-                                        false,   // floating
-                                        null),   // tzid
+            icalDateTimeFormat.fromDate(startCal.getTime()),
+            false,
+            false,   // floating
+            null),   // tzid
         BwDateTimeUtil.getDateTime(
-             DateTimeUtil.isoDateTime(endCal.getTime()),
-                                      false,
-                                      false,   // floating
-                                      null));   // tzid
-  }
-
-  private static Date fromDate(final String dt) {
-    try {
-      if (dt.contains("T")) {
-        if (!dt.contains("-")) {
-          return DateTimeUtil.fromISODateTimeUTC(dt);
-        }
-
-        return DateTimeUtil.fromRfcDateTimeUTC(dt);
-      }
-
-      if (!dt.contains("-")) {
-        return DateTimeUtil.fromISODate(dt);
-      }
-
-      return DateTimeUtil.fromRfcDate(dt);
-    } catch (final Throwable t) {
-      throw new BedeworkBadDateException();
-    }
+            icalDateTimeFormat.fromDate(endCal.getTime()),
+            false,
+            false,   // floating
+            null));   // tzid
   }
 }

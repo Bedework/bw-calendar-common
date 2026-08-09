@@ -25,13 +25,14 @@ import org.bedework.calfacade.annotations.ical.NoProxy;
 import org.bedework.calfacade.base.BwShareableContainedDbentity;
 import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.util.timezones.DateTimeUtil;
 
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.property.LastModified;
 
 import java.sql.Timestamp;
 import java.util.Date;
+
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** Represent a resource stored within the system, e.g an attachment or an
  * image. The actual content is stored in a BwResourceContent object to allow us
@@ -96,8 +97,8 @@ public class BwResource extends BwShareableContainedDbentity<BwResource> {
     super();
 
     final Date dt = new Date();
-//    setLastmod(DateTimeUtil.isoDateTimeUTC(dt));
-    setCreated(DateTimeUtil.isoDateTimeUTC(dt));
+//    setLastmod(icalDateTimeUTCFormat.fromDate(dt));
+    setCreated(icalDateTimeUTCFormat.fromDate(dt));
   }
 
   /* ====================================================================

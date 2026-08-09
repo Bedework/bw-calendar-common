@@ -23,7 +23,6 @@ import org.bedework.calfacade.CalFacadeDefs;
 import org.bedework.calfacade.annotations.NoDump;
 import org.bedework.calfacade.annotations.NoWrap;
 import org.bedework.base.ToString;
-import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.fortuna.ical4j.model.DateTime;
@@ -31,6 +30,8 @@ import net.fortuna.ical4j.model.property.LastModified;
 
 import java.sql.Timestamp;
 import java.util.Date;
+
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** This is used to store the last modification times for some entities. We do
  * this to avoid the overhead and errors caused by versioning when not needed.
@@ -47,7 +48,7 @@ import java.util.Date;
  * @param <T>     type we are a lastmod for
  * @param <T1>    the actual class.
  */
-public class BwLastMod<T extends BwDbentity, T1>
+public class BwLastMod<T extends BwDbentity<?>, T1>
         extends BwUnversionedDbentity<T1> {
   private int id = CalFacadeDefs.unsavedItemKey;
 
@@ -74,7 +75,7 @@ public class BwLastMod<T extends BwDbentity, T1>
    */
   public BwLastMod(final T dbEntity, final Date dt) {
     this(dbEntity);
-    setTimestamp(DateTimeUtil.isoDateTimeUTC(dt));
+    setTimestamp(icalDateTimeUTCFormat.fromDate(dt));
   }
 
   /**

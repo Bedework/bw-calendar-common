@@ -31,7 +31,6 @@ import org.bedework.calfacade.util.FieldSplitter;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.base.ToString;
-import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.timezones.Timezones;
 
 import ietf.params.xml.ns.icalendar_2.DateDatetimePropertyType;
@@ -57,6 +56,9 @@ import java.util.Calendar;
 import java.util.Comparator;
 
 import static org.bedework.calfacade.exc.CalFacadeErrorCode.badDate;
+import static org.bedework.util.dates.DateFormatter.icalDateFormat;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeFormat;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** Class to represent an RFC2445 date and datetime type. These are not stored
  * in separate tables but as components of the including class.
@@ -125,8 +127,8 @@ public class BwDateTime extends DumpEntity<BwDateTime>
                                           final String tzid) {
     try {
       if (dateType) {
-        if (!DateTimeUtil.isISODate(date)) {
-          throw new RuntimeException("org.bedework.datetime.expect.dateonly");
+        if (!icalDateFormat.matches(date)) {
+          throw new BedeworkException("org.bedework.datetime.expect.dateonly");
         }
       }
 
@@ -136,7 +138,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
       bwd.setTzid(tzid);
 
       if (tzid == null) {
-        if (DateTimeUtil.isISODateTime(date)) {
+        if (icalDateTimeFormat.matches(date)) {
           bwd.setFloatFlag(true);
           bwd.setDate(date + "Z");
         }
@@ -179,8 +181,8 @@ public class BwDateTime extends DumpEntity<BwDateTime>
                                           final boolean floating) {
     try {
       if (dateType) {
-        if (!DateTimeUtil.isISODate(date)) {
-          throw new RuntimeException("org.bedework.datetime.expect.dateonly");
+        if (!icalDateFormat.matches(date)) {
+          throw new BedeworkException("org.bedework.datetime.expect.dateonly");
         }
       }
 
@@ -362,9 +364,9 @@ public class BwDateTime extends DumpEntity<BwDateTime>
         bwd.setDtval(date);
         bwd.setTzid(null);
       } else {
-        final java.util.Date dt = DateTimeUtil.fromISODateTimeUTC(date);
+        final var dt = icalDateTimeUTCFormat.toDate(date);
 
-        bwd.setDtval(DateTimeUtil.isoDateTime(dt, Timezones.getTz(tzid)));
+        bwd.setDtval(icalDateTimeFormat.fromDate(dt, Timezones.getTz(tzid)));
         bwd.setTzid(tzid);
       }
 
@@ -517,7 +519,7 @@ public class BwDateTime extends DumpEntity<BwDateTime>
     }
 
     try {
-      return DateTimeUtil.isISODateTimeUTC(getDtval());
+      return icalDateTimeUTCFormat.matches(getDtval());
     } catch (final Throwable t) {
       return false;
     }

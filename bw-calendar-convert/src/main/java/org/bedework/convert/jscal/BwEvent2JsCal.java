@@ -73,7 +73,6 @@ import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.util.calendar.XcalUtil;
 import org.bedework.util.logging.BwLogger;
 import org.bedework.util.misc.Util;
-import org.bedework.util.timezones.DateTimeUtil;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
@@ -94,6 +93,8 @@ import static org.bedework.jsforj.model.values.JSLink.linkRelAlternate;
 import static org.bedework.jsforj.model.values.JSLink.linkRelAlternateDescription;
 import static org.bedework.jsforj.model.values.JSRoles.roleContact;
 import static org.bedework.util.calendar.ScheduleMethods.methodTypeReply;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeFormat;
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** Class to provide utility methods for translating to VEvent ical4j classes
  *
@@ -2555,13 +2556,13 @@ public class BwEvent2JsCal {
     try {
       final java.util.Date date;
       if (dateTime.endsWith("Z") || (tzid == null)) {
-        date = DateTimeUtil.fromISODateTimeUTC(dateTime);
+        date = icalDateTimeUTCFormat.toDate(dateTime);
       } else {
-        date = DateTimeUtil.fromISODateTime(dateTime,
-                                            tzreg.getTimeZone(tzid));
+        date = icalDateTimeFormat.toDate(dateTime,
+                                         tzreg.getTimeZone(tzid));
       }
 
-      return DateTimeUtil.isoDateTime(date);
+      return icalDateTimeFormat.fromDate(date);
     } catch (final Throwable t) {
       throw new RuntimeException(t);
     }

@@ -34,7 +34,6 @@ import org.bedework.util.calendar.IcalDefs;
 import org.bedework.util.calendar.PropertyIndex.PropertyInfoIndex;
 import org.bedework.base.ToString;
 import org.bedework.util.misc.Util;
-import org.bedework.util.timezones.DateTimeUtil;
 import org.bedework.util.xml.FromXmlCallback;
 import org.bedework.util.xml.tagdefs.AppleIcalTags;
 import org.bedework.util.xml.tagdefs.AppleServerTags;
@@ -63,6 +62,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
+
+import static org.bedework.util.dates.DateFormatter.icalDateTimeUTCFormat;
 
 /** A collection in Bedework. This is roughly equivalent to a folder with some
  * rules attached.
@@ -321,7 +322,7 @@ public class BwCollection
 
     final Date dt = new Date();
     setLastmod(new BwCollectionLastmod(this, dt));
-    setCreated(DateTimeUtil.isoDateTimeUTC(dt));
+    setCreated(icalDateTimeUTCFormat.fromDate(dt));
   }
 
   /** Set the name
